@@ -37,7 +37,7 @@ export function Navbar() {
     const segmentKey = segment.toLowerCase();
     const routeData = routeMeta[segmentKey];
 
-    const { icon: IconComponent, label } = routeData || {
+    const { icon: IconComponent, label } = routeData ?? {
       label: segment.replace(/-/g, " "),
       icon: Building2, // Default fallback icon
     };

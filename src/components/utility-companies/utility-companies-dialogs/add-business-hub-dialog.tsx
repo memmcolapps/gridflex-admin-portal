@@ -41,30 +41,30 @@ export function AddBusinessHubDialog({ isOpen, onOpenChange, onSubmit, initialDa
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <Label htmlFor="businessHubId">Business Hub ID *</Label>
-                            <Input id="businessHubId" name="businessHubId" value={formData.businessHubId || ""} onChange={handleChange} placeholder="Enter Business Hub ID" />
+                            <Input id="businessHubId" name="businessHubId" value={formData.businessHubId ?? ""} onChange={handleChange} placeholder="Enter Business Hub ID" />
                         </div>
                         <div>
                             <Label htmlFor="businessHubName">Business Hub Name *</Label>
-                            <Input id="businessHubName" name="businessHubName" value={formData.businessHubName || ""} onChange={handleChange} placeholder="Enter Business Hub Name" />
+                            <Input id="businessHubName" name="businessHubName" value={formData.businessHubName ?? ""} onChange={handleChange} placeholder="Enter Business Hub Name" />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <Label htmlFor="phoneNumber">Phone Number *</Label>
-                            <Input id="phoneNumber" name="phoneNumber" value={formData.phoneNumber || ""} onChange={handleChange} placeholder="Enter Phone Number" />
+                            <Input id="phoneNumber" name="phoneNumber" value={formData.phoneNumber ?? ""} onChange={handleChange} placeholder="Enter Phone Number" />
                         </div>
                         <div>
                             <Label htmlFor="email">Email *</Label>
-                            <Input id="email" name="email" value={formData.email || ""} onChange={handleChange} placeholder="Enter Email" />
+                            <Input id="email" name="email" value={formData.email ?? ""} onChange={handleChange} placeholder="Enter Email" />
                         </div>
                     </div>
                     <div>
                         <Label htmlFor="contactPerson">Contact Person *</Label>
-                        <Input id="contactPerson" name="contactPerson" value={formData.contactPerson || ""} onChange={handleChange} placeholder="Enter Contact Person" />
+                        <Input id="contactPerson" name="contactPerson" value={formData.contactPerson ?? ""} onChange={handleChange} placeholder="Enter Contact Person" />
                     </div>
                     <div>
                         <Label htmlFor="address">Address *</Label>
-                        <Input id="address" name="address" value={formData.address || ""} onChange={handleChange} placeholder="Enter Address" />
+                        <Input id="address" name="address" value={formData.address ?? ""} onChange={handleChange} placeholder="Enter Address" />
                     </div>
                 </div>
                 <DialogFooter>

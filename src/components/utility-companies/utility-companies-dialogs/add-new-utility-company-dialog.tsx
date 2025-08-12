@@ -70,7 +70,7 @@ export function AddNewUtilityCompanyDialog({ isOpen, onOpenChange, onSubmit, ini
                     <div className="grid grid-cols-2 gap-4 ">
                         <div className="space-y-2">
                             <Label htmlFor="organizationName">Organization Name <span className="text-red-500">*</span></Label>
-                            <Input id="organizationName" name="organizationName" value={formData.organizationName || ""} onChange={handleChange} placeholder="Enter company name" />
+                            <Input id="organizationName" name="organizationName" value={formData.organizationName ?? ""} onChange={handleChange} placeholder="Enter company name" />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="country">Country <span className="text-red-500">*</span></Label>
@@ -88,21 +88,21 @@ export function AddNewUtilityCompanyDialog({ isOpen, onOpenChange, onSubmit, ini
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
-                            <Input id="city" name="city" value={formData.city || ""} onChange={handleChange} placeholder="Enter City" />
+                            <Input id="city" name="city" value={formData.city ?? ""} onChange={handleChange} placeholder="Enter City" />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="postalCode">Postal Code</Label>
-                            <Input id="postalCode" name="postalCode" value={formData.postalCode || ""} onChange={handleChange} placeholder="Enter Postal Code" />
+                            <Input id="postalCode" name="postalCode" value={formData.postalCode ?? ""} onChange={handleChange} placeholder="Enter Postal Code" />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="stateProvince">State/Province <span className="text-red-500">*</span></Label>
-                            <Input id="stateProvince" name="stateProvince" value={formData.stateProvince || ""} onChange={handleChange} placeholder="Enter state or province" />
+                            <Input id="stateProvince" name="stateProvince" value={formData.stateProvince ?? ""} onChange={handleChange} placeholder="Enter state or province" />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="streetAddress">Street Address <span className="text-red-500">*</span></Label>
-                            <Input id="streetAddress" name="streetAddress" value={formData.streetAddress || ""} onChange={handleChange} placeholder="Enter street address" />
+                            <Input id="streetAddress" name="streetAddress" value={formData.streetAddress ?? ""} onChange={handleChange} placeholder="Enter street address" />
                         </div>
                     </div>
                     <div className="space-y-2">
@@ -113,21 +113,21 @@ export function AddNewUtilityCompanyDialog({ isOpen, onOpenChange, onSubmit, ini
                     <div className="grid grid-cols-2 gap-4 mt-2">
                         <div className="space-y-2">
                             <Label htmlFor="adminName">Admin Name <span className="text-red-500">*</span></Label>
-                            <Input id="adminName" name="adminName" value={formData.adminName || ""} onChange={handleChange} placeholder="Enter person name" />
+                            <Input id="adminName" name="adminName" value={formData.adminName ?? ""} onChange={handleChange} placeholder="Enter person name" />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="adminPhoneNumber">Admin Phone Number <span className="text-red-500">*</span></Label>
-                            <Input id="adminPhoneNumber" name="adminPhoneNumber" value={formData.adminPhoneNumber || ""} onChange={handleChange} placeholder="Enter person number" />
+                            <Input id="adminPhoneNumber" name="adminPhoneNumber" value={formData.adminPhoneNumber ?? ""} onChange={handleChange} placeholder="Enter person number" />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
-                            <Input id="email" name="email" value={formData.email || ""} onChange={handleChange} placeholder="Enter contact email" />
+                            <Input id="email" name="email" value={formData.email ?? ""} onChange={handleChange} placeholder="Enter contact email" />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="defaultPassword">Default Password <span className="text-red-500">*</span></Label>
-                            <Input id="defaultPassword" name="defaultPassword" value={formData.defaultPassword || ""} onChange={handleChange} placeholder="Enter default password" />
+                            <Input id="defaultPassword" name="defaultPassword" value={formData.defaultPassword ?? ""} onChange={handleChange} placeholder="Enter default password" />
                         </div>
                     </div>
                 </div>

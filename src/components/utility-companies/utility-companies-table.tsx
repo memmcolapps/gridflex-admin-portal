@@ -21,11 +21,7 @@ import {
   Pencil,
   CircleSlash,
 } from "lucide-react";
-<<<<<<< HEAD
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-=======
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
->>>>>>> origin/main
 
 const utilityCompaniesData = [
   {
@@ -204,12 +200,11 @@ export default function UtilityCompaniesTable() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="center">
-<<<<<<< HEAD
                       <DropdownMenuItem
                         className="align-items-center cursor-pointer"
                         onClick={() => router.push(`/utility-companies/${company.company.toLowerCase()}`)}  // Addition: Navigate to performance overview based on company name
                       >
-                        <Eye size={14} className="mr-2 text-black" />  ~~// Addition: Added mr-2 for spacing (minor styling)~~
+                        <Eye size={14} className="mr-2 text-black" /> 
                         View Details
                       </DropdownMenuItem>
                       <DropdownMenuItem className="align-items-center cursor-pointer">
@@ -222,22 +217,6 @@ export default function UtilityCompaniesTable() {
                       </DropdownMenuItem>
                       <DropdownMenuItem className="align-items-center cursor-pointer">
                         <CircleSlash size={14} className="mr-2 text-black" />
-=======
-                      <DropdownMenuItem className="align-items-center cursor-pointer">
-                        <Eye size={14} className="text-black mt-1" />
-                        View Details
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="align-items-center cursor-pointer">
-                        <Pencil size={14} className="text-black" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="align-items-center cursor-pointer" >
-                        <CircleSlash size={14} className="text-black" />
-                        Suspend
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="align-items-center cursor-pointer">
-                        <CircleSlash size={14} className="text-black" />
->>>>>>> origin/main
                         Unsuspend
                       </DropdownMenuItem>
                     </DropdownMenuContent>

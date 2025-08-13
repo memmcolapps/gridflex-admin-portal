@@ -1,4 +1,3 @@
-// page.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,9 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Plus } from "lucide-react";
 import SummaryTab from "@/components/utility-companies/summary-tab";
+import { AddNewUtilityCompanyDialog } from "@/components/utility-companies/utility-companies-dialogs/add-new-utility-company-dialog";
+import type { UnifiedFormData } from "@/types/unifiedForm";
 
 export default function UtilityCompaniesPage() {
   const [activeTab, setActiveTab] = useState("summary");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleSubmit = (data: UnifiedFormData) => {
+    console.log("Submitted data:", data);
+    // Here you can add logic to handle the form submission, e.g., API call to add the company
+    setIsDialogOpen(false);
+  };
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -28,11 +36,10 @@ export default function UtilityCompaniesPage() {
         <div className="border-b border-gray-200">
           <button
             onClick={() => setActiveTab("summary")}
-            className={`relative pb-3 text-sm font-medium transition-colors ${
-              activeTab === "summary"
+            className={`relative pb-3 text-sm font-medium transition-colors ${activeTab === "summary"
                 ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
                 : "text-gray-600 hover:text-gray-900"
-            } `}
+              } `}
           >
             Summary
           </button>
@@ -51,7 +58,10 @@ export default function UtilityCompaniesPage() {
           </div>
 
           {/* Add Company on the right */}
-          <Button className="flex h-9 items-center gap-2 bg-black hover:bg-gray-800">
+          <Button
+            className="flex h-9 items-center gap-2 bg-black hover:bg-gray-800 cursor-pointer"
+            onClick={() => setIsDialogOpen(true)}
+          >
             <Plus size={16} />
             Add Company
           </Button>
@@ -60,6 +70,13 @@ export default function UtilityCompaniesPage() {
         {/* Tab Content */}
         {activeTab === "summary" && <SummaryTab />}
       </div>
+
+      {/* Add New Utility Company Dialog */}
+      <AddNewUtilityCompanyDialog
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 }

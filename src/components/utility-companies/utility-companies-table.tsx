@@ -1,5 +1,6 @@
 // utility-companies-table.tsx
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -16,7 +17,11 @@ import {
   MoreVertical,
   ChevronLeft,
   ChevronRight,
+  Eye,
+  Pencil,
+  CircleSlash,
 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const utilityCompaniesData = [
   {
@@ -97,6 +102,7 @@ export default function UtilityCompaniesTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = 10;
+  const router = useRouter();
 
   return (
     <Card className="shadow-sm">
@@ -183,13 +189,38 @@ export default function UtilityCompaniesTable() {
                   {company.registrationDate}
                 </TableCell>
                 <TableCell className="pr-6 text-right">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8  cursor-pointer rounded-lg border border-gray-200 bg-white p-0 shadow-sm hover:bg-gray-50"
-                  >
-                    <MoreVertical size={16} className="text-gray-600" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 cursor-pointer rounded-lg border border-gray-200 bg-white p-0 shadow-sm hover:bg-gray-50"
+                      >
+                        <MoreVertical size={16} className="text-gray-600" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="center">
+                      <DropdownMenuItem
+                        className="align-items-center cursor-pointer"
+                        onClick={() => router.push(`/utility-companies/${company.company.toLowerCase()}`)}  // Addition: Navigate to performance overview based on company name
+                      >
+                        <Eye size={14} className="mr-2 text-black" />  ~~// Addition: Added mr-2 for spacing (minor styling)~~
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="align-items-center cursor-pointer">
+                        <Pencil size={14} className="mr-2 text-black" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="align-items-center cursor-pointer" >
+                        <CircleSlash size={14} className="mr-2 text-black" />
+                        Suspend
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="align-items-center cursor-pointer">
+                        <CircleSlash size={14} className="mr-2 text-black" />
+                        Unsuspend
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}
@@ -216,11 +247,10 @@ export default function UtilityCompaniesTable() {
                 variant={currentPage === page ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setCurrentPage(page)}
-                className={`h-8 w-8 cursor-pointer p-0 ${
-                  currentPage === page
-                    ? "bg-gray-900 text-white hover:bg-gray-800"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
+                className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
+                  ? "bg-gray-900 text-white hover:bg-gray-800"
+                  : "text-gray-600 hover:bg-gray-50"
+                  }`}
               >
                 {page}
               </Button>

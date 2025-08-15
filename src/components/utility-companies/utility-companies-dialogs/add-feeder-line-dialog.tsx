@@ -1,5 +1,6 @@
 // components/dialogs/AddFeederLineDialog.tsx
-import { useState } from "react";
+"use client";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -36,48 +37,63 @@ export function AddFeederLineDialog({ isOpen, onOpenChange, onSubmit, initialDat
         onOpenChange(false);
     };
 
+    // Disable button until all required fields are filled
+    const isFormValid = useMemo(() => {
+        return (
+            formData.feederName?.trim() &&
+            formData.phoneNumber?.trim() &&
+            formData.email?.trim() &&
+            formData.contactPerson?.trim() &&
+            formData.address?.trim() &&
+            formData.assetId?.trim() &&
+            formData.status?.trim() &&
+            formData.voltage?.trim() &&
+            formData.description?.trim()
+        );
+    }, [formData]);
+
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Add Feeder Line</DialogTitle>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
+                <div className="grid gap-4 py-4 space-y-2">
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <Label htmlFor="feederName">Feeder Name *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="feederName">Feeder Name <span className="text-red-500">*</span></Label>
                             <Input id="feederName" name="feederName" value={formData.feederName ?? ""} onChange={handleChange} placeholder="Enter Feeder Name" />
                         </div>
-                        <div>
-                            <Label htmlFor="serialNumber">Serial Number *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="serialNumber">Serial Number <span className="text-red-500">*</span></Label>
                             <Input id="serialNumber" name="serialNumber" value={formData.serialNumber ?? "System Generated"} disabled />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <Label htmlFor="phoneNumber">Phone Number *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="phoneNumber">Phone Number <span className="text-red-500">*</span></Label>
                             <Input id="phoneNumber" name="phoneNumber" value={formData.phoneNumber ?? ""} onChange={handleChange} placeholder="Enter Phone Number" />
                         </div>
-                        <div>
-                            <Label htmlFor="email">Email *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
                             <Input id="email" name="email" value={formData.email ?? ""} onChange={handleChange} placeholder="Enter Email" />
                         </div>
                     </div>
-                    <div>
-                        <Label htmlFor="contactPerson">Contact Person *</Label>
+                    <div className="space-y-2">
+                        <Label htmlFor="contactPerson">Contact Person <span className="text-red-500">*</span></Label>
                         <Input id="contactPerson" name="contactPerson" value={formData.contactPerson ?? ""} onChange={handleChange} placeholder="Enter Contact Person" />
                     </div>
-                    <div>
-                        <Label htmlFor="address">Address *</Label>
+                    <div className="space-y-2">
+                        <Label htmlFor="address">Address <span className="text-red-500">*</span></Label>
                         <Input id="address" name="address" value={formData.address ?? ""} onChange={handleChange} placeholder="Enter Address" />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
-                        <div>
-                            <Label htmlFor="assetId">Asset ID *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="assetId">Asset ID <span className="text-red-500">*</span></Label>
                             <Input id="assetId" name="assetId" value={formData.assetId ?? ""} onChange={handleChange} placeholder="Enter Asset ID" />
                         </div>
-                        <div>
-                            <Label htmlFor="status">Status *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="status">Status<span className="text-red-500">*</span></Label>
                             <Select onValueChange={handleSelectChange("status")} defaultValue={formData.status}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Status" />
@@ -87,8 +103,8 @@ export function AddFeederLineDialog({ isOpen, onOpenChange, onSubmit, initialDat
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div>
-                            <Label htmlFor="voltage">Voltage *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="voltage">Voltage<span className="text-red-500">*</span></Label>
                             <Select onValueChange={handleSelectChange("voltage")} defaultValue={formData.voltage}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Voltage" />
@@ -99,14 +115,20 @@ export function AddFeederLineDialog({ isOpen, onOpenChange, onSubmit, initialDat
                             </Select>
                         </div>
                     </div>
-                    <div>
-                        <Label htmlFor="description">Description *</Label>
+                    <div className="space-y-2">
+                        <Label htmlFor="description">Description<span className="text-red-500">*</span></Label>
                         <Input id="description" name="description" value={formData.description ?? ""} onChange={handleChange} placeholder="Enter Description" />
                     </div>
                 </div>
                 <DialogFooter>
                     <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Add Substation</Button> {/* Note: Image shows "Add Substation", likely a generic button */}
+                    <Button
+                        onClick={handleSubmit}
+                        className="bg-[#161CCA] text-white"
+                        disabled={!isFormValid}
+                    >
+                        Add Feeder Line
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

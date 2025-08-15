@@ -1,5 +1,5 @@
-// components/dialogs/AddDistributionSubstationDialog.tsx
-import { useState } from "react";
+"use client";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -36,49 +36,116 @@ export function AddDistributionSubstationDialog({ isOpen, onOpenChange, onSubmit
         onOpenChange(false);
     };
 
+    // Disable button until all required fields are filled
+    const isFormValid = useMemo(() => {
+        return (
+            formData.substationName &&
+            formData.phoneNumber &&
+            formData.email &&
+            formData.contactPerson &&
+            formData.address &&
+            formData.assetId &&
+            formData.status &&
+            formData.voltage &&
+            formData.description
+        );
+    }, [formData]);
+
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent>
+            <DialogContent className="max-w-3xl"> {/* Wider dialog */}
                 <DialogHeader>
                     <DialogTitle>Add Distribution Substation (DSS)</DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <Label htmlFor="substationName">Distribution Substation (DSS) Name *</Label>
-                            <Input id="substationName" name="substationName" value={formData.substationName ?? ""} onChange={handleChange} placeholder="Enter Distribution Name" />
+                        <div className="space-y-2">
+                            <Label htmlFor="substationName" className="whitespace-nowrap">
+                                Distribution Substation(DSS)<span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                id="substationName"
+                                name="substationName"
+                                value={formData.substationName ?? ""}
+                                onChange={handleChange}
+                                placeholder="Enter Distribution Name"
+                            />
                         </div>
-                        <div>
-                            <Label htmlFor="serialNumber">Serial Number *</Label>
-                            <Input id="serialNumber" name="serialNumber" value={formData.serialNumber ?? "System Generated"} disabled />
+                        <div className="space-y-2">
+                            <Label htmlFor="serialNumber">
+                                Serial Number<span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                id="serialNumber"
+                                name="serialNumber"
+                                value={formData.serialNumber ?? "System Generated"}
+                                disabled
+                            />
                         </div>
                     </div>
+
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <Label htmlFor="phoneNumber">Phone Number *</Label>
-                            <Input id="phoneNumber" name="phoneNumber" value={formData.phoneNumber ?? ""} onChange={handleChange} placeholder="Enter Phone Number" />
+                        <div className="space-y-2">
+                            <Label htmlFor="phoneNumber">Phone Number <span className="text-red-500">*</span></Label>
+                            <Input
+                                id="phoneNumber"
+                                name="phoneNumber"
+                                value={formData.phoneNumber ?? ""}
+                                onChange={handleChange}
+                                placeholder="Enter Phone Number"
+                            />
                         </div>
-                        <div>
-                            <Label htmlFor="email">Email *</Label>
-                            <Input id="email" name="email" value={formData.email ?? ""} onChange={handleChange} placeholder="Enter Email" />
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+                            <Input
+                                id="email"
+                                name="email"
+                                value={formData.email ?? ""}
+                                onChange={handleChange}
+                                placeholder="Enter Email"
+                            />
                         </div>
                     </div>
-                    <div>
-                        <Label htmlFor="contactPerson">Contact Person *</Label>
-                        <Input id="contactPerson" name="contactPerson" value={formData.contactPerson ?? ""} onChange={handleChange} placeholder="Enter Contact Person" />
+
+                    <div className="space-y-2">
+                        <Label htmlFor="contactPerson">Contact Person <span className="text-red-500">*</span></Label>
+                        <Input
+                            id="contactPerson"
+                            name="contactPerson"
+                            value={formData.contactPerson ?? ""}
+                            onChange={handleChange}
+                            placeholder="Enter Contact Person"
+                        />
                     </div>
-                    <div>
-                        <Label htmlFor="address">Address *</Label>
-                        <Input id="address" name="address" value={formData.address ?? ""} onChange={handleChange} placeholder="Enter Address" />
+
+                    <div className="space-y-2">
+                        <Label htmlFor="address">Address <span className="text-red-500">*</span></Label>
+                        <Input
+                            id="address"
+                            name="address"
+                            value={formData.address ?? ""}
+                            onChange={handleChange}
+                            placeholder="Enter Address"
+                        />
                     </div>
+
                     <div className="grid grid-cols-3 gap-4">
-                        <div>
-                            <Label htmlFor="assetId">Asset ID *</Label>
-                            <Input id="assetId" name="assetId" value={formData.assetId ?? ""} onChange={handleChange} placeholder="Enter Asset ID" />
+                        <div className="space-y-2">
+                            <Label htmlFor="assetId">Asset ID <span className="text-red-500">*</span></Label>
+                            <Input
+                                id="assetId"
+                                name="assetId"
+                                value={formData.assetId ?? ""}
+                                onChange={handleChange}
+                                placeholder="Enter Asset ID"
+                            />
                         </div>
-                        <div>
-                            <Label htmlFor="status">Status *</Label>
-                            <Select onValueChange={handleSelectChange("status")} defaultValue={formData.status}>
+                        <div className="space-y-2">
+                            <Label htmlFor="status">Status <span className="text-red-500">*</span></Label>
+                            <Select
+                                onValueChange={handleSelectChange("status")}
+                                value={formData.status ?? ""}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Status" />
                                 </SelectTrigger>
@@ -87,9 +154,12 @@ export function AddDistributionSubstationDialog({ isOpen, onOpenChange, onSubmit
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div>
-                            <Label htmlFor="voltage">Voltage *</Label>
-                            <Select onValueChange={handleSelectChange("voltage")} defaultValue={formData.voltage}>
+                        <div className="space-y-2">
+                            <Label htmlFor="voltage">Voltage <span className="text-red-500">*</span></Label>
+                            <Select
+                                onValueChange={handleSelectChange("voltage")}
+                                value={formData.voltage ?? ""}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Voltage" />
                                 </SelectTrigger>
@@ -99,24 +169,50 @@ export function AddDistributionSubstationDialog({ isOpen, onOpenChange, onSubmit
                             </Select>
                         </div>
                     </div>
+
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
+                        <div className="space-y-2">
                             <Label htmlFor="longitude">Longitude</Label>
-                            <Input id="longitude" name="longitude" value={formData.longitude ?? ""} onChange={handleChange} placeholder="Enter Longitude" />
+                            <Input
+                                id="longitude"
+                                name="longitude"
+                                value={formData.longitude ?? ""}
+                                onChange={handleChange}
+                                placeholder="Enter Longitude"
+                            />
                         </div>
-                        <div>
+                        <div className="space-y-2">
                             <Label htmlFor="latitude">Latitude</Label>
-                            <Input id="latitude" name="latitude" value={formData.latitude ?? ""} onChange={handleChange} placeholder="Enter Latitude" />
+                            <Input
+                                id="latitude"
+                                name="latitude"
+                                value={formData.latitude ?? ""}
+                                onChange={handleChange}
+                                placeholder="Enter Latitude"
+                            />
                         </div>
                     </div>
-                    <div>
-                        <Label htmlFor="description">Description *</Label>
-                        <Input id="description" name="description" value={formData.description ?? ""} onChange={handleChange} placeholder="Enter Description" />
+
+                    <div className="space-y-2">
+                        <Label htmlFor="description">Description <span className="text-red-500">*</span></Label>
+                        <Input
+                            id="description"
+                            name="description"
+                            value={formData.description ?? ""}
+                            onChange={handleChange}
+                            placeholder="Enter Description"
+                        />
                     </div>
                 </div>
+
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Add Substation</Button>
+                     <Button variant="outline" onClick={() => onOpenChange(false)} className="text-[#161CCA] border-[#161CCA] hover:text-[#161CCA] cursor-pointer">Cancel</Button>
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={!isFormValid}
+                        className={`text-white ${isFormValid ? "bg-[#161CCA] hover:bg-[#161CCA] cursor-pointer" : "bg-[#161CCA]/40 cursor-not-allowed"}`}
+                    >
+                        Add Substation</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

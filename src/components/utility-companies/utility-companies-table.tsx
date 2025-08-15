@@ -1,5 +1,6 @@
 // utility-companies-table.tsx
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -20,7 +21,7 @@ import {
   Pencil,
   CircleSlash,
 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const utilityCompaniesData = [
   {
@@ -101,6 +102,7 @@ export default function UtilityCompaniesTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = 10;
+  const router = useRouter();
 
   return (
     <Card className="shadow-sm">
@@ -198,20 +200,23 @@ export default function UtilityCompaniesTable() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="center">
-                      <DropdownMenuItem className="align-items-center cursor-pointer">
-                        <Eye size={14} className="text-black mt-1" />
+                      <DropdownMenuItem
+                        className="align-items-center cursor-pointer"
+                        onClick={() => router.push(`/performance-overview`)}  // Addition: Navigate to performance overview based on company name
+                      >
+                        <Eye size={14} className="mr-2 text-black mt-1" /> 
                         View Details
                       </DropdownMenuItem>
                       <DropdownMenuItem className="align-items-center cursor-pointer">
-                        <Pencil size={14} className="text-black" />
+                        <Pencil size={14} className="mr-2 text-black" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuItem className="align-items-center cursor-pointer" >
-                        <CircleSlash size={14} className="text-black" />
+                        <CircleSlash size={14} className="mr-2 text-black" />
                         Suspend
                       </DropdownMenuItem>
                       <DropdownMenuItem className="align-items-center cursor-pointer">
-                        <CircleSlash size={14} className="text-black" />
+                        <CircleSlash size={14} className="mr-2 text-black" />
                         Unsuspend
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -248,7 +253,7 @@ export default function UtilityCompaniesTable() {
                   }`}
               >
                 {page}
-              </Button>
+              </Button> 
             ))}
             <span className="px-2 text-gray-400">...</span>
             {[8, 9, 10].map((page) => (

@@ -1,4 +1,5 @@
 // components/dialogs/AddFeederLineDialog.tsx
+"use client";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {

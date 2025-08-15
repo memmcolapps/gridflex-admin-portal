@@ -1,3 +1,4 @@
+"use client";
 // components/dialogs/EditBusinessHubDialog.tsx
 import { useState } from "react";
 import { Button } from "@/components/ui/button";

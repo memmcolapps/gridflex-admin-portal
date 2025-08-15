@@ -1,3 +1,4 @@
+"use client";
 // components/dialogs/EditDistributionSubstationDialog.tsx
 // Note: Similar to EditSubstationDialog, with adjusted title and label
 import { useState } from "react";

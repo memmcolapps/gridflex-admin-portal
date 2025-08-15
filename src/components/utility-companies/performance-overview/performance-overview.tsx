@@ -109,7 +109,7 @@ export default function PerformanceOverview({ params }: { params: { slug: string
     const addChild = (parentName: string, newChild: Node) => {
         const update = (node: Node): Node => {
             if (node.name === parentName) {
-                return { ...node, children: [...(node.children || []), newChild] };
+                return { ...node, children: [...(node.children ?? []), newChild] };
             }
             if (node.children) {
                 return { ...node, children: node.children.map(update) };
@@ -125,22 +125,22 @@ export default function PerformanceOverview({ params }: { params: { slug: string
                 return {
                     ...node,
                     name:
-                        updatedData.businessHubName ||
-                        updatedData.substationName ||
-                        updatedData.feederName ||
+                        updatedData.businessHubName ??
+                        updatedData.substationName ??
+                        updatedData.feederName ??
                         node.name,
-                    businessHubId: updatedData.businessHubId || node.businessHubId,
-                    serialNumber: updatedData.serialNumber || node.serialNumber,
-                    assetId: updatedData.assetId || node.assetId,
-                    status: updatedData.status || node.status,
-                    voltage: updatedData.voltage || node.voltage,
-                    longitude: updatedData.longitude || node.longitude,
-                    latitude: updatedData.latitude || node.latitude,
-                    description: updatedData.description || node.description,
-                    phoneNumber: updatedData.phoneNumber || node.phoneNumber,
-                    email: updatedData.email || node.email,
-                    contactPerson: updatedData.contactPerson || node.contactPerson,
-                    address: updatedData.address || node.address,
+                    businessHubId: updatedData.businessHubId ?? node.businessHubId,
+                    serialNumber: updatedData.serialNumber ?? node.serialNumber,
+                    assetId: updatedData.assetId ?? node.assetId,
+                    status: updatedData.status ?? node.status,
+                    voltage: updatedData.voltage ?? node.voltage,
+                    longitude: updatedData.longitude ?? node.longitude,
+                    latitude: updatedData.latitude ?? node.latitude,
+                    description: updatedData.description ?? node.description,
+                    phoneNumber: updatedData.phoneNumber ?? node.phoneNumber,
+                    email: updatedData.email ?? node.email,
+                    contactPerson: updatedData.contactPerson ?? node.contactPerson,
+                    address: updatedData.address ?? node.address,
                 };
             }
             if (node.children) {
@@ -152,7 +152,7 @@ export default function PerformanceOverview({ params }: { params: { slug: string
     };
 
     const handleAddRegion = (data: UnifiedFormData) => {
-        const newRegion: Node = { name: data.regionName || "Unnamed Region", type: "region", children: [] };
+        const newRegion: Node = { name: data.regionName ?? "Unnamed Region", type: "region", children: [] };
         addChild(currentParentName, newRegion);
         setIsAddRegionOpen(false);
         setCurrentParentName("");
@@ -160,13 +160,13 @@ export default function PerformanceOverview({ params }: { params: { slug: string
 
     const handleAddBusinessHub = (data: UnifiedFormData) => {
         const newBusinessHub: Node = {
-            name: data.businessHubName || "Unnamed Business Hub",
+            name: data.businessHubName ?? "Unnamed Business Hub",
             type: "businessHub",
-            businessHubId: data.businessHubId || `BH-${Date.now()}`,
-            phoneNumber: data.phoneNumber || "",
-            email: data.email || "",
-            contactPerson: data.contactPerson || "",
-            address: data.address || "",
+            businessHubId: data.businessHubId ?? `BH-${Date.now()}`,
+            phoneNumber: data.phoneNumber ?? "",
+            email: data.email ?? "",
+            contactPerson: data.contactPerson ?? "",
+            address: data.address ?? "",
             children: [],
         };
         addChild(currentParentName, newBusinessHub);
@@ -176,19 +176,19 @@ export default function PerformanceOverview({ params }: { params: { slug: string
 
     const handleAddSubstation = (data: UnifiedFormData) => {
         const newSubstation: Node = {
-            name: data.substationName || "Unnamed Substation",
+            name: data.substationName ?? "Unnamed Substation",
             type: "substation",
-            serialNumber: data.serialNumber || `SUB-${Date.now()}`,
-            assetId: data.assetId || "",
-            status: data.status || "Active",
-            voltage: data.voltage || "330 KV",
-            longitude: data.longitude || "",
-            latitude: data.latitude || "",
-            description: data.description || "",
-            phoneNumber: data.phoneNumber || "",
-            email: data.email || "",
-            contactPerson: data.contactPerson || "",
-            address: data.address || "",
+            serialNumber: data.serialNumber ?? `SUB-${Date.now()}`,
+            assetId: data.assetId ?? "",
+            status: data.status ?? "Active",
+            voltage: data.voltage ?? "330 KV",
+            longitude: data.longitude ?? "",
+            latitude: data.latitude ?? "",
+            description: data.description ?? "",
+            phoneNumber: data.phoneNumber ?? "",
+            email: data.email ?? "",
+            contactPerson: data.contactPerson ?? "",
+            address: data.address ?? "",
             children: [],
         };
         addChild(currentParentName, newSubstation);
@@ -198,19 +198,19 @@ export default function PerformanceOverview({ params }: { params: { slug: string
 
     const handleAddFeederLine = (data: UnifiedFormData) => {
         const newFeederLine: Node = {
-            name: data.feederName || "Unnamed Feeder Line",
+            name: data.feederName ?? "Unnamed Feeder Line",
             type: "feederLine",
-            serialNumber: data.serialNumber || `FL-${Date.now()}`,
-            assetId: data.assetId || "",
-            status: data.status || "Active",
-            voltage: data.voltage || "330 KV",
-            longitude: data.longitude || "",
-            latitude: data.latitude || "",
-            description: data.description || "",
-            phoneNumber: data.phoneNumber || "",
-            email: data.email || "",
-            contactPerson: data.contactPerson || "",
-            address: data.address || "",
+            serialNumber: data.serialNumber ?? `FL-${Date.now()}`,
+            assetId: data.assetId ?? "",
+            status: data.status ?? "Active",
+            voltage: data.voltage ?? "330 KV",
+            longitude: data.longitude ?? "",
+            latitude: data.latitude ?? "",
+            description: data.description ?? "",
+            phoneNumber: data.phoneNumber ?? "",
+            email: data.email ?? "",
+            contactPerson: data.contactPerson ?? "",
+            address: data.address ?? "",
             children: [],
         };
         addChild(currentParentName, newFeederLine);
@@ -220,19 +220,19 @@ export default function PerformanceOverview({ params }: { params: { slug: string
 
     const handleAddDSS = (data: UnifiedFormData) => {
         const newDSS: Node = {
-            name: data.substationName || "Unnamed Distribution Substation (DSS)",
+            name: data.substationName ?? "Unnamed Distribution Substation (DSS)",
             type: "dss",
-            serialNumber: data.serialNumber || `DSS-${Date.now()}`,
-            assetId: data.assetId || "",
-            status: data.status || "Active",
-            voltage: data.voltage || "330 KV",
-            longitude: data.longitude || "",
-            latitude: data.latitude || "",
-            description: data.description || "",
-            phoneNumber: data.phoneNumber || "",
-            email: data.email || "",
-            contactPerson: data.contactPerson || "",
-            address: data.address || "",
+            serialNumber: data.serialNumber ?? `DSS-${Date.now()}`,
+            assetId: data.assetId ?? "",
+            status: data.status ?? "Active",
+            voltage: data.voltage ?? "330 KV",
+            longitude: data.longitude ?? "",
+            latitude: data.latitude ?? "",
+            description: data.description ?? "",
+            phoneNumber: data.phoneNumber ?? "",
+            email: data.email ?? "",
+            contactPerson: data.contactPerson ?? "",
+            address: data.address ?? "",
             children: [],
         };
         addChild(currentParentName, newDSS);
@@ -242,11 +242,11 @@ export default function PerformanceOverview({ params }: { params: { slug: string
 
     const handleEditRoot = (data: UnifiedFormData) => {
         setCompanyProfile({
-            company: data.rootName || companyProfile.company,
-            contact: data.contactPerson || companyProfile.contact,
-            email: data.email || companyProfile.email,
-            phone: data.phoneNumber || companyProfile.phone,
-            address: data.address || companyProfile.address,
+            company: data.rootName ?? companyProfile.company,
+            contact: data.contactPerson ?? companyProfile.contact,
+            email: data.email ?? companyProfile.email,
+            phone: data.phoneNumber ?? companyProfile.phone,
+            address: data.address ?? companyProfile.address,
         });
         if (data.rootName && data.rootName !== tree.name) {
             setTree({ ...tree, name: data.rootName });
@@ -623,12 +623,12 @@ export default function PerformanceOverview({ params }: { params: { slug: string
                     initialData={
                         currentEditNode
                             ? {
-                                businessHubId: currentEditNode.businessHubId || "",
+                                businessHubId: currentEditNode.businessHubId ?? "",
                                 businessHubName: currentEditNode.name,
-                                phoneNumber: currentEditNode.phoneNumber || "",
-                                email: currentEditNode.email || "",
-                                contactPerson: currentEditNode.contactPerson || "",
-                                address: currentEditNode.address || "",
+                                phoneNumber: currentEditNode.phoneNumber ?? "",
+                                email: currentEditNode.email ?? "",
+                                contactPerson: currentEditNode.contactPerson ?? "",
+                                address: currentEditNode.address ?? "",
                             }
                             : {}
                     }
@@ -641,17 +641,17 @@ export default function PerformanceOverview({ params }: { params: { slug: string
                         currentEditNode
                             ? {
                                 substationName: currentEditNode.name,
-                                serialNumber: currentEditNode.serialNumber || "",
-                                assetId: currentEditNode.assetId || "",
-                                status: currentEditNode.status || "Active",
-                                voltage: currentEditNode.voltage || "330 KV",
-                                longitude: currentEditNode.longitude || "",
-                                latitude: currentEditNode.latitude || "",
-                                description: currentEditNode.description || "",
-                                phoneNumber: currentEditNode.phoneNumber || "",
-                                email: currentEditNode.email || "",
-                                contactPerson: currentEditNode.contactPerson || "",
-                                address: currentEditNode.address || "",
+                                serialNumber: currentEditNode.serialNumber ?? "",
+                                assetId: currentEditNode.assetId ?? "",
+                                status: currentEditNode.status ?? "Active",
+                                voltage: currentEditNode.voltage ?? "330 KV",
+                                longitude: currentEditNode.longitude ?? "",
+                                latitude: currentEditNode.latitude ?? "",
+                                description: currentEditNode.description ?? "",
+                                phoneNumber: currentEditNode.phoneNumber ?? "",
+                                email: currentEditNode.email ?? "",
+                                contactPerson: currentEditNode.contactPerson ?? "",
+                                address: currentEditNode.address ?? "",
                             }
                             : {}
                     }
@@ -664,17 +664,17 @@ export default function PerformanceOverview({ params }: { params: { slug: string
                         currentEditNode
                             ? {
                                 feederName: currentEditNode.name,
-                                serialNumber: currentEditNode.serialNumber || "",
-                                assetId: currentEditNode.assetId || "",
-                                status: currentEditNode.status || "Active",
-                                voltage: currentEditNode.voltage || "330 KV",
-                                longitude: currentEditNode.longitude || "",
-                                latitude: currentEditNode.latitude || "",
-                                description: currentEditNode.description || "",
-                                phoneNumber: currentEditNode.phoneNumber || "",
-                                email: currentEditNode.email || "",
-                                contactPerson: currentEditNode.contactPerson || "",
-                                address: currentEditNode.address || "",
+                                serialNumber: currentEditNode.serialNumber ?? "",
+                                assetId: currentEditNode.assetId ?? "",
+                                status: currentEditNode.status ?? "Active",
+                                voltage: currentEditNode.voltage ?? "330 KV",
+                                longitude: currentEditNode.longitude ?? "",
+                                latitude: currentEditNode.latitude ?? "",
+                                description: currentEditNode.description ?? "",
+                                phoneNumber: currentEditNode.phoneNumber ?? "",
+                                email: currentEditNode.email ?? "",
+                                contactPerson: currentEditNode.contactPerson ?? "",
+                                address: currentEditNode.address ?? "",
                             }
                             : {}
                     }
@@ -687,17 +687,17 @@ export default function PerformanceOverview({ params }: { params: { slug: string
                         currentEditNode
                             ? {
                                 substationName: currentEditNode.name,
-                                serialNumber: currentEditNode.serialNumber || "",
-                                assetId: currentEditNode.assetId || "",
-                                status: currentEditNode.status || "Active",
-                                voltage: currentEditNode.voltage || "330 KV",
-                                longitude: currentEditNode.longitude || "",
-                                latitude: currentEditNode.latitude || "",
-                                description: currentEditNode.description || "",
-                                phoneNumber: currentEditNode.phoneNumber || "",
-                                email: currentEditNode.email || "",
-                                contactPerson: currentEditNode.contactPerson || "",
-                                address: currentEditNode.address || "",
+                                serialNumber: currentEditNode.serialNumber ?? "",
+                                assetId: currentEditNode.assetId ?? "",
+                                status: currentEditNode.status ?? "Active",
+                                voltage: currentEditNode.voltage ?? "330 KV",
+                                longitude: currentEditNode.longitude ?? "",
+                                latitude: currentEditNode.latitude ?? "",
+                                description: currentEditNode.description ?? "",
+                                phoneNumber: currentEditNode.phoneNumber ?? "",
+                                email: currentEditNode.email ?? "",
+                                contactPerson: currentEditNode.contactPerson ?? "",
+                                address: currentEditNode.address ?? "",
                             }
                             : {}
                     }

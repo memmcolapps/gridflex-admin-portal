@@ -202,9 +202,9 @@ export default function UtilityCompaniesTable() {
                     <DropdownMenuContent align="center">
                       <DropdownMenuItem
                         className="align-items-center cursor-pointer"
-                        onClick={() => router.push(`/utility-companies/${company.company.toLowerCase()}`)}  // Addition: Navigate to performance overview based on company name
+                        onClick={() => router.push(`/performance-overview`)}  // Addition: Navigate to performance overview based on company name
                       >
-                        <Eye size={14} className="mr-2 text-black" /> 
+                        <Eye size={14} className="mr-2 text-black mt-1" /> 
                         View Details
                       </DropdownMenuItem>
                       <DropdownMenuItem className="align-items-center cursor-pointer">
@@ -253,7 +253,7 @@ export default function UtilityCompaniesTable() {
                   }`}
               >
                 {page}
-              </Button>
+              </Button> 
             ))}
             <span className="px-2 text-gray-400">...</span>
             {[8, 9, 10].map((page) => (

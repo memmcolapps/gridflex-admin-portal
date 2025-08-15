@@ -39,37 +39,37 @@ export function EditRootDialog({ isOpen, onOpenChange, onSubmit, initialData = {
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <Label htmlFor="rootId">Root ID *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="rootId">Root ID <span className="text-red-500">*</span> </Label>
                             <Input id="rootId" name="rootId" value={formData.rootId ?? ""} onChange={handleChange} placeholder="Enter Root ID" />
                         </div>
-                        <div>
-                            <Label htmlFor="rootName">Root name *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="rootName">Root name <span className="text-red-500">*</span></Label>
                             <Input id="rootName" name="rootName" value={formData.rootName ?? ""} onChange={handleChange} placeholder="Enter Root name" />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <Label htmlFor="phoneNumber">Phone Number *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="phoneNumber">Phone Number <span className="text-red-500">*</span></Label>
                             <Input id="phoneNumber" name="phoneNumber" value={formData.phoneNumber ?? ""} onChange={handleChange} placeholder="Enter Phone Number" />
                         </div>
-                        <div>
-                            <Label htmlFor="email">Email *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
                             <Input id="email" name="email" value={formData.email ?? ""} onChange={handleChange} placeholder="Enter Email" />
                         </div>
                     </div>
-                    <div>
-                        <Label htmlFor="contactPerson">Contact Person *</Label>
+                    <div className="space-y-2">
+                        <Label htmlFor="contactPerson">Contact Person <span className="text-red-500">*</span></Label>
                         <Input id="contactPerson" name="contactPerson" value={formData.contactPerson ?? ""} onChange={handleChange} placeholder="Enter Contact Person" />
                     </div>
-                    <div>
-                        <Label htmlFor="address">Address *</Label>
+                    <div className="space-y-2">
+                        <Label htmlFor="address">Address <span className="text-red-500">*</span></Label>
                         <Input id="address" name="address" value={formData.address ?? ""} onChange={handleChange} placeholder="Enter Address" />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Save</Button>
+                    <Button variant="outline" onClick={() => onOpenChange(false)} className="text-[#161CCA] border-[#161CCA]">Cancel</Button>
+                    <Button onClick={handleSubmit} className="bg-[#161CCA] hover:bg-[#161CCA] cursor-pointer">Save</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

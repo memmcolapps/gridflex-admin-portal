@@ -39,37 +39,37 @@ export function EditBusinessHubDialog({ isOpen, onOpenChange, onSubmit, initialD
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <Label htmlFor="businessHubId">Business Hub ID *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="businessHubId">Business Hub ID <span className="text-red-500">*</span></Label>
                             <Input id="businessHubId" name="businessHubId" value={formData.businessHubId ?? ""} onChange={handleChange} placeholder="Enter Business Hub ID" />
                         </div>
-                        <div>
-                            <Label htmlFor="businessHubName">Business Hub Name *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="businessHubName">Business Hub Name <span className="text-red-500">*</span></Label>
                             <Input id="businessHubName" name="businessHubName" value={formData.businessHubName ?? ""} onChange={handleChange} placeholder="Enter Business Hub Name" />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <Label htmlFor="phoneNumber">Phone Number *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="phoneNumber">Phone Number <span className="text-red-500">*</span></Label>
                             <Input id="phoneNumber" name="phoneNumber" value={formData.phoneNumber ?? ""} onChange={handleChange} placeholder="Enter Phone Number" />
                         </div>
-                        <div>
-                            <Label htmlFor="email">Email *</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email<span className="text-red-500">*</span></Label>
                             <Input id="email" name="email" value={formData.email ?? ""} onChange={handleChange} placeholder="Enter Email" />
                         </div>
                     </div>
-                    <div>
-                        <Label htmlFor="contactPerson">Contact Person *</Label>
+                    <div className="space-y-2">
+                        <Label htmlFor="contactPerson">Contact Person <span className="text-red-500">*</span></Label>
                         <Input id="contactPerson" name="contactPerson" value={formData.contactPerson ?? ""} onChange={handleChange} placeholder="Enter Contact Person" />
                     </div>
-                    <div>
-                        <Label htmlFor="address">Address *</Label>
+                    <div className="space-y-2">
+                        <Label htmlFor="address">Address <span className="text-red-500">*</span></Label>
                         <Input id="address" name="address" value={formData.address ?? ""} onChange={handleChange} placeholder="Enter Address" />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Add Centre</Button> {/* Matching image, though likely "Save" intended */}
+                    <Button variant="outline" onClick={() => onOpenChange(false)} className="border-[#161CCA] text-[#161CCA]">Cancel</Button>
+                    <Button onClick={handleSubmit} className="bg-[#161CCA]">Save</Button> {/* Matching image, though likely "Save" intended */}
                 </DialogFooter>
             </DialogContent>
         </Dialog>

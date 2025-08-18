@@ -1,8 +1,6 @@
-
-
 // src/services/location-service.ts
 
-import axios from "axios";
+import axios, { AxiosError } from "axios"; // Import AxiosError
 import { type NigerianState, type NigerianCity } from "@/types/location";
 
 // Base URL for the static GeoJSON data
@@ -29,7 +27,7 @@ export const fetchNigerianStates = async (): Promise<NigerianState[]> => {
             // Filter out any potential duplicates or invalid entries if necessary,
             // though the GeoJSON data is expected to be clean.
             .filter(state => state.id.trim() !== '' && state.name.trim() !== '');
-    } catch (error: any) {
+    } catch (error: unknown) { // Use unknown as required by TypeScript
         console.error("Error fetching Nigerian states from GeoJSON:", error);
         // Provide a more specific error message
         throw new Error("Failed to fetch states from GeoJSON data. Please check the URL or your network connection.");
@@ -61,7 +59,7 @@ export const fetchNigerianCitiesByState = async (
                 stateId: stateId, // Use the passed stateId
             }))
             .filter(city => city.id.trim() !== '' && city.name.trim() !== '');
-    } catch (error: any) {
+    } catch (error: unknown) { // Use unknown as required by TypeScript
         console.error(`Error fetching cities for state ${stateId} from GeoJSON:`, error);
         // Provide a more specific error message
         throw new Error(`Failed to fetch cities for state ${stateId} from GeoJSON data. Please check the URL or your network connection.`);

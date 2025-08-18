@@ -1,6 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-import { createOrgApi } from "../services/org.service";
-import type { CreateOrgPayload } from "../services/org.service";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createOrgApi, getOrgs } from "../services/org.service";
+import type { CreateOrgPayload } from "@/types/org.interfaces";
+
 export const useCreateOrg = () => {
   return useMutation({
     mutationFn: async (org: CreateOrgPayload) => {
@@ -9,6 +10,19 @@ export const useCreateOrg = () => {
         throw new Error(response.error);
       }
       return response;
+    },
+  });
+};
+
+export const useGetOrgs = () => {
+  return useQuery({
+    queryKey: ["orgs"],
+    queryFn: async () => {
+      const response = await getOrgs();
+      if (!response.success && "error" in response) {
+        throw new Error(response.error);
+      }
+      return response.data;
     },
   });
 };

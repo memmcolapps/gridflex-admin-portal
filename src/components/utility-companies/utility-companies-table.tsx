@@ -21,88 +21,22 @@ import {
   Pencil,
   CircleSlash,
 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
-const utilityCompaniesData = [
-  {
-    id: 1,
-    company: "IBDEC",
-    email: "Mon.grid@powergrid.com",
-    admin: "Deyemi Oyewo",
-    phone: "+23491827372",
-    status: "Active",
-    customers: "45,000",
-    totalVending: "₦2.4 Billion",
-    totalBilling: "₦2.4 Billion",
-    registrationDate: "1/15/2024",
-  },
-  {
-    id: 2,
-    company: "IBDEC",
-    email: "Mon.grid@powergrid.com",
-    admin: "Deyemi Oyewo",
-    phone: "+23491827372",
-    status: "Active",
-    customers: "45,000",
-    totalVending: "₦2.4 Billion",
-    totalBilling: "₦2.4 Billion",
-    registrationDate: "1/15/2024",
-  },
-  {
-    id: 3,
-    company: "IBDEC",
-    email: "Mon.grid@powergrid.com",
-    admin: "Deyemi Oyewo",
-    phone: "+23491827372",
-    status: "Active",
-    customers: "45,000",
-    totalVending: "₦2.4 Billion",
-    totalBilling: "₦2.4 Billion",
-    registrationDate: "1/15/2024",
-  },
-  {
-    id: 4,
-    company: "IBDEC",
-    email: "Mon.grid@powergrid.com",
-    admin: "Deyemi Oyewo",
-    phone: "+23491827372",
-    status: "Active",
-    customers: "45,000",
-    totalVending: "₦2.4 Billion",
-    totalBilling: "₦2.4 Billion",
-    registrationDate: "1/15/2024",
-  },
-  {
-    id: 5,
-    company: "IBDEC",
-    email: "Mon.grid@powergrid.com",
-    admin: "Deyemi Oyewo",
-    phone: "+23491827372",
-    status: "Active",
-    customers: "45,000",
-    totalVending: "₦2.4 Billion",
-    totalBilling: "₦2.4 Billion",
-    registrationDate: "1/15/2024",
-  },
-  {
-    id: 6,
-    company: "IBDEC",
-    email: "Mon.grid@powergrid.com",
-    admin: "Deyemi Oyewo",
-    phone: "+23491827372",
-    status: "Active",
-    customers: "45,000",
-    totalVending: "₦2.4 Billion",
-    totalBilling: "₦2.4 Billion",
-    registrationDate: "1/15/2024",
-  },
-];
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useGetOrgs } from "@/hooks/use-orgs";
 
 export default function UtilityCompaniesTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const totalPages = 10;
   const router = useRouter();
+  const { data: utilityCompaniesData, isLoading, isError } = useGetOrgs();
+  const totalPages = Math.ceil(
+    (utilityCompaniesData?.organizations.length || 0) / itemsPerPage,
+  );
 
   return (
     <Card className="shadow-sm">
@@ -145,7 +79,7 @@ export default function UtilityCompaniesTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {utilityCompaniesData.map((company) => (
+            {utilityCompaniesData?.organizations.map((company) => (
               <TableRow key={company.id} className="hover:bg-gray-50">
                 <TableCell className="py-4 pl-6">
                   <div className="flex items-center gap-3">
@@ -154,18 +88,22 @@ export default function UtilityCompaniesTable() {
                     </div>
                     <div>
                       <div className="text-sm font-medium text-gray-900">
-                        {company.company}
+                        {company.businessName}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {company.email}
+                        {company.operator.email}
                       </div>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell className="py-4">
                   <div>
-                    <div className="text-sm text-gray-900">{company.admin}</div>
-                    <div className="text-xs text-gray-500">{company.phone}</div>
+                    <div className="text-sm text-gray-900">
+                      {company.operator.firstname +
+                        " " +
+                        company.operator.lastname}
+                    </div>
+                    <div className="text-xs text-gray-500">{""}</div>
                   </div>
                 </TableCell>
                 <TableCell className="py-4">
@@ -177,7 +115,7 @@ export default function UtilityCompaniesTable() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-sm text-gray-900">
-                  {company.customers}
+                  {company.customerCount}
                 </TableCell>
                 <TableCell className="text-sm text-gray-900">
                   {company.totalVending}
@@ -186,7 +124,7 @@ export default function UtilityCompaniesTable() {
                   {company.totalBilling}
                 </TableCell>
                 <TableCell className="text-sm text-gray-900">
-                  {company.registrationDate}
+                  {company.createdAt}
                 </TableCell>
                 <TableCell className="pr-6 text-right">
                   <DropdownMenu>
@@ -202,16 +140,16 @@ export default function UtilityCompaniesTable() {
                     <DropdownMenuContent align="center">
                       <DropdownMenuItem
                         className="align-items-center cursor-pointer"
-                        onClick={() => router.push(`/performance-overview`)}  // Addition: Navigate to performance overview based on company name
+                        onClick={() => router.push(`/performance-overview`)} // Addition: Navigate to performance overview based on company name
                       >
-                        <Eye size={14} className="mr-2 text-black mt-1" /> 
+                        <Eye size={14} className="mt-1 mr-2 text-black" />
                         View Details
                       </DropdownMenuItem>
                       <DropdownMenuItem className="align-items-center cursor-pointer">
                         <Pencil size={14} className="mr-2 text-black" />
                         Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="align-items-center cursor-pointer" >
+                      <DropdownMenuItem className="align-items-center cursor-pointer">
                         <CircleSlash size={14} className="mr-2 text-black" />
                         Suspend
                       </DropdownMenuItem>
@@ -247,13 +185,14 @@ export default function UtilityCompaniesTable() {
                 variant={currentPage === page ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setCurrentPage(page)}
-                className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
-                  ? "bg-gray-900 text-white hover:bg-gray-800"
-                  : "text-gray-600 hover:bg-gray-50"
-                  }`}
+                className={`h-8 w-8 cursor-pointer p-0 ${
+                  currentPage === page
+                    ? "bg-gray-900 text-white hover:bg-gray-800"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
               >
                 {page}
-              </Button> 
+              </Button>
             ))}
             <span className="px-2 text-gray-400">...</span>
             {[8, 9, 10].map((page) => (

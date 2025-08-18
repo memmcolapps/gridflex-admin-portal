@@ -36,10 +36,11 @@ export default function UtilityCompaniesPage() {
         <div className="border-b border-gray-200">
           <button
             onClick={() => setActiveTab("summary")}
-            className={`relative pb-3 text-sm font-medium transition-colors ${activeTab === "summary"
+            className={`relative pb-3 text-sm font-medium transition-colors ${
+              activeTab === "summary"
                 ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
                 : "text-gray-600 hover:text-gray-900"
-              } `}
+            } `}
           >
             Summary
           </button>
@@ -59,7 +60,7 @@ export default function UtilityCompaniesPage() {
 
           {/* Add Company on the right */}
           <Button
-            className="flex h-9 items-center gap-2 bg-black hover:bg-gray-800 cursor-pointer"
+            className="flex h-9 cursor-pointer items-center gap-2 bg-black hover:bg-gray-800"
             onClick={() => setIsDialogOpen(true)}
           >
             <Plus size={16} />

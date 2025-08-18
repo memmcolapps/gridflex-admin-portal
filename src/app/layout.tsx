@@ -1,6 +1,7 @@
 import "../styles/globals.css";
 import { type Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Providers } from "./Providers";
 
 export const metadata: Metadata = {
   title: "GridFlex Admin Portal",
@@ -18,7 +19,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

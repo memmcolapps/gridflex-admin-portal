@@ -15,34 +15,24 @@ export interface UserInfo {
   firstname: string;
   lastname: string;
   email: string;
-  hierarchyId: number;
+  department: string;
   status: boolean;
   active: boolean;
   lastActive: string;
-  password: string;
+  role: [
+    {
+      id: string;
+      userId: string;
+      userRole: string;
+    },
+  ];
   createdAt: string;
   updatedAt: string;
-}
-
-interface Submodule {
-  permissions: string[];
-  submodule: string;
-}
-
-interface Module {
-  module: string;
-  submodules: Submodule[];
-}
-
-interface Group {
-  modules: Module[];
-  group: string;
 }
 
 interface AuthResponseData {
   access_token: string;
   user_info: UserInfo;
-  groups: Group[];
 }
 
 interface LoginApiResponse {
@@ -61,17 +51,16 @@ export const loginApi = async (
     data.append("password", credentials.password);
 
     const response = await axios.post<LoginApiResponse>(
-      `${BASE_URL}/admin/login`,
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/login`,
       data,
       {
         maxBodyLength: Infinity,
         headers: {
           custom: CUSTOM_HEADER,
-          ...data.getHeaders(),
         },
       },
     );
-    if (response.data.responsecode !== "000") {
+    if (response.data.responsecode !== "001") {
       return {
         success: false,
         error: response.data.responsedesc,

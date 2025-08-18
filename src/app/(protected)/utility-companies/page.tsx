@@ -37,8 +37,8 @@ export default function UtilityCompaniesPage() {
           <button
             onClick={() => setActiveTab("summary")}
             className={`relative pb-3 text-sm font-medium transition-colors ${activeTab === "summary"
-                ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
-                : "text-gray-600 hover:text-gray-900"
+              ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
+              : "text-gray-600 hover:text-gray-900"
               } `}
           >
             Summary

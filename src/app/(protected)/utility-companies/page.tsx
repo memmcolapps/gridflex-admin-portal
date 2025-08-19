@@ -14,13 +14,11 @@ export default function UtilityCompaniesPage() {
 
   const handleSubmit = (data: UnifiedFormData) => {
     console.log("Submitted data:", data);
-    // Here you can add logic to handle the form submission, e.g., API call to add the company
     setIsDialogOpen(false);
   };
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      {/* Page Header */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-900">
           Utility Companies
@@ -30,9 +28,7 @@ export default function UtilityCompaniesPage() {
         </p>
       </div>
 
-      {/* Custom Tab Implementation */}
       <div className="w-full">
-        {/* Tab List with full width border */}
         <div className="border-b border-gray-200">
           <button
             onClick={() => setActiveTab("summary")}
@@ -46,9 +42,7 @@ export default function UtilityCompaniesPage() {
           </button>
         </div>
 
-        {/* Search and Add Company Row */}
         <div className="mt-6 mb-6 flex items-center justify-between">
-          {/* Search on the left */}
           <div className="relative">
             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
@@ -58,7 +52,6 @@ export default function UtilityCompaniesPage() {
             />
           </div>
 
-          {/* Add Company on the right */}
           <Button
             className="flex h-9 cursor-pointer items-center gap-2 bg-black hover:bg-gray-800"
             onClick={() => setIsDialogOpen(true)}
@@ -68,11 +61,9 @@ export default function UtilityCompaniesPage() {
           </Button>
         </div>
 
-        {/* Tab Content */}
         {activeTab === "summary" && <SummaryTab />}
       </div>
 
-      {/* Add New Utility Company Dialog */}
       <AddNewUtilityCompanyDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}

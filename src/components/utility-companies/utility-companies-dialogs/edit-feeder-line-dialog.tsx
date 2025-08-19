@@ -107,7 +107,7 @@ export function EditFeederLineDialog({ isOpen, onOpenChange, onSubmit, initialDa
                 </div>
                 <DialogFooter>
                     <Button variant="outline" onClick={() => onOpenChange(false)} className="border-[#161CCA] text-[#161CCA]">Cancel</Button>
-                    <Button onClick={handleSubmit} className="bg-[#161CCA]">Save</Button>
+                    <Button onClick={handleSubmit} className="bg-[#161CCA]">Save Changes</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

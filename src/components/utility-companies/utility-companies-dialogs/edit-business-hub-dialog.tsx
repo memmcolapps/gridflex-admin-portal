@@ -70,7 +70,7 @@ export function EditBusinessHubDialog({ isOpen, onOpenChange, onSubmit, initialD
                 </div>
                 <DialogFooter>
                     <Button variant="outline" onClick={() => onOpenChange(false)} className="border-[#161CCA] text-[#161CCA]">Cancel</Button>
-                    <Button onClick={handleSubmit} className="bg-[#161CCA]">Save</Button> {/* Matching image, though likely "Save" intended */}
+                    <Button onClick={handleSubmit} className="bg-[#161CCA]">Save Changes</Button> {/* Matching image, though likely "Save" intended */}
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -81,7 +81,7 @@ export function AddBusinessHubDialog({ isOpen, onOpenChange, onSubmit, initialDa
                     <Button onClick={handleSubmit}
                         disabled={!isFormValid}
                         className={`text-white ${isFormValid ? "bg-[#161CCA] hover:bg-[#161CCA] cursor-pointer" : "bg-[#161CCA]/40 cursor-not-allowed"}`}
-                    >Add Centre</Button>
+                    >Add BusinessHub</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

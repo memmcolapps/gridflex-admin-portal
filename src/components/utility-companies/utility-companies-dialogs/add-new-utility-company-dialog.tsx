@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCreateOrg } from "@/hooks/use-orgs";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,12 +20,42 @@ import {
 } from "@/components/ui/select";
 import type { UnifiedFormData } from "@/types/unifiedForm.ts";
 import { toast } from "sonner";
+import { fetchNigerianStates, fetchNigerianCitiesByState } from "@/services/location-service";
+import type { NigerianState, NigerianCity } from "@/types/location";
 
 type Props = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: UnifiedFormData) => void;
   initialData?: Partial<UnifiedFormData>;
+};
+
+// Fallback data for Nigerian states and cities
+const fallbackStates: NigerianState[] = [
+  { id: "lagos", name: "Lagos" },
+  { id: "abia", name: "Abia" },
+  { id: "kano", name: "Kano" },
+  { id: "abuja", name: "Abuja" },
+];
+
+const fallbackCities: Record<string, NigerianCity[]> = {
+  lagos: [
+    { id: "ikeja", name: "Ikeja", stateId: "lagos" },
+    { id: "alimosho", name: "Alimosho", stateId: "lagos" },
+    { id: "surulere", name: "Surulere", stateId: "lagos" },
+  ],
+  abia: [
+    { id: "aba-north", name: "Aba North", stateId: "abia" },
+    { id: "aba-south", name: "Aba South", stateId: "abia" },
+  ],
+  kano: [
+    { id: "kano-municipal", name: "Kano Municipal", stateId: "kano" },
+    { id: "dala", name: "Dala", stateId: "kano" },
+  ],
+  abuja: [
+    { id: "abaji", name: "Abaji", stateId: "abuja" },
+    { id: "gwagwalada", name: "Gwagwalada", stateId: "abuja" },
+  ],
 };
 
 export const AddNewUtilityCompanyDialog = ({
@@ -35,6 +65,10 @@ export const AddNewUtilityCompanyDialog = ({
   initialData = {},
 }: Props) => {
   const [formData, setFormData] = useState<UnifiedFormData>(initialData);
+  const [states, setStates] = useState<NigerianState[]>([]);
+  const [cities, setCities] = useState<NigerianCity[]>([]);
+  const [isLoadingStates, setIsLoadingStates] = useState(false);
+  const [isLoadingCities, setIsLoadingCities] = useState(false);
   const {
     mutate: createOrg,
     isError,
@@ -42,6 +76,53 @@ export const AddNewUtilityCompanyDialog = ({
     isSuccess,
     isPending,
   } = useCreateOrg();
+
+  // Fetch states on component mount
+  useEffect(() => {
+    const loadStates = async () => {
+      setIsLoadingStates(true);
+      try {
+        const fetchedStates = await fetchNigerianStates();
+        setStates(fetchedStates);
+      } catch (error) {
+        console.error("Failed to load states:", error);
+        toast.error("Failed to fetch states. Using fallback data.");
+        setStates(fallbackStates);
+      } finally {
+        setIsLoadingStates(false);
+      }
+    };
+    loadStates();
+  }, []);
+
+  // Fetch cities when a state is selected
+  useEffect(() => {
+    if (formData.stateProvince) {
+      const stateId = states.find((s) => s.name === formData.stateProvince)?.id || "";
+      if (stateId) {
+        const loadCities = async () => {
+          setIsLoadingCities(true);
+          try {
+            const fetchedCities = await fetchNigerianCitiesByState(stateId);
+            setCities(fetchedCities);
+          } catch (error) {
+            console.error(`Failed to load cities for state ${stateId}:`, error);
+            toast.error(`Failed to fetch cities for ${formData.stateProvince}. Using fallback data.`);
+            setCities(fallbackCities[stateId] || []);
+          } finally {
+            setIsLoadingCities(false);
+          }
+        };
+        loadCities();
+      } else {
+        setCities(fallbackCities[stateId] || []);
+      }
+      // Reset city when state changes
+      setFormData((prev) => ({ ...prev, city: "" }));
+    } else {
+      setCities([]);
+    }
+  }, [formData.stateProvince, states]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,7 +138,6 @@ export const AddNewUtilityCompanyDialog = ({
     setFormData({ ...formData, [name]: value });
   };
 
-  // Map UnifiedFormData to CreateOrgPayload
   const mapToCreateOrgPayload = (data: UnifiedFormData) => ({
     businessName: data.organizationName ?? "",
     postalCode: data.postalCode ?? "",
@@ -135,24 +215,55 @@ export const AddNewUtilityCompanyDialog = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Nigeria">Nigeria</SelectItem>
-                  {/* Add more countries as needed */}
                 </SelectContent>
               </Select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
+              <Label htmlFor="stateProvince">
+                State/Province <span className="text-red-500">*</span>
+              </Label>
+              <Select
+                onValueChange={handleSelectChange("stateProvince")}
+                value={formData.stateProvince}
+                disabled={isLoadingStates || states.length === 0}
+              >
+                <SelectTrigger className="w-55">
+                  <SelectValue placeholder={isLoadingStates ? "Loading states..." : "Select state"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {states.map((state) => (
+                    <SelectItem key={state.id} value={state.name}>
+                      {state.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="city">
                 City <span className="text-red-500">*</span>
               </Label>
-              <Input
-                id="city"
-                name="city"
-                value={formData.city ?? ""}
-                onChange={handleChange}
-                placeholder="Enter City"
-              />
+              <Select
+                onValueChange={handleSelectChange("city")}
+                value={formData.city}
+                disabled={isLoadingCities || !formData.stateProvince || cities.length === 0}
+              >
+                <SelectTrigger className="w-55">
+                  <SelectValue placeholder={isLoadingCities ? "Loading cities..." : "Select city"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {cities.map((city) => (
+                    <SelectItem key={city.id} value={city.name}>
+                      {city.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="postalCode">Postal Code</Label>
               <Input
@@ -161,20 +272,6 @@ export const AddNewUtilityCompanyDialog = ({
                 value={formData.postalCode ?? ""}
                 onChange={handleChange}
                 placeholder="Enter Postal Code"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="stateProvince">
-                State/Province <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="stateProvince"
-                name="stateProvince"
-                value={formData.stateProvince ?? ""}
-                onChange={handleChange}
-                placeholder="Enter state or province"
               />
             </div>
             <div className="space-y-2">

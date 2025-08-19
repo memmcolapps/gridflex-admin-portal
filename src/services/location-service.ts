@@ -1,4 +1,4 @@
-// src/services/location-service.t
+// src/services/location-service
 
 import axios, { AxiosError } from "axios"; // Import AxiosError
 import { type NigerianState, type NigerianCity } from "@/types/location";

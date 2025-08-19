@@ -29,4 +29,6 @@ export interface UnifiedFormData {
   streetAddress?: string;
   substationName?: string;
   voltage?: string;
+  serviceCenterId?: string;
+  serviceCenterName?: string;
 }

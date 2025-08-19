@@ -212,7 +212,7 @@ export function AddDistributionSubstationDialog({ isOpen, onOpenChange, onSubmit
                         disabled={!isFormValid}
                         className={`text-white ${isFormValid ? "bg-[#161CCA] hover:bg-[#161CCA] cursor-pointer" : "bg-[#161CCA]/40 cursor-not-allowed"}`}
                     >
-                        Add Substation</Button>
+                        Add DSS</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -1,10 +1,33 @@
 "use client";
-import { ArrowUp, Banknote, Building2, ChevronRight, Database, Edit, LayoutGrid, Lightbulb, Mail, MapPin, Phone, PlugZap, Plus, TrendingUp, Users, Wrench, Zap } from "lucide-react";
+import {
+  ArrowUp,
+  Banknote,
+  Building2,
+  ChevronRight,
+  Database,
+  Edit,
+  LayoutGrid,
+  Lightbulb,
+  Mail,
+  MapPin,
+  Phone,
+  PlugZap,
+  Plus,
+  TrendingUp,
+  Users,
+  Wrench,
+  Zap,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useState, type Key } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { use, useState, type Key } from "react";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import { AddRegionDialog } from "../utility-companies-dialogs/add-region-dialog";
 import { AddBusinessHubDialog } from "../utility-companies-dialogs/add-business-hub-dialog";
@@ -18,8 +41,9 @@ import { EditFeederLineDialog } from "@/components/utility-companies/utility-com
 import { EditDistributionSubstationDialog } from "@/components/utility-companies/utility-companies-dialogs/edit-dss-dialog";
 import { AddServiceCenterDialog } from "@/components/utility-companies/utility-companies-dialogs/add-service-center-dialog";
 import { EditServiceCenterDialog } from "@/components/utility-companies/utility-companies-dialogs/edit-service-center-dialog";
+import { useGetAllNodes } from "@/hooks/use-orgs";
+import { useParams } from "next/navigation";
 
-// Extend Node type to include serviceCenter
 type Node = {
   name: string;
   type?: string; // e.g., "root", "region", "businessHub", "substation", "feederLine", "dss", "serviceCenter"
@@ -90,10 +114,14 @@ const performanceData = {
   },
 };
 
-export default function PerformanceOverview({ params }: { params: { slug: string } }) {
+export default function PerformanceOverview({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const id = params.id;
   const [activeTab, setActiveTab] = useState("summary");
   const [expanded, setExpanded] = useState(new Set([performanceData.name]));
-  const [tree, setTree] = useState<Node>({ name: performanceData.name, type: "root", children: [] });
   const [isAddRegionOpen, setIsAddRegionOpen] = useState(false);
   const [isAddBusinessHubOpen, setIsAddBusinessHubOpen] = useState(false);
   const [isAddServiceCenterOpen, setIsAddServiceCenterOpen] = useState(false);
@@ -109,56 +137,22 @@ export default function PerformanceOverview({ params }: { params: { slug: string
   const [currentParentName, setCurrentParentName] = useState<string>("");
   const [currentEditNode, setCurrentEditNode] = useState<Node | null>(null);
   const [companyProfile, setCompanyProfile] = useState(performanceData.profile);
+  const { data: tree, isLoading } = useGetAllNodes(id);
 
   const addChild = (parentName: string, newChild: Node) => {
-    const update = (node: Node): Node => {
-      if (node.name === parentName) {
-        return { ...node, children: [...(node.children ?? []), newChild] };
-      }
-      if (node.children) {
-        return { ...node, children: node.children.map(update) };
-      }
-      return node;
-    };
-    setTree(update(tree));
+    console.log("Adding child:", newChild, "to parent:", parentName);
   };
 
   const updateNode = (nodeName: string, updatedData: UnifiedFormData) => {
-    const update = (node: Node): Node => {
-      if (node.name === nodeName) {
-        return {
-          ...node,
-          name:
-            updatedData.businessHubName ??
-            updatedData.serviceCenterName ??
-            updatedData.substationName ??
-            updatedData.feederName ??
-            node.name,
-          businessHubId: updatedData.businessHubId ?? node.businessHubId,
-          serviceCenterId: updatedData.serviceCenterId ?? node.serviceCenterId,
-          serialNumber: updatedData.serialNumber ?? node.serialNumber,
-          assetId: updatedData.assetId ?? node.assetId,
-          status: updatedData.status ?? node.status,
-          voltage: updatedData.voltage ?? node.voltage,
-          longitude: updatedData.longitude ?? node.longitude,
-          latitude: updatedData.latitude ?? node.latitude,
-          description: updatedData.description ?? node.description,
-          phoneNumber: updatedData.phoneNumber ?? node.phoneNumber,
-          email: updatedData.email ?? node.email,
-          contactPerson: updatedData.contactPerson ?? node.contactPerson,
-          address: updatedData.address ?? node.address,
-        };
-      }
-      if (node.children) {
-        return { ...node, children: node.children.map(update) };
-      }
-      return node;
-    };
-    setTree(update(tree));
+    console.log("Updating node:", nodeName, "with data:", updatedData);
   };
 
   const handleAddRegion = (data: UnifiedFormData) => {
-    const newRegion: Node = { name: data.regionName ?? "Unnamed Region", type: "region", children: [] };
+    const newRegion: Node = {
+      name: data.regionName ?? "Unnamed Region",
+      type: "region",
+      children: [],
+    };
     addChild(currentParentName, newRegion);
     setIsAddRegionOpen(false);
     setCurrentParentName("");
@@ -264,15 +258,13 @@ export default function PerformanceOverview({ params }: { params: { slug: string
 
   const handleEditRoot = (data: UnifiedFormData) => {
     setCompanyProfile({
-      company: data.rootName ?? companyProfile.company,
+      ...companyProfile,
+      company: data.organizationName ?? companyProfile.company,
       contact: data.contactPerson ?? companyProfile.contact,
       email: data.email ?? companyProfile.email,
       phone: data.phoneNumber ?? companyProfile.phone,
       address: data.address ?? companyProfile.address,
     });
-    if (data.rootName && data.rootName !== tree.name) {
-      setTree({ ...tree, name: data.rootName });
-    }
     setIsEditRootOpen(false);
   };
 
@@ -353,8 +345,13 @@ export default function PerformanceOverview({ params }: { params: { slug: string
 
     return (
       <>
-        <div className={`flex items-center justify-between ${level > 0 ? `pl-${level * 6}` : ""}`}>
-          <div className="flex items-center gap-2 cursor-pointer" onClick={toggleExpanded}>
+        <div
+          className={`flex items-center justify-between ${level > 0 ? `pl-${level * 6}` : ""}`}
+        >
+          <div
+            className="flex cursor-pointer items-center gap-2"
+            onClick={toggleExpanded}
+          >
             <ChevronRight
               size={16}
               className={`text-gray-500 transition-transform ${isExpanded ? "rotate-90" : ""}`}
@@ -368,12 +365,17 @@ export default function PerformanceOverview({ params }: { params: { slug: string
                 <Button
                   variant="secondary"
                   size="lg"
-                  className="p-1 text-black hover:text-gray-700 bg-white cursor-pointer"
+                  className="cursor-pointer bg-white p-1 text-black hover:text-gray-700"
                 >
                   <Plus size={28} className="h-24 w-24" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent side="bottom" align="center" sideOffset={4} avoidCollisions={false}>
+              <DropdownMenuContent
+                side="bottom"
+                align="center"
+                sideOffset={4}
+                avoidCollisions={false}
+              >
                 <DropdownMenuItem
                   onClick={() => {
                     setCurrentParentName(node.name);
@@ -439,7 +441,7 @@ export default function PerformanceOverview({ params }: { params: { slug: string
             <Button
               variant="ghost"
               size="lg"
-              className="px-1 text-black hover:text-gray-700 cursor-pointer"
+              className="cursor-pointer px-1 text-black hover:text-gray-700"
               onClick={() => {
                 setCurrentEditNode(node);
                 if (node.type === "root") {
@@ -455,7 +457,9 @@ export default function PerformanceOverview({ params }: { params: { slug: string
                 } else if (node.type === "dss") {
                   setIsEditDSSOpen(true);
                 } else {
-                  console.log(`Editing node: ${node.name} (type ${node.type}, level ${level})`);
+                  console.log(
+                    `Editing node: ${node.name} (type ${node.type}, level ${level})`,
+                  );
                 }
               }}
             >
@@ -472,10 +476,12 @@ export default function PerformanceOverview({ params }: { params: { slug: string
   }
 
   return (
-    <div className="space-y-6 p-6 bg-white">
+    <div className="space-y-6 bg-white p-6">
       {/* Title Section */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Performance Overview</h1>
+        <h1 className="text-2xl font-bold text-gray-900">
+          Performance Overview
+        </h1>
         <p className="text-sm text-gray-500">Manage {companyProfile.company}</p>
       </div>
 
@@ -483,10 +489,11 @@ export default function PerformanceOverview({ params }: { params: { slug: string
       <div className="border-b border-gray-200">
         <button
           onClick={() => setActiveTab("summary")}
-          className={`relative pb-3 text-sm font-medium transition-colors ${activeTab === "summary"
-            ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
-            : "text-gray-600 hover:text-gray-900"
-            } `}
+          className={`relative pb-3 text-sm font-medium transition-colors ${
+            activeTab === "summary"
+              ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
+              : "text-gray-600 hover:text-gray-900"
+          } `}
         >
           Summary
         </button>
@@ -497,14 +504,22 @@ export default function PerformanceOverview({ params }: { params: { slug: string
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="mb-2 text-sm font-medium text-gray-600">{item.title}</p>
-                  <p className="mb-1 text-2xl font-bold text-gray-900">{item.value}</p>
+                  <p className="mb-2 text-sm font-medium text-gray-600">
+                    {item.title}
+                  </p>
+                  <p className="mb-1 text-2xl font-bold text-gray-900">
+                    {item.value}
+                  </p>
                   <div className="flex items-center gap-1 text-sm text-gray-500">
                     {item.subtitle}
-                    <span className={`font-medium ${item.changeColor}`}>{item.change}</span>
+                    <span className={`font-medium ${item.changeColor}`}>
+                      {item.change}
+                    </span>
                   </div>
                 </div>
-                <div className={`flex h-15 w-15 items-center justify-center mt-4 rounded-lg ${item.iconBg}`}>
+                <div
+                  className={`mt-4 flex h-15 w-15 items-center justify-center rounded-lg ${item.iconBg}`}
+                >
                   {item.icon}
                 </div>
               </div>
@@ -514,25 +529,32 @@ export default function PerformanceOverview({ params }: { params: { slug: string
       </div>
 
       {/* Company Status */}
-      <Card className="border border-gray-200 bg-white shadow-sm h-30">
-        <CardContent className="p-4 h-full flex items-center justify-between">
+      <Card className="h-30 border border-gray-200 bg-white shadow-sm">
+        <CardContent className="flex h-full items-center justify-between p-4">
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gray-100">
               <Building2 size={24} className="text-gray-600" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-semibold text-gray-900">{companyProfile.company}</h2>
-                <Badge variant="secondary" className="bg-green-50 text-green-700">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {companyProfile.company}
+                </h2>
+                <Badge
+                  variant="secondary"
+                  className="bg-green-50 text-green-700"
+                >
                   {performanceData.status}
                 </Badge>
               </div>
-              <p className="text-sm text-gray-500">Registered {performanceData.registered}</p>
+              <p className="text-sm text-gray-500">
+                Registered {performanceData.registered}
+              </p>
             </div>
           </div>
           <Button
             variant="outline"
-            className="text-black bg-white border-gray-200 hover:bg-white cursor-pointer"
+            className="cursor-pointer border-gray-200 bg-white text-black hover:bg-white"
             onClick={() => setIsEditRootOpen(true)}
           >
             <Edit size={16} className="text-black" />
@@ -542,11 +564,11 @@ export default function PerformanceOverview({ params }: { params: { slug: string
       </Card>
 
       {/* Profile and Hierarchy */}
-      <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-10">
         {/* Profile + Hierarchy (30%) */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="space-y-6 lg:col-span-3">
           {/* Company Profile */}
-          <Card className="border border-gray-200 bg-white shadow-sm w-full">
+          <Card className="w-full border border-gray-200 bg-white shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg font-semibold">
                 <Building2 size={18} className="text-gray-500" />
@@ -554,40 +576,54 @@ export default function PerformanceOverview({ params }: { params: { slug: string
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <h3 className="mb-4 text-sm font-medium text-gray-600">Company Information</h3>
+              <h3 className="mb-4 text-sm font-medium text-gray-600">
+                Company Information
+              </h3>
               <ul className="space-y-1">
                 <li className="flex items-center gap-3">
                   <Building2 size={18} className="text-gray-500" />
-                  <div className="space-y-0 mt-2">
-                    <p className="text-sm text-black font-bold">{companyProfile.company}</p>
+                  <div className="mt-2 space-y-0">
+                    <p className="text-sm font-bold text-black">
+                      {companyProfile.company}
+                    </p>
                     <p className="text-sm font-medium text-gray-400">Company</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <Users size={18} className="text-gray-500" />
-                  <div className="space-y-0 mt-2">
-                    <p className="text-sm text-black font-bold">{companyProfile.contact}</p>
-                    <p className="text-sm font-medium text-gray-400">Contact Person</p>
+                  <div className="mt-2 space-y-0">
+                    <p className="text-sm font-bold text-black">
+                      {companyProfile.contact}
+                    </p>
+                    <p className="text-sm font-medium text-gray-400">
+                      Contact Person
+                    </p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <Mail size={18} className="text-gray-500" />
-                  <div className="space-y-0 mt-2">
-                    <p className="text-sm text-black font-bold">{companyProfile.email}</p>
+                  <div className="mt-2 space-y-0">
+                    <p className="text-sm font-bold text-black">
+                      {companyProfile.email}
+                    </p>
                     <p className="text-sm font-medium text-gray-400">Email</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone size={18} className="text-gray-500" />
-                  <div className="space-y-0 mt-2">
-                    <p className="text-sm text-black font-bold">{companyProfile.phone}</p>
+                  <div className="mt-2 space-y-0">
+                    <p className="text-sm font-bold text-black">
+                      {companyProfile.phone}
+                    </p>
                     <p className="text-sm font-medium text-gray-400">Phone</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <MapPin size={18} className="text-gray-500" />
-                  <div className="space-y-0 mt-2">
-                    <p className="text-sm text-black font-bold">{companyProfile.address}</p>
+                  <div className="mt-2 space-y-0">
+                    <p className="text-sm font-bold text-black">
+                      {companyProfile.address}
+                    </p>
                     <p className="text-sm font-medium text-gray-400">Address</p>
                   </div>
                 </li>
@@ -601,12 +637,19 @@ export default function PerformanceOverview({ params }: { params: { slug: string
           {/* Organizational Hierarchy */}
           <Card className="border border-gray-200 bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold">Organizational Hierarchy</CardTitle>
-              <p className="text-sm text-gray-500">Build the organization structure</p>
+              <CardTitle className="text-lg font-semibold">
+                Organizational Hierarchy
+              </CardTitle>
+              <p className="text-sm text-gray-500">
+                Build the organization structure
+              </p>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <RenderNode node={tree} level={0} />
+                <RenderNode
+                  node={{ name: "Root", type: "root", children: tree }}
+                  level={0}
+                />
               </div>
             </CardContent>
           </Card>

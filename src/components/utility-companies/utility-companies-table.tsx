@@ -140,7 +140,9 @@ export default function UtilityCompaniesTable() {
                     <DropdownMenuContent align="center">
                       <DropdownMenuItem
                         className="align-items-center cursor-pointer"
-                        onClick={() => router.push(`/performance-overview`)} // Addition: Navigate to performance overview based on company name
+                        onClick={() =>
+                          router.push(`/performance-overview/${company.id}`)
+                        }
                       >
                         <Eye size={14} className="mt-1 mr-2 text-black" />
                         View Details
@@ -165,7 +167,6 @@ export default function UtilityCompaniesTable() {
           </TableBody>
         </Table>
 
-        {/* Pagination */}
         <div className="flex items-center justify-between border-t px-6 py-4">
           <Button
             variant="outline"

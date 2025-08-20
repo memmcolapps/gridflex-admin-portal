@@ -1,6 +1,5 @@
 "use client";
 import {
-  ArrowUp,
   Banknote,
   Building2,
   ChevronRight,
@@ -11,7 +10,6 @@ import {
   Mail,
   MapPin,
   Phone,
-  PlugZap,
   Plus,
   TrendingUp,
   Users,
@@ -27,8 +25,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { use, useState, type Key } from "react";
+import { useState, type Key } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import type { UnifiedFormData } from "@/types/unifiedForm";
+import type { Node as ApiNode, GetOneNode } from "@/types/org.interfaces";
 import { AddRegionDialog } from "../utility-companies-dialogs/add-region-dialog";
 import { AddBusinessHubDialog } from "../utility-companies-dialogs/add-business-hub-dialog";
 import { AddSubstationDialog } from "@/components/utility-companies/utility-companies-dialogs/add-substation-dialog";
@@ -41,78 +41,12 @@ import { EditFeederLineDialog } from "@/components/utility-companies/utility-com
 import { EditDistributionSubstationDialog } from "@/components/utility-companies/utility-companies-dialogs/edit-dss-dialog";
 import { AddServiceCenterDialog } from "@/components/utility-companies/utility-companies-dialogs/add-service-center-dialog";
 import { EditServiceCenterDialog } from "@/components/utility-companies/utility-companies-dialogs/edit-service-center-dialog";
-import { useGetAllNodes } from "@/hooks/use-orgs";
-import { useParams } from "next/navigation";
-
-type Node = {
-  name: string;
-  type?: string; // e.g., "root", "region", "businessHub", "substation", "feederLine", "dss", "serviceCenter"
-  businessHubId?: string;
-  serviceCenterId?: string;
-  serialNumber?: string;
-  assetId?: string;
-  status?: string;
-  voltage?: string;
-  longitude?: string;
-  latitude?: string;
-  description?: string;
-  phoneNumber?: string;
-  email?: string;
-  contactPerson?: string;
-  address?: string;
-  children?: Node[];
-};
-
-const performanceData = {
-  name: "IBDEC",
-  status: "Active",
-  registered: "January 15, 2024",
-  summary: [
-    {
-      title: "Total Customers",
-      value: "200,000",
-      change: "+8%",
-      changeColor: "text-green-600",
-      subtitle: "Vs last year",
-      icon: <Users size={24} className="text-gray-600" />,
-      iconBg: "bg-gray-100",
-    },
-    {
-      title: "Total Vending Amount",
-      value: "N1.2 Billion",
-      change: "+2%",
-      changeColor: "text-green-600",
-      subtitle: "Vs last year",
-      icon: <TrendingUp size={24} className="text-gray-600" />,
-      iconBg: "bg-gray-100",
-    },
-    {
-      title: "Total Billing Amount",
-      value: "N2.4 Billion",
-      change: "+5%",
-      changeColor: "text-green-600",
-      subtitle: "Vs last year",
-      icon: <Banknote size={24} className="text-gray-600" />,
-      iconBg: "bg-gray-100",
-    },
-    {
-      title: "Feeders Connected",
-      value: "200",
-      change: "+1%",
-      changeColor: "text-green-600",
-      subtitle: "Vs last year",
-      icon: <Banknote size={24} className="text-gray-600" />,
-      iconBg: "bg-gray-100",
-    },
-  ],
-  profile: {
-    company: "IBDEC",
-    contact: "Ada Okoro",
-    email: "ada@powergrid.com",
-    phone: "+234 810 XXX XXXX",
-    address: "12 Adeola Odeku St, Lagos",
-  },
-};
+import {
+  useCreateRegionBhubServiceCenter,
+  useCreateSubstationTransfomerFeeder,
+  useGetOneOrg,
+} from "@/hooks/use-orgs";
+import { toast } from "sonner";
 
 export default function PerformanceOverview({
   params,
@@ -121,7 +55,6 @@ export default function PerformanceOverview({
 }) {
   const id = params.id;
   const [activeTab, setActiveTab] = useState("summary");
-  const [expanded, setExpanded] = useState(new Set([performanceData.name]));
   const [isAddRegionOpen, setIsAddRegionOpen] = useState(false);
   const [isAddBusinessHubOpen, setIsAddBusinessHubOpen] = useState(false);
   const [isAddServiceCenterOpen, setIsAddServiceCenterOpen] = useState(false);
@@ -134,137 +67,290 @@ export default function PerformanceOverview({
   const [isEditSubstationOpen, setIsEditSubstationOpen] = useState(false);
   const [isEditFeederLineOpen, setIsEditFeederLineOpen] = useState(false);
   const [isEditDSSOpen, setIsEditDSSOpen] = useState(false);
-  const [currentParentName, setCurrentParentName] = useState<string>("");
-  const [currentEditNode, setCurrentEditNode] = useState<Node | null>(null);
-  const [companyProfile, setCompanyProfile] = useState(performanceData.profile);
-  const { data: tree, isLoading } = useGetAllNodes(id);
+  const [currentParentId, setCurrentParentId] = useState<string>("");
+  const [currentEditNode, setCurrentEditNode] = useState<ApiNode | null>(null);
+  const queryClient = useQueryClient();
 
-  const addChild = (parentName: string, newChild: Node) => {
-    console.log("Adding child:", newChild, "to parent:", parentName);
-  };
+  const { data: performanceData } = useGetOneOrg(id);
+
+  const { mutate: createRegionBhubServiceCenter } =
+    useCreateRegionBhubServiceCenter();
+  const { mutate: createSubstationTransfomerFeeder } =
+    useCreateSubstationTransfomerFeeder();
+  const [expanded, setExpanded] = useState(
+    new Set([performanceData?.businessName]),
+  );
+
+  const summary = [
+    {
+      title: "Total Customers",
+      value: performanceData?.totalCustomer ?? "0",
+      change: "+8%",
+      changeColor: "text-green-600",
+      subtitle: "Vs last year",
+      icon: <Users size={24} className="text-gray-600" />,
+      iconBg: "bg-gray-100",
+    },
+    {
+      title: "Total Vending Amount",
+      value: performanceData?.totalVending ?? "0",
+      change: "+2%",
+      changeColor: "text-green-600",
+      subtitle: "Vs last year",
+      icon: <TrendingUp size={24} className="text-gray-600" />,
+      iconBg: "bg-gray-100",
+    },
+    {
+      title: "Total Billing Amount",
+      value: performanceData?.totalBilling ?? "0",
+      change: "+5%",
+      changeColor: "text-green-600",
+      subtitle: "Vs last year",
+      icon: <Banknote size={24} className="text-gray-600" />,
+      iconBg: "bg-gray-100",
+    },
+    {
+      title: "Feeders Connected",
+      value: performanceData?.totalFeeder ?? "0",
+      change: "+1%",
+      changeColor: "text-green-600",
+      subtitle: "Vs last year",
+      icon: <Banknote size={24} className="text-gray-600" />,
+      iconBg: "bg-gray-100",
+    },
+  ];
 
   const updateNode = (nodeName: string, updatedData: UnifiedFormData) => {
     console.log("Updating node:", nodeName, "with data:", updatedData);
   };
 
   const handleAddRegion = (data: UnifiedFormData) => {
-    const newRegion: Node = {
-      name: data.regionName ?? "Unnamed Region",
-      type: "region",
-      children: [],
-    };
-    addChild(currentParentName, newRegion);
-    setIsAddRegionOpen(false);
-    setCurrentParentName("");
+    if (!currentParentId) {
+      console.error("No parent ID set for adding region");
+      return;
+    }
+
+    createRegionBhubServiceCenter(
+      {
+        orgId: id,
+        parentId: currentParentId,
+        regionId: data.regionId ?? `REG-${Date.now()}`,
+        name: data.regionName ?? "Unnamed Region",
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        type: "region",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddRegionOpen(false);
+          setCurrentParentId("");
+          console.log("Region created successfully");
+          toast.success("Region created successfully");
+        },
+        onError: (error) => {
+          console.error("Error creating region:", error);
+          toast.error("Error creating region");
+        },
+      },
+    );
   };
 
   const handleAddBusinessHub = (data: UnifiedFormData) => {
-    const newBusinessHub: Node = {
-      name: data.businessHubName ?? "Unnamed Business Hub",
-      type: "businessHub",
-      businessHubId: data.businessHubId ?? `BH-${Date.now()}`,
-      phoneNumber: data.phoneNumber ?? "",
-      email: data.email ?? "",
-      contactPerson: data.contactPerson ?? "",
-      address: data.address ?? "",
-      children: [],
-    };
-    addChild(currentParentName, newBusinessHub);
-    setIsAddBusinessHubOpen(false);
-    setCurrentParentName("");
+    if (!currentParentId) {
+      console.error("No parent ID set for adding business hub");
+      return;
+    }
+
+    createRegionBhubServiceCenter(
+      {
+        orgId: id,
+        parentId: currentParentId,
+        regionId: data.regionId ?? `BH-${Date.now()}`,
+        name: data.businessHubName ?? "Unnamed Business Hub",
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        type: "business hub",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddBusinessHubOpen(false);
+          setCurrentParentId("");
+          console.log("Business hub created successfully");
+          toast.success("Business hub created successfully");
+        },
+        onError: (error) => {
+          console.error("Error creating business hub:", error);
+          toast.error("Error creating business hub");
+        },
+      },
+    );
   };
 
   const handleAddServiceCenter = (data: UnifiedFormData) => {
-    const newServiceCenter: Node = {
-      name: data.serviceCenterName ?? "Unnamed Service Center",
-      type: "serviceCenter",
-      serviceCenterId: data.serviceCenterId ?? `SC-${Date.now()}`,
-      phoneNumber: data.phoneNumber ?? "",
-      email: data.email ?? "",
-      contactPerson: data.contactPerson ?? "",
-      address: data.address ?? "",
-      children: [],
-    };
-    addChild(currentParentName, newServiceCenter);
-    setIsAddServiceCenterOpen(false);
-    setCurrentParentName("");
+    if (!currentParentId) {
+      console.error("No parent ID set for adding service center");
+      return;
+    }
+
+    createRegionBhubServiceCenter(
+      {
+        orgId: id,
+        parentId: currentParentId,
+        regionId: data.regionId ?? `SC-${Date.now()}`,
+        name: data.serviceCenterName ?? "Unnamed Service Center",
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        type: "service center",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddServiceCenterOpen(false);
+          setCurrentParentId("");
+          console.log("Service center created successfully");
+          toast.success("Service center created successfully");
+        },
+        onError: (error) => {
+          console.error("Error creating service center:", error);
+          toast.error("Error creating service center");
+        },
+      },
+    );
   };
 
   const handleAddSubstation = (data: UnifiedFormData) => {
-    const newSubstation: Node = {
-      name: data.substationName ?? "Unnamed Substation",
-      type: "substation",
-      serialNumber: data.serialNumber ?? `SUB-${Date.now()}`,
-      assetId: data.assetId ?? "",
-      status: data.status ?? "Active",
-      voltage: data.voltage ?? "330 KV",
-      longitude: data.longitude ?? "",
-      latitude: data.latitude ?? "",
-      description: data.description ?? "",
-      phoneNumber: data.phoneNumber ?? "",
-      email: data.email ?? "",
-      contactPerson: data.contactPerson ?? "",
-      address: data.address ?? "",
-      children: [],
-    };
-    addChild(currentParentName, newSubstation);
-    setIsAddSubstationOpen(false);
-    setCurrentParentName("");
+    if (!currentParentId) {
+      console.error("No parent ID set for adding substation");
+      return;
+    }
+
+    createSubstationTransfomerFeeder(
+      {
+        orgId: id,
+        parentId: currentParentId,
+        name: data.substationName ?? "Unnamed Substation",
+        serialNo: data.serialNumber ?? `SUB-${Date.now()}`,
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        status: data.status === "Active" || data.status === "true",
+        voltage: data.voltage ?? "330 KV",
+        latitude: data.latitude ?? "",
+        longitude: data.longitude ?? "",
+        description: data.description ?? "",
+        type: "substation",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddSubstationOpen(false);
+          setCurrentParentId("");
+          console.log("Substation created successfully");
+          toast.success("Substation created successfully");
+        },
+        onError: (error) => {
+          console.error("Error creating substation:", error);
+          toast.error("Error creating substation");
+        },
+      },
+    );
   };
 
   const handleAddFeederLine = (data: UnifiedFormData) => {
-    const newFeederLine: Node = {
-      name: data.feederName ?? "Unnamed Feeder Line",
-      type: "feederLine",
-      serialNumber: data.serialNumber ?? `FL-${Date.now()}`,
-      assetId: data.assetId ?? "",
-      status: data.status ?? "Active",
-      voltage: data.voltage ?? "330 KV",
-      longitude: data.longitude ?? "",
-      latitude: data.latitude ?? "",
-      description: data.description ?? "",
-      phoneNumber: data.phoneNumber ?? "",
-      email: data.email ?? "",
-      contactPerson: data.contactPerson ?? "",
-      address: data.address ?? "",
-      children: [],
-    };
-    addChild(currentParentName, newFeederLine);
-    setIsAddFeederLineOpen(false);
-    setCurrentParentName("");
+    if (!currentParentId) {
+      console.error("No parent ID set for adding feeder line");
+      return;
+    }
+
+    createSubstationTransfomerFeeder(
+      {
+        orgId: id,
+        parentId: currentParentId,
+        name: data.feederName ?? "Unnamed Feeder Line",
+        serialNo: data.serialNumber ?? `FL-${Date.now()}`,
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        status: data.status === "Active" || data.status === "true",
+        voltage: data.voltage ?? "330 KV",
+        latitude: data.latitude ?? "",
+        longitude: data.longitude ?? "",
+        description: data.description ?? "",
+        type: "feeder line",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddFeederLineOpen(false);
+          setCurrentParentId("");
+          console.log("Feeder line created successfully");
+          toast.success("Feeder line created successfully");
+        },
+        onError: (error) => {
+          console.error("Error creating feeder line:", error);
+          toast.error("Error creating feeder line");
+        },
+      },
+    );
   };
 
   const handleAddDSS = (data: UnifiedFormData) => {
-    const newDSS: Node = {
-      name: data.substationName ?? "Unnamed Distribution Substation (DSS)",
-      type: "dss",
-      serialNumber: data.serialNumber ?? `DSS-${Date.now()}`,
-      assetId: data.assetId ?? "",
-      status: data.status ?? "Active",
-      voltage: data.voltage ?? "330 KV",
-      longitude: data.longitude ?? "",
-      latitude: data.latitude ?? "",
-      description: data.description ?? "",
-      phoneNumber: data.phoneNumber ?? "",
-      email: data.email ?? "",
-      contactPerson: data.contactPerson ?? "",
-      address: data.address ?? "",
-      children: [],
-    };
-    addChild(currentParentName, newDSS);
-    setIsAddDSSOpen(false);
-    setCurrentParentName("");
+    if (!currentParentId) {
+      console.error("No parent ID set for adding DSS");
+      return;
+    }
+
+    createSubstationTransfomerFeeder(
+      {
+        orgId: id,
+        parentId: currentParentId,
+        name: data.substationName ?? "Unnamed Distribution Substation (DSS)",
+        serialNo: data.serialNumber ?? `DSS-${Date.now()}`,
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        status: data.status === "Active" || data.status === "true",
+        voltage: data.voltage ?? "330 KV",
+        latitude: data.latitude ?? "",
+        longitude: data.longitude ?? "",
+        description: data.description ?? "",
+        type: "transformer",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddDSSOpen(false);
+          setCurrentParentId("");
+          console.log("DSS created successfully");
+          toast.success("DSS created successfully");
+        },
+        onError: (error) => {
+          console.error("Error creating DSS:", error);
+          toast.error("Error creating DSS");
+        },
+      },
+    );
   };
 
   const handleEditRoot = (data: UnifiedFormData) => {
-    setCompanyProfile({
-      ...companyProfile,
-      company: data.organizationName ?? companyProfile.company,
-      contact: data.contactPerson ?? companyProfile.contact,
-      email: data.email ?? companyProfile.email,
-      phone: data.phoneNumber ?? companyProfile.phone,
-      address: data.address ?? companyProfile.address,
-    });
+    console.log("Editing root:", data);
     setIsEditRootOpen(false);
   };
 
@@ -308,40 +394,32 @@ export default function PerformanceOverview({
     setCurrentEditNode(null);
   };
 
-  function RenderNode({ node, level }: { node: Node; level: number }) {
-    const isExpanded = expanded.has(node.name);
+  function RenderNode({
+    node,
+    level,
+    _isRoot = false,
+  }: {
+    node: GetOneNode;
+    level: number;
+    _isRoot?: boolean;
+  }) {
+    const nodeName = node.name;
+    const nodeId = node.id;
+    const isExpanded = expanded.has(nodeName);
 
     const toggleExpanded = () => {
       const newExpanded = new Set(expanded);
       if (isExpanded) {
-        newExpanded.delete(node.name);
+        newExpanded.delete(nodeName);
       } else {
-        newExpanded.add(node.name);
+        newExpanded.add(nodeName);
       }
       setExpanded(newExpanded);
     };
 
-    // Assign icons based on node type
-    const Icon = (() => {
-      switch (node.type) {
-        case "root":
-          return Building2;
-        case "region":
-          return LayoutGrid;
-        case "businessHub":
-          return Building2;
-        case "serviceCenter":
-          return Wrench;
-        case "substation":
-          return Database;
-        case "feederLine":
-          return Zap;
-        case "dss":
-          return Lightbulb;
-        default:
-          return LayoutGrid; // Fallback for unspecified types
-      }
-    })();
+    // For the tree display, we can't determine the exact node type without additional data
+    // So we'll use a generic icon for now, or you could add type information to GetOneNode
+    const Icon = Building2;
 
     return (
       <>
@@ -354,10 +432,10 @@ export default function PerformanceOverview({
           >
             <ChevronRight
               size={16}
-              className={`text-gray-500 transition-transform ${isExpanded ? "rotate-90" : ""}`}
+              className={`text-gray-500 transition-transform ${isExpanded ? "rotate-90" : ""} ${node.nodesTree?.length === 0 ? "invisible" : ""}`}
             />
             <Icon size={18} className="text-gray-500" />
-            <span className="font-medium text-gray-900">{node.name}</span>
+            <span className="font-medium text-gray-900">{nodeName}</span>
           </div>
           <div className="flex items-center gap-0">
             <DropdownMenu>
@@ -378,7 +456,7 @@ export default function PerformanceOverview({
               >
                 <DropdownMenuItem
                   onClick={() => {
-                    setCurrentParentName(node.name);
+                    setCurrentParentId(nodeId);
                     setIsAddRegionOpen(true);
                   }}
                   className="cursor-pointer"
@@ -388,7 +466,7 @@ export default function PerformanceOverview({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
-                    setCurrentParentName(node.name);
+                    setCurrentParentId(nodeId);
                     setIsAddBusinessHubOpen(true);
                   }}
                   className="cursor-pointer"
@@ -398,7 +476,7 @@ export default function PerformanceOverview({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
-                    setCurrentParentName(node.name);
+                    setCurrentParentId(nodeId);
                     setIsAddServiceCenterOpen(true);
                   }}
                   className="cursor-pointer"
@@ -408,7 +486,7 @@ export default function PerformanceOverview({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
-                    setCurrentParentName(node.name);
+                    setCurrentParentId(nodeId);
                     setIsAddSubstationOpen(true);
                   }}
                   className="cursor-pointer"
@@ -418,7 +496,7 @@ export default function PerformanceOverview({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
-                    setCurrentParentName(node.name);
+                    setCurrentParentId(nodeId);
                     setIsAddFeederLineOpen(true);
                   }}
                   className="cursor-pointer"
@@ -428,7 +506,7 @@ export default function PerformanceOverview({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
-                    setCurrentParentName(node.name);
+                    setCurrentParentId(nodeId);
                     setIsAddDSSOpen(true);
                   }}
                   className="cursor-pointer"
@@ -443,24 +521,27 @@ export default function PerformanceOverview({
               size="lg"
               className="cursor-pointer px-1 text-black hover:text-gray-700"
               onClick={() => {
-                setCurrentEditNode(node);
-                if (node.type === "root") {
-                  setIsEditRootOpen(true);
-                } else if (node.type === "businessHub") {
-                  setIsEditBusinessHubOpen(true);
-                } else if (node.type === "serviceCenter") {
-                  setIsEditServiceCenterOpen(true);
-                } else if (node.type === "substation") {
-                  setIsEditSubstationOpen(true);
-                } else if (node.type === "feederLine") {
-                  setIsEditFeederLineOpen(true);
-                } else if (node.type === "dss") {
-                  setIsEditDSSOpen(true);
-                } else {
-                  console.log(
-                    `Editing node: ${node.name} (type ${node.type}, level ${level})`,
-                  );
-                }
+                // For editing, we'll need to set a simplified node structure
+                // Since GetOneNode doesn't have nodeInfo, we'll handle this differently
+                setCurrentEditNode({
+                  id: nodeId,
+                  orgId: node.orgId,
+                  name: nodeName,
+                  nodeInfo: {
+                    id: nodeId,
+                    nodeId: nodeId,
+                    name: nodeName,
+                    phoneNo: "",
+                    email: "",
+                    contactPerson: "",
+                    address: "",
+                    createdAt: "",
+                    updatedAt: "",
+                  },
+                });
+
+                // For now, we'll default to root edit since we don't have type info
+                setIsEditRootOpen(true);
               }}
             >
               <Edit size={28} className="h-24 w-24" />
@@ -468,9 +549,11 @@ export default function PerformanceOverview({
           </div>
         </div>
         {isExpanded &&
-          node.children?.map((child: Node, idx: Key | null | undefined) => (
-            <RenderNode key={idx} node={child} level={level + 1} />
-          ))}
+          node.nodesTree?.map(
+            (child: GetOneNode, idx: Key | null | undefined) => (
+              <RenderNode key={idx} node={child} level={level + 1} />
+            ),
+          )}
       </>
     );
   }
@@ -482,7 +565,9 @@ export default function PerformanceOverview({
         <h1 className="text-2xl font-bold text-gray-900">
           Performance Overview
         </h1>
-        <p className="text-sm text-gray-500">Manage {companyProfile.company}</p>
+        <p className="text-sm text-gray-500">
+          Manage {performanceData?.businessName}
+        </p>
       </div>
 
       {/* Summary Cards */}
@@ -499,7 +584,7 @@ export default function PerformanceOverview({
         </button>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {performanceData.summary.map((item, idx) => (
+        {summary.map((item, idx) => (
           <Card key={idx} className="border border-gray-200 bg-white shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
@@ -538,17 +623,17 @@ export default function PerformanceOverview({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-semibold text-gray-900">
-                  {companyProfile.company}
+                  {performanceData?.businessName}
                 </h2>
                 <Badge
                   variant="secondary"
                   className="bg-green-50 text-green-700"
                 >
-                  {performanceData.status}
+                  {performanceData?.status}
                 </Badge>
               </div>
               <p className="text-sm text-gray-500">
-                Registered {performanceData.registered}
+                Registered {performanceData?.createdAt}
               </p>
             </div>
           </div>
@@ -584,7 +669,7 @@ export default function PerformanceOverview({
                   <Building2 size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
                     <p className="text-sm font-bold text-black">
-                      {companyProfile.company}
+                      {performanceData?.businessName}
                     </p>
                     <p className="text-sm font-medium text-gray-400">Company</p>
                   </div>
@@ -593,7 +678,9 @@ export default function PerformanceOverview({
                   <Users size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
                     <p className="text-sm font-bold text-black">
-                      {companyProfile.contact}
+                      {performanceData?.operator.firstname +
+                        " " +
+                        performanceData?.operator.lastname}
                     </p>
                     <p className="text-sm font-medium text-gray-400">
                       Contact Person
@@ -604,7 +691,7 @@ export default function PerformanceOverview({
                   <Mail size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
                     <p className="text-sm font-bold text-black">
-                      {companyProfile.email}
+                      {performanceData?.operator.email}
                     </p>
                     <p className="text-sm font-medium text-gray-400">Email</p>
                   </div>
@@ -612,9 +699,7 @@ export default function PerformanceOverview({
                 <li className="flex items-center gap-3">
                   <Phone size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
-                    <p className="text-sm font-bold text-black">
-                      {companyProfile.phone}
-                    </p>
+                    <p className="text-sm font-bold text-black">{""}</p>
                     <p className="text-sm font-medium text-gray-400">Phone</p>
                   </div>
                 </li>
@@ -622,7 +707,7 @@ export default function PerformanceOverview({
                   <MapPin size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
                     <p className="text-sm font-bold text-black">
-                      {companyProfile.address}
+                      {performanceData?.address}
                     </p>
                     <p className="text-sm font-medium text-gray-400">Address</p>
                   </div>
@@ -647,7 +732,12 @@ export default function PerformanceOverview({
             <CardContent>
               <div className="space-y-2">
                 <RenderNode
-                  node={{ name: "Root", type: "root", children: tree }}
+                  node={{
+                    id: performanceData?.operator.nodes.id || "root",
+                    orgId: id,
+                    name: performanceData?.businessName || "Root",
+                    nodesTree: performanceData?.operator.nodes.nodesTree || [],
+                  }}
                   level={0}
                 />
               </div>
@@ -692,11 +782,14 @@ export default function PerformanceOverview({
           onSubmit={handleEditRoot}
           initialData={{
             rootId: "IBDEC001",
-            rootName: companyProfile.company,
-            contactPerson: companyProfile.contact,
-            email: companyProfile.email,
-            phoneNumber: companyProfile.phone,
-            address: companyProfile.address,
+            rootName: performanceData?.businessName,
+            contactPerson:
+              performanceData?.operator.firstname +
+              " " +
+              performanceData?.operator.lastname,
+            email: performanceData?.operator.email,
+            phoneNumber: "",
+            address: performanceData?.address,
           }}
         />
         <EditBusinessHubDialog
@@ -706,12 +799,13 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  businessHubId: currentEditNode.businessHubId ?? "",
-                  businessHubName: currentEditNode.name,
-                  phoneNumber: currentEditNode.phoneNumber ?? "",
-                  email: currentEditNode.email ?? "",
-                  contactPerson: currentEditNode.contactPerson ?? "",
-                  address: currentEditNode.address ?? "",
+                  businessHubId: currentEditNode.nodeInfo?.bhubId ?? "",
+                  businessHubName:
+                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                  email: currentEditNode.nodeInfo?.email ?? "",
+                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                  address: currentEditNode.nodeInfo?.address ?? "",
                 }
               : {}
           }
@@ -723,12 +817,13 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  serviceCenterId: currentEditNode.serviceCenterId ?? "",
-                  serviceCenterName: currentEditNode.name,
-                  phoneNumber: currentEditNode.phoneNumber ?? "",
-                  email: currentEditNode.email ?? "",
-                  contactPerson: currentEditNode.contactPerson ?? "",
-                  address: currentEditNode.address ?? "",
+                  serviceCenterId: currentEditNode.id,
+                  serviceCenterName:
+                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                  email: currentEditNode.nodeInfo?.email ?? "",
+                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                  address: currentEditNode.nodeInfo?.address ?? "",
                 }
               : {}
           }
@@ -740,18 +835,21 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  substationName: currentEditNode.name,
-                  serialNumber: currentEditNode.serialNumber ?? "",
-                  assetId: currentEditNode.assetId ?? "",
-                  status: currentEditNode.status ?? "Active",
-                  voltage: currentEditNode.voltage ?? "330 KV",
-                  longitude: currentEditNode.longitude ?? "",
-                  latitude: currentEditNode.latitude ?? "",
-                  description: currentEditNode.description ?? "",
-                  phoneNumber: currentEditNode.phoneNumber ?? "",
-                  email: currentEditNode.email ?? "",
-                  contactPerson: currentEditNode.contactPerson ?? "",
-                  address: currentEditNode.address ?? "",
+                  substationName:
+                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
+                  assetId: "", // Not available in NodeInfo, so default to empty
+                  status: currentEditNode.nodeInfo?.status
+                    ? "Active"
+                    : "Inactive",
+                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
+                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
+                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
+                  description: currentEditNode.nodeInfo?.description ?? "",
+                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                  email: currentEditNode.nodeInfo?.email ?? "",
+                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                  address: currentEditNode.nodeInfo?.address ?? "",
                 }
               : {}
           }
@@ -763,18 +861,21 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  feederName: currentEditNode.name,
-                  serialNumber: currentEditNode.serialNumber ?? "",
-                  assetId: currentEditNode.assetId ?? "",
-                  status: currentEditNode.status ?? "Active",
-                  voltage: currentEditNode.voltage ?? "330 KV",
-                  longitude: currentEditNode.longitude ?? "",
-                  latitude: currentEditNode.latitude ?? "",
-                  description: currentEditNode.description ?? "",
-                  phoneNumber: currentEditNode.phoneNumber ?? "",
-                  email: currentEditNode.email ?? "",
-                  contactPerson: currentEditNode.contactPerson ?? "",
-                  address: currentEditNode.address ?? "",
+                  feederName:
+                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
+                  assetId: "", // Not available in NodeInfo, so default to empty
+                  status: currentEditNode.nodeInfo?.status
+                    ? "Active"
+                    : "Inactive",
+                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
+                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
+                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
+                  description: currentEditNode.nodeInfo?.description ?? "",
+                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                  email: currentEditNode.nodeInfo?.email ?? "",
+                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                  address: currentEditNode.nodeInfo?.address ?? "",
                 }
               : {}
           }
@@ -786,18 +887,21 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  substationName: currentEditNode.name,
-                  serialNumber: currentEditNode.serialNumber ?? "",
-                  assetId: currentEditNode.assetId ?? "",
-                  status: currentEditNode.status ?? "Active",
-                  voltage: currentEditNode.voltage ?? "330 KV",
-                  longitude: currentEditNode.longitude ?? "",
-                  latitude: currentEditNode.latitude ?? "",
-                  description: currentEditNode.description ?? "",
-                  phoneNumber: currentEditNode.phoneNumber ?? "",
-                  email: currentEditNode.email ?? "",
-                  contactPerson: currentEditNode.contactPerson ?? "",
-                  address: currentEditNode.address ?? "",
+                  substationName:
+                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
+                  assetId: "", // Not available in NodeInfo, so default to empty
+                  status: currentEditNode.nodeInfo?.status
+                    ? "Active"
+                    : "Inactive",
+                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
+                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
+                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
+                  description: currentEditNode.nodeInfo?.description ?? "",
+                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                  email: currentEditNode.nodeInfo?.email ?? "",
+                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                  address: currentEditNode.nodeInfo?.address ?? "",
                 }
               : {}
           }

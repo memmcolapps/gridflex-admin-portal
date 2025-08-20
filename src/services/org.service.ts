@@ -6,6 +6,8 @@ import type {
   CreateOrgResponse,
   CreateRegionBhubServiceCenterPayload,
   CreateSubstationTransfomerFeederPayload,
+  GetOneOrgResponse,
+  GetOneOrgResponseData,
   Node,
   NodesResponse,
   OrganizationResponse,
@@ -268,6 +270,44 @@ export const getAllNodes = async (
     };
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "getAllNodes");
+    return {
+      success: false,
+      error: errorResult.error,
+    };
+  }
+};
+
+export const getOneOrg = async (
+  orgId: string,
+): Promise<{
+  success: boolean;
+  data?: GetOneOrgResponseData;
+  error?: string;
+}> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.get<GetOneOrgResponse>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/organization/single?id=${orgId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (response.data.responsecode !== "000") {
+      return {
+        success: false,
+        error: response.data.responsedesc,
+      };
+    }
+
+    return {
+      success: true,
+      data: response.data.responsedata,
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "getOneOrg");
     return {
       success: false,
       error: errorResult.error,

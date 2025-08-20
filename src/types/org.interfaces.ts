@@ -234,3 +234,50 @@ export interface NodesResponse {
   responsedesc: string;
   responsedata: Node[];
 }
+
+export interface GetOneOrgResponse {
+  responsecode: string;
+  responsedesc: string;
+  responsedata: GetOneOrgResponseData;
+}
+
+export interface GetOneOrgResponseData {
+  id: string;
+  userId: string;
+  businessName: string;
+  postalCode: string;
+  address: string;
+  country: string;
+  state: string;
+  city: string;
+  status: boolean;
+  image: string;
+  operator: GetOneOrgOperator;
+  totalCustomer: number;
+  totalFeeder: number;
+  totalVending: number;
+  totalBilling: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface GetOneOrgOperator {
+  id: string;
+  orgId: string;
+  nodeId: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  status: boolean;
+  active: boolean;
+  nodes: GetOneNode;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GetOneNode {
+  id: string;
+  orgId: string;
+  name: string;
+  nodesTree: GetOneNode[];
+}

@@ -96,7 +96,7 @@ export const createRegionBhubServiceCenter = async (
   try {
     const token = localStorage.getItem("access_token");
     const response = await axios.post<CreateOrgResponse>(
-      `${BASE_URL}/portal/onboard/v1/api/node/service/create/node/region-bhub-service-center`,
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/node/service/create/node/region-bhub-service-center`,
       payload,
       {
         headers: {

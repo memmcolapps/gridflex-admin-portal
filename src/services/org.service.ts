@@ -134,7 +134,7 @@ export const updateRegionBhubServiceCenter = async (
   try {
     const token = localStorage.getItem("access_token");
     const response = await axios.put<CreateOrgResponse>(
-      `${BASE_URL}/portal/onboard/v1/api/node/service/update/node/region-bhub-service-center`,
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/node/service/update/node/region-bhub-service-center`,
       payload,
       {
         headers: {
@@ -169,7 +169,7 @@ export const createSubstationTransfomerFeeder = async (
   try {
     const token = localStorage.getItem("access_token");
     const response = await axios.post<CreateOrgResponse>(
-      `${BASE_URL}/portal/onboard/v1/api/node/service/create/node/substation-transformer-feeder-line`,
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/node/service/create/node/substation-transformer-feeder-line`,
       payload,
       {
         headers: {
@@ -207,7 +207,7 @@ export const updateSubstationTransfomerFeeder = async (
   try {
     const token = localStorage.getItem("access_token");
     const response = await axios.put<CreateOrgResponse>(
-      `${BASE_URL}/portal/onboard/v1/api/node/service/update/node/substation-transformer-feeder-line`,
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/node/service/update/node/substation-transformer-feeder-line`,
       payload,
       {
         headers: {

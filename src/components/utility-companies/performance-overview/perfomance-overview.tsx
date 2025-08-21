@@ -169,7 +169,7 @@ export default function PerformanceOverview({
       {
         orgId: id,
         parentId: currentParentId,
-        regionId: data.regionId ?? `BH-${Date.now()}`,
+        regionId: data.businessHubId ?? `BH-${Date.now()}`,
         name: data.businessHubName ?? "Unnamed Business Hub",
         phoneNo: data.phoneNumber ?? "",
         email: data.email ?? "",
@@ -204,7 +204,7 @@ export default function PerformanceOverview({
       {
         orgId: id,
         parentId: currentParentId,
-        regionId: data.regionId ?? `SC-${Date.now()}`,
+        regionId: data.serviceCenterId ?? `SC-${Date.now()}`,
         name: data.serviceCenterName ?? "Unnamed Service Center",
         phoneNo: data.phoneNumber ?? "",
         email: data.email ?? "",

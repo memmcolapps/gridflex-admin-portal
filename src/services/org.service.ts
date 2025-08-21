@@ -302,6 +302,8 @@ export const getOneOrg = async (
       };
     }
 
+    console.log("Organization data:", response.data.responsedata);
+
     return {
       success: true,
       data: response.data.responsedata,

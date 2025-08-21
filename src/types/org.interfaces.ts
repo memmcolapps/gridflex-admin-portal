@@ -182,7 +182,7 @@ export interface CreateSubstationTransfomerFeederPayload {
   latitude: string;
   longitude: string;
   description: string;
-  type: "feeder line" | "substation" | "transformer";
+  type: "feeder line" | "substation" | "dss";
 }
 
 export interface UpdateSubstationTransfomerFeederPayload {
@@ -198,7 +198,7 @@ export interface UpdateSubstationTransfomerFeederPayload {
   latitude: string;
   longitude: string;
   description: string;
-  type: "feeder line" | "substation" | "transformer";
+  type: "feeder line" | "substation" | "dss";
 }
 
 interface NodeInfo {
@@ -270,7 +270,7 @@ interface GetOneOrgOperator {
   email: string;
   status: boolean;
   active: boolean;
-  nodes: GetOneNode;
+  nodes: GetOneNode[];
   createdAt: string;
   updatedAt: string;
 }
@@ -279,5 +279,18 @@ export interface GetOneNode {
   id: string;
   orgId: string;
   name: string;
+  nodeInfo?: {
+    address: string;
+    contactPerson: string;
+    createdAt: string;
+    email: string;
+    id: string;
+    name: string;
+    nodeId: string;
+    phoneNo: string;
+    regionId: string;
+    type: string;
+    updatedAt: string;
+  };
   nodesTree: GetOneNode[];
 }

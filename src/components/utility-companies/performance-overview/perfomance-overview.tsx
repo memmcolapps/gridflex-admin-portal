@@ -15,6 +15,7 @@ import {
   Users,
   Wrench,
   Zap,
+  FolderRoot,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -330,7 +331,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
-        type: "transformer",
+        type: "dss",
       },
       {
         onSuccess: () => {
@@ -417,24 +418,39 @@ export default function PerformanceOverview({
       setExpanded(newExpanded);
     };
 
-    // For the tree display, we can't determine the exact node type without additional data
-    // So we'll use a generic icon for now, or you could add type information to GetOneNode
-    const Icon = Building2;
+    let Icon;
+
+    if (node.nodeInfo?.type === "region") {
+      Icon = LayoutGrid;
+    } else if (node.nodeInfo?.type === "business hub") {
+      Icon = Building2;
+    } else if (node.nodeInfo?.type === "service center") {
+      Icon = Wrench;
+    } else if (node.nodeInfo?.type === "substation") {
+      Icon = Database;
+    } else if (node.nodeInfo?.type === "feeder line") {
+      Icon = Zap;
+    } else if (node.nodeInfo?.type === "DSS") {
+      Icon = Lightbulb;
+    } else {
+      Icon = FolderRoot;
+    }
 
     return (
       <>
         <div
-          className={`flex items-center justify-between ${level > 0 ? `pl-${level * 6}` : ""}`}
+          className="flex items-center justify-between"
+          style={{ paddingLeft: `${level * 24}px` }}
         >
           <div
             className="flex cursor-pointer items-center gap-2"
             onClick={toggleExpanded}
           >
             <ChevronRight
-              size={16}
+              size={10}
               className={`text-gray-500 transition-transform ${isExpanded ? "rotate-90" : ""} ${node.nodesTree?.length === 0 ? "invisible" : ""}`}
             />
-            <Icon size={18} className="text-gray-500" />
+            <Icon size={10} className="text-gray-500" />
             <span className="font-medium text-gray-900">{nodeName}</span>
           </div>
           <div className="flex items-center gap-0">
@@ -445,7 +461,7 @@ export default function PerformanceOverview({
                   size="lg"
                   className="cursor-pointer bg-white p-1 text-black hover:text-gray-700"
                 >
-                  <Plus size={28} className="h-24 w-24" />
+                  <Plus size={10} className="h-24 w-24" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -471,7 +487,7 @@ export default function PerformanceOverview({
                   }}
                   className="cursor-pointer"
                 >
-                  <Building2 size={16} />
+                  <Building2 size={10} />
                   Business Hub
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -481,7 +497,7 @@ export default function PerformanceOverview({
                   }}
                   className="cursor-pointer"
                 >
-                  <Wrench size={16} />
+                  <Wrench size={10} />
                   Service Centre
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -491,7 +507,7 @@ export default function PerformanceOverview({
                   }}
                   className="cursor-pointer"
                 >
-                  <Database size={16} />
+                  <Database size={10} />
                   Substation
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -501,7 +517,7 @@ export default function PerformanceOverview({
                   }}
                   className="cursor-pointer"
                 >
-                  <Zap size={16} />
+                  <Zap size={10} />
                   Feeder Line
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -511,7 +527,7 @@ export default function PerformanceOverview({
                   }}
                   className="cursor-pointer"
                 >
-                  <Lightbulb size={16} />
+                  <Lightbulb size={10} />
                   Distribution Substation (DSS)
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -560,7 +576,6 @@ export default function PerformanceOverview({
 
   return (
     <div className="space-y-6 bg-white p-6">
-      {/* Title Section */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
           Performance Overview
@@ -613,7 +628,6 @@ export default function PerformanceOverview({
         ))}
       </div>
 
-      {/* Company Status */}
       <Card className="h-30 border border-gray-200 bg-white shadow-sm">
         <CardContent className="flex h-full items-center justify-between p-4">
           <div className="flex items-center gap-4">
@@ -648,11 +662,8 @@ export default function PerformanceOverview({
         </CardContent>
       </Card>
 
-      {/* Profile and Hierarchy */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-10">
-        {/* Profile + Hierarchy (30%) */}
         <div className="space-y-6 lg:col-span-3">
-          {/* Company Profile */}
           <Card className="w-full border border-gray-200 bg-white shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg font-semibold">
@@ -733,10 +744,11 @@ export default function PerformanceOverview({
               <div className="space-y-2">
                 <RenderNode
                   node={{
-                    id: performanceData?.operator.nodes.id || "root",
+                    id: performanceData?.operator.nodes[0]?.id || "root",
                     orgId: id,
                     name: performanceData?.businessName || "Root",
-                    nodesTree: performanceData?.operator.nodes.nodesTree || [],
+                    nodesTree:
+                      performanceData?.operator.nodes[0]?.nodesTree || [],
                   }}
                   level={0}
                 />

@@ -27,8 +27,10 @@ export const createOrgApi = async (
     data.append("businessName", payload.businessName);
     data.append("postalCode", payload.postalCode);
     data.append("email", payload.email);
+    data.append("address", payload.address);
     data.append("password", payload.password);
     data.append("country", payload.country);
+    data.append("state", payload.state);
     data.append("city", payload.city);
     data.append("firstName", payload.firstName);
     data.append("lastName", payload.lastName);

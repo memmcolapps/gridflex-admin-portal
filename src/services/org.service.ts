@@ -22,10 +22,21 @@ export const createOrgApi = async (
   payload: CreateOrgPayload,
 ): Promise<{ success: boolean } | { success: boolean; error: string }> => {
   try {
+    const FormData = (await import("form-data")).default;
+    const data = new FormData();
+    data.append("businessName", payload.businessName);
+    data.append("postalCode", payload.postalCode);
+    data.append("email", payload.email);
+    data.append("password", payload.password);
+    data.append("country", payload.country);
+    data.append("city", payload.city);
+    data.append("firstName", payload.firstName);
+    data.append("lastName", payload.lastName);
+    data.append("phoneNumber", payload.phoneNumber);
     const token = localStorage.getItem("access_token");
     const response = await axios.post<CreateOrgResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/organization/create`,
-      payload,
+      data,
       {
         headers: {
           Authorization: `Bearer ${token}`,

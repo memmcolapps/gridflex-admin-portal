@@ -2,13 +2,12 @@
 @import "tw-animate-css";
 
 html {
-  font-size: min(20px, 0.8vw);
+  font-size: 12.8px;
 }
 
 body {
   background-color: #ffffff;
 }
-
 
 @theme {
   --font-sans:
@@ -83,7 +82,7 @@ body {
 
   --radius: 0.625rem;
 
-  --background: #FEFAF5;
+  --background: #fefaf5;
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
@@ -106,25 +105,24 @@ body {
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar:  #FEFAF5; /*oklch(0.985 0 0); */
+  --sidebar: #fefaf5; /*oklch(0.985 0 0); */
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.21 0.006 285.885);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: #FFFFFF;
-  --sidebar-accent-foreground: #000000; ;
+  --sidebar-accent: #ffffff;
+  --sidebar-accent-foreground: #000000;
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
-  --sidebar: #FEFAF5;
+  --sidebar: #fefaf5;
 }
 
 /* Custom active state styling */
 .sidebar-item-active {
-  background-color: #FFFFFF ;
-  box-shadow: 
+  background-color: #ffffff;
+  box-shadow:
     0px 1px 4px 0px rgba(0, 0, 0, 0.1),
-    0px -1px 4px 0px rgba(0, 0, 0, 0.1) ;
+    0px -1px 4px 0px rgba(0, 0, 0, 0.1);
 }
-
 
 @layer base {
   * {

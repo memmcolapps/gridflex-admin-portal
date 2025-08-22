@@ -41,7 +41,7 @@ interface Organization {
   city: string;
   status: boolean;
   operator: Operator;
-  customerCount: number;
+  totalCustomer: number;
   totalVending: number;
   totalBilling: number;
   createdAt: string;

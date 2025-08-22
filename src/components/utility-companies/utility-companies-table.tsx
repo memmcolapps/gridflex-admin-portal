@@ -107,15 +107,24 @@ export default function UtilityCompaniesTable() {
                   </div>
                 </TableCell>
                 <TableCell className="py-4">
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-50 px-3 font-normal text-green-700 hover:bg-green-50"
-                  >
-                    {company.status}
-                  </Badge>
+                  {company.status === true ? (
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-50 px-3 font-normal text-green-700 hover:bg-green-50"
+                    >
+                      Active
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="secondary"
+                      className="bg-red-50 px-3 font-normal text-red-700 hover:bg-red-50"
+                    >
+                      Inactive
+                    </Badge>
+                  )}
                 </TableCell>
                 <TableCell className="text-sm text-gray-900">
-                  {company.customerCount}
+                  {company.totalCustomer}
                 </TableCell>
                 <TableCell className="text-sm text-gray-900">
                   {company.totalVending}

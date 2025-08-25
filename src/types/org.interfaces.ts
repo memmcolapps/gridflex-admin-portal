@@ -40,6 +40,32 @@ interface Organization {
   state: string;
   city: string;
   status: boolean;
+  nodes: {
+    id: string;
+    orgId: string;
+    name: string;
+    nodeInfo?: {
+      id: string;
+      nodeId: string;
+      regionId?: string;
+      name: string;
+      phoneNo: string;
+      email: string;
+      contactPerson: string;
+      address: string;
+      type: string;
+      assetId?: string;
+      serialNo?: string;
+      status?: boolean;
+      voltage?: string;
+      description?: string;
+      latitude?: string;
+      longitude?: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    nodesTree: NodeTree[];
+  };
   operator: Operator;
   totalCustomer: number;
   totalVending: number;
@@ -72,32 +98,7 @@ interface Operator {
       disable: boolean;
     };
   };
-  nodes: {
-    id: string;
-    orgId: string;
-    name: string;
-    nodeInfo?: {
-      id: string;
-      nodeId: string;
-      regionId?: string;
-      name: string;
-      phoneNo: string;
-      email: string;
-      contactPerson: string;
-      address: string;
-      type: string;
-      assetId?: string;
-      serialNo?: string;
-      status?: boolean;
-      voltage?: string;
-      description?: string;
-      latitude?: string;
-      longitude?: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-    nodesTree: NodeTree[];
-  };
+
   createdAt: string;
   updatedAt: string;
 }
@@ -252,6 +253,7 @@ export interface GetOneOrgResponseData {
   city: string;
   status: boolean;
   image: string;
+  nodes: GetOneNode;
   operator: GetOneOrgOperator;
   totalCustomer: number;
   totalFeeder: number;
@@ -270,7 +272,6 @@ interface GetOneOrgOperator {
   email: string;
   status: boolean;
   active: boolean;
-  nodes: GetOneNode[];
   createdAt: string;
   updatedAt: string;
 }

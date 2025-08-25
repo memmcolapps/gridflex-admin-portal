@@ -744,11 +744,10 @@ export default function PerformanceOverview({
               <div className="space-y-2">
                 <RenderNode
                   node={{
-                    id: performanceData?.operator.nodes[0]?.id || "root",
+                    id: performanceData?.nodes.id || "root",
                     orgId: id,
                     name: performanceData?.businessName || "Root",
-                    nodesTree:
-                      performanceData?.operator.nodes[0]?.nodesTree || [],
+                    nodesTree: performanceData?.nodes.nodesTree || [],
                   }}
                   level={0}
                 />

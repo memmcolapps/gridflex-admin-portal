@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-// import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/contexts/AuthContext";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Navbar } from "@/components/navbar";
@@ -12,26 +12,26 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  //   const { user, isLoading } = useAuth();
-  //   const router = useRouter();
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
-  //   useEffect(() => {
-  //     if (!isLoading && !user) {
-  //       router.push("/login");
-  //     }
-  //   }, [user, isLoading, router]);
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
-  //   if (isLoading) {
-  //     return (
-  //       <div className="flex min-h-screen items-center justify-center">
-  //         <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-purple-500"></div>
-  //       </div>
-  //     );
-  //   }
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
-  //   if (!user) {
-  //     return null;
-  //   }
+  if (!user) {
+    return null;
+  }
 
   return (
     <SidebarProvider>

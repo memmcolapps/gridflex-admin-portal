@@ -1,10 +1,20 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 import {
   Building2,
@@ -27,7 +37,14 @@ const routeMeta: Record<string, { label: string; icon: LucideIcon }> = {
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useAuth();
   const pathSegments = pathname.split("/").filter(Boolean);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
 
   const breadcrumbs = pathSegments.map((segment, index) => {
     const href = "/" + pathSegments.slice(0, index + 1).join("/");
@@ -66,23 +83,56 @@ export function Navbar() {
   });
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-30 flex h-16 items-center border-b border-gray-200 bg-[#FEFAF5] px-4 sm:px-6 lg:px-8">
-      {/* Logo Section */}
-      <div className="mr-45 flex items-center gap-4">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/images/gridflex-admin-logo.svg"
-            alt="GridFlex Logo"
-            width={42}
-            height={54}
-            className="h-auto w-10"
-          />
-          <span className="text-xl font-semibold">Admin Portal</span>
-        </Link>
+    <header className="fixed top-0 right-0 left-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-[#FEFAF5] px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center gap-4">
+        {/* Logo Section */}
+        <div className="mr-45 flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/images/gridflex-admin-logo.svg"
+              alt="GridFlex Logo"
+              width={42}
+              height={54}
+              className="h-auto w-10"
+            />
+            <span className="text-xl font-semibold">Admin Portal</span>
+          </Link>
+        </div>
+
+        {/* Breadcrumbs */}
+        <div className="flex items-center gap-2">{breadcrumbs}</div>
       </div>
 
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2">{breadcrumbs}</div>
+      {/* User Menu */}
+      {user && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="flex items-center gap-2">
+              <User size={16} />
+              <span className="text-sm font-medium">
+                {user.firstname} {user.lastname}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm leading-none font-medium">
+                  {user.firstname} {user.lastname}
+                </p>
+                <p className="text-muted-foreground text-xs leading-none">
+                  {user.email}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+              <LogOut size={16} />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </header>
   );
 }

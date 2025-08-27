@@ -689,9 +689,9 @@ export default function PerformanceOverview({
                   <Users size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
                     <p className="text-sm font-bold text-black">
-                      {performanceData?.operator.firstname +
+                      {performanceData?.operator?.firstname +
                         " " +
-                        performanceData?.operator.lastname}
+                        performanceData?.operator?.lastname}
                     </p>
                     <p className="text-sm font-medium text-gray-400">
                       Contact Person
@@ -702,7 +702,7 @@ export default function PerformanceOverview({
                   <Mail size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
                     <p className="text-sm font-bold text-black">
-                      {performanceData?.operator.email}
+                      {performanceData?.operator?.email}
                     </p>
                     <p className="text-sm font-medium text-gray-400">Email</p>
                   </div>
@@ -744,10 +744,10 @@ export default function PerformanceOverview({
               <div className="space-y-2">
                 <RenderNode
                   node={{
-                    id: performanceData?.nodes.id || "root",
+                    id: performanceData?.nodes?.id || "root",
                     orgId: id,
                     name: performanceData?.businessName || "Root",
-                    nodesTree: performanceData?.nodes.nodesTree || [],
+                    nodesTree: performanceData?.nodes?.nodesTree || [],
                   }}
                   level={0}
                 />
@@ -795,10 +795,10 @@ export default function PerformanceOverview({
             rootId: "IBDEC001",
             rootName: performanceData?.businessName,
             contactPerson:
-              performanceData?.operator.firstname +
+              performanceData?.operator?.firstname +
               " " +
-              performanceData?.operator.lastname,
-            email: performanceData?.operator.email,
+              performanceData?.operator?.lastname,
+            email: performanceData?.operator?.email,
             phoneNumber: "",
             address: performanceData?.address,
           }}

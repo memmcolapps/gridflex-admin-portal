@@ -91,7 +91,7 @@ export default function UtilityCompaniesTable() {
                         {company.businessName}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {company.operator.email}
+                        {company.operator?.email}
                       </div>
                     </div>
                   </div>
@@ -99,9 +99,9 @@ export default function UtilityCompaniesTable() {
                 <TableCell className="py-4">
                   <div>
                     <div className="text-sm text-gray-900">
-                      {company.operator.firstname +
+                      {company.operator?.firstname +
                         " " +
-                        company.operator.lastname}
+                        company.operator?.lastname}
                     </div>
                     <div className="text-xs text-gray-500">{""}</div>
                   </div>

@@ -70,7 +70,7 @@ export default function RecentIncidents() {
                                         <ul>
                                             <div className="flex py-2 gap-2">
                                                 <div className="pt-2 pl-2">
-                                                    <div className="w-3 h-3 bg-[#161CCA] rounded-full"></div>
+                                                    <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
                                                 </div>
                                                 <li className="flex flex-col">
                                                     <span className="text-gray-900">{incident.action}</span>

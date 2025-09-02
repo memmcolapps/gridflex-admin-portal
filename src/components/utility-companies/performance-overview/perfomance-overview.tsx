@@ -589,11 +589,10 @@ export default function PerformanceOverview({
       <div className="border-b border-gray-200">
         <button
           onClick={() => setActiveTab("summary")}
-          className={`relative pb-3 text-sm font-medium transition-colors ${
-            activeTab === "summary"
+          className={`relative pb-3 text-sm font-medium transition-colors ${activeTab === "summary"
               ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
               : "text-gray-600 hover:text-gray-900"
-          } `}
+            } `}
         >
           Summary
         </button>
@@ -810,14 +809,14 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  businessHubId: currentEditNode.nodeInfo?.bhubId ?? "",
-                  businessHubName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                businessHubId: currentEditNode.nodeInfo?.bhubId ?? "",
+                businessHubName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />
@@ -828,14 +827,14 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  serviceCenterId: currentEditNode.id,
-                  serviceCenterName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                serviceCenterId: currentEditNode.id,
+                serviceCenterName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />
@@ -846,22 +845,22 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  substationName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                  assetId: "", // Not available in NodeInfo, so default to empty
-                  status: currentEditNode.nodeInfo?.status
-                    ? "Active"
-                    : "Inactive",
-                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                  description: currentEditNode.nodeInfo?.description ?? "",
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                substationName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
+                assetId: "", // Not available in NodeInfo, so default to empty
+                status: currentEditNode.nodeInfo?.status
+                  ? "Active"
+                  : "Inactive",
+                voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
+                longitude: currentEditNode.nodeInfo?.longitude ?? "",
+                latitude: currentEditNode.nodeInfo?.latitude ?? "",
+                description: currentEditNode.nodeInfo?.description ?? "",
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />
@@ -872,22 +871,22 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  feederName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                  assetId: "", // Not available in NodeInfo, so default to empty
-                  status: currentEditNode.nodeInfo?.status
-                    ? "Active"
-                    : "Inactive",
-                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                  description: currentEditNode.nodeInfo?.description ?? "",
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                feederName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
+                assetId: "", // Not available in NodeInfo, so default to empty
+                status: currentEditNode.nodeInfo?.status
+                  ? "Active"
+                  : "Inactive",
+                voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
+                longitude: currentEditNode.nodeInfo?.longitude ?? "",
+                latitude: currentEditNode.nodeInfo?.latitude ?? "",
+                description: currentEditNode.nodeInfo?.description ?? "",
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />
@@ -898,22 +897,22 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  substationName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                  assetId: "", // Not available in NodeInfo, so default to empty
-                  status: currentEditNode.nodeInfo?.status
-                    ? "Active"
-                    : "Inactive",
-                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                  description: currentEditNode.nodeInfo?.description ?? "",
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                substationName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
+                assetId: "", // Not available in NodeInfo, so default to empty
+                status: currentEditNode.nodeInfo?.status
+                  ? "Active"
+                  : "Inactive",
+                voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
+                longitude: currentEditNode.nodeInfo?.longitude ?? "",
+                latitude: currentEditNode.nodeInfo?.latitude ?? "",
+                description: currentEditNode.nodeInfo?.description ?? "",
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />

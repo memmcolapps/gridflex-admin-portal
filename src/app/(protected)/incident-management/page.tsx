@@ -1,24 +1,20 @@
 'use client'
 
 import { useState } from "react";
-import AnalysisSummaryTab from "@/components/analysis/summary-tab";
-import { DatePicker } from "@/components/atoms/date-picker";
+import RecentIncidents from "@/components/incident-management/recent-incident";
 
-export default function Analysis() {
+export default function incidentManagement() {
     const [activeTab, setActiveTab] = useState("summary");
 
     return (
         <div className="flex flex-col gap-6 py-4">
             <div>
                 <h1 className="text-2xl font-medium text-gray-900">
-                Analysis
+                    Incident Management
                 </h1>
                 <p className="mt-1 text-lg text-gray-500">
-                Real-time system monitoring and incident tracking
+                    Track, review, and resolve issues reported by users or detected automatically.
                 </p>
-            </div>
-            <div>
-                <DatePicker/>
             </div>
 
             <div className="w-full">
@@ -34,7 +30,7 @@ export default function Analysis() {
                     </button>
                 </div>
 
-            {activeTab === "summary" && <AnalysisSummaryTab />}
+                {activeTab === "summary" && <RecentIncidents />}
             </div>
         </div>
     )

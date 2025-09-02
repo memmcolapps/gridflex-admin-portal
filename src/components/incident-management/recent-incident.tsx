@@ -1,0 +1,101 @@
+'use client'
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Clock, Dot } from "lucide-react";
+
+const RECENT_INCIDENTS = [
+    {
+        action: 'Login API 505',
+        name: 'IBDEC',
+        user: 'Auto',
+        date: 'Aug 19, 2025',
+        time: '8:42 AM',
+        status: 'Error'
+    },
+    {
+        action: 'Payment not going through',
+        name: 'IBDEC',
+        user: 'Margeret Adeleke',
+        date: 'Aug 19, 2025',
+        time: '8:42 AM',
+        status: 'Processing'
+    },
+    {
+        action: 'Payment not going through',
+        name: 'IBDEC',
+        user: 'Margeret Adeleke',
+        date: 'Aug 19, 2025',
+        time: '8:42 AM',
+        status: 'Processing'
+    },
+    {
+        action: 'Payment not going through',
+        name: 'IBDEC',
+        user: 'Margeret Adeleke',
+        date: 'Aug 19, 2025',
+        time: '8:42 AM',
+        status: 'Processing'
+    },
+    {
+        action: 'Payment not going through',
+        name: 'IBDEC',
+        user: 'Margeret Adeleke',
+        date: 'Aug 19, 2025',
+        time: '8:42 AM',
+        status: 'Processing'
+    },
+]
+
+
+export default function RecentIncidents() {
+    return (
+        <div className="py-8">
+            <div className="w-full">
+                <div className="Recent Incidents">
+                    <Card className="shadow-none gap-0 rounded-lg pb-6 pt-6 bg-white">
+                        <CardHeader>
+                            <CardTitle className="text-xl font-medium">
+                                Recent Incidents
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-4">
+                            <div className="flex flex-col gap-5">
+                                {RECENT_INCIDENTS.map((incident, index) => (
+                                    <div key={index} className={`
+                                        rounded-lg flex flex-col gap-1
+                                        ${incident.status === 'Error' ? 'bg-red-100' : ''}
+                                        ${incident.status === 'Processing' ? 'bg-yellow-100' : ''}
+                                        `}>
+
+                                        <ul>
+                                            <div className="flex py-2 gap-2">
+                                                <div className="pt-2 pl-2">
+                                                    <div className="w-3 h-3 bg-[#161CCA] rounded-full"></div>
+                                                </div>
+                                                <li className="flex flex-col">
+                                                    <span className="text-gray-900">{incident.action}</span>
+                                                    <span className="text-gray-600">User: {incident.user} </span>
+                                                    <span className="text-gray-600">Utility Company: {incident.name} </span>
+                                                    <span className="text-gray-600 gap-1 flex items-center">
+                                                        {incident.date}
+                                                        <div className="w-[4px] h-[4px] bg-[#6D6D6D] rounded-full"></div>
+                                                        <Clock size={16} color="#6D6D6D" />
+                                                        {incident.time}
+                                                    </span>
+
+                                                </li>
+                                            </div>
+
+                                        </ul>
+                                    </div>
+
+                                ))}
+                            </div>
+
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </div>
+    )
+}

@@ -17,6 +17,7 @@ import {
   ChartColumnDecreasing,
   ClipboardPlus,
   type LucideIcon,
+  BookOpen,
 } from "lucide-react";
 
 interface NavItem {
@@ -30,6 +31,7 @@ const navItems: NavItem[] = [
   { title: "Utility Companies", href: "/utility-companies", icon: Building2 },
   { title: "Admin Management", href: "/admin-management", icon: Shield },
   { title: "Analysis", href: "/analysis", icon: ChartColumnDecreasing },
+  { title: "Incident Report", href: "/incident-management", icon: BookOpen  },
   { title: "User Management", href: "/user-management", icon: Users },
   { title: "Audit Log", href: "/audit-log", icon: ClipboardPlus },
 ];

@@ -243,10 +243,10 @@ export default function AdminDetails({ params }: { params: { id: string } }) {
                                         <div key={index}  className="bg-gray-50 rounded-lg flex flex-col gap-1">
 
                                             <ul>
-                                                <div className="flex py-2">
-                                                    <div className="">
-                                                        <Dot color="#161CCA" size={40} />
-                                                    </div>
+                                            <div className="flex py-2 gap-2">
+                                                <div className="pt-2 pl-2">
+                                                    <div className="w-3 h-3 bg-[#161CCA] rounded-full"></div>
+                                                </div>
                                                     <li className="flex flex-col">
                                                         <span className="text-black">{activity.action + ': ' + activity.name}</span>
                                                         <span className="text-gray-400">Ip Address:{activity.ipAddress} </span>

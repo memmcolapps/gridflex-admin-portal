@@ -36,7 +36,6 @@ const ALL_ROLES = [
 export const EditAdminDialog = ({
     isOpen,
     onOpenChange,
-    onSubmit,
     initialData = {},
 }: Props) => {
     const [formData] = useState<UnifiedFormData>(initialData);
@@ -47,41 +46,6 @@ export const EditAdminDialog = ({
         isSuccess,
         isPending,
     } = useCreateOrg();
-
-    // const { data: states, isLoading: isLoadingStates } = useNigerianStates();
-    // const stateId = states?.find(
-    //     (state) => state.name === formData.stateProvince,
-    // )?.id;
-    //   const { data: cities, isLoading: isLoadingCities } =
-    //     useNigerianCities(stateId);
-
-    //   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     setFormData({ ...formData, [e.target.name]: e.target.value });
-    //   };
-
-    //   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     if (e.target.files) {
-    //       setFormData({ ...formData, companyLogo: e.target.files[0]?.name });
-    //     }
-    //   };
-
-    //   const handleSelectChange = (name: string) => (value: string) => {
-    //     setFormData({ ...formData, [name]: value });
-    //   };
-
-    //   const mapToCreateOrgPayload = (data: UnifiedFormData) => ({
-    //     businessName: data.organizationName ?? "",
-    //     postalCode: data.postalCode ?? "",
-    //     address: data.streetAddress ?? "",
-    //     country: data.country ?? "",
-    //     state: data.stateProvince ?? "",
-    //     city: data.city ?? "",
-    //     firstName: data.adminName?.split(" ")[0] ?? "",
-    //     lastName: data.adminName?.split(" ")[1] ?? "",
-    //     email: data.email ?? "",
-    //     password: data.defaultPassword ?? "",
-    //     phoneNumber: data.adminPhoneNumber ?? "",
-    //   });
 
     const handleSubmit = () => {
         // const payload = mapToCreateOrgPayload(formData);

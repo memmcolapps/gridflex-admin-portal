@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function AdminLogin() {
-  const { login, loading } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
 

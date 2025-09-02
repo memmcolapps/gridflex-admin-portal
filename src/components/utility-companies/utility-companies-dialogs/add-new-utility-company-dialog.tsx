@@ -18,9 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { UnifiedFormData } from "@/types/unifiedForm.ts";
 import { toast } from "sonner";
 import { useNigerianCities, useNigerianStates } from "@/hooks/use-location";
+import type { UnifiedFormData } from "@/types/unifiedForm";
 
 type Props = {
   isOpen: boolean;

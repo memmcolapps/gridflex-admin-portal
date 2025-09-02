@@ -28,9 +28,9 @@ interface NavItem {
 const navItems: NavItem[] = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { title: "Utility Companies", href: "/utility-companies", icon: Building2 },
-  { title: "User Management", href: "/user-management", icon: Users },
   { title: "Admin Management", href: "/admin-management", icon: Shield },
   { title: "Analysis", href: "/analysis", icon: ChartColumnDecreasing },
+  { title: "User Management", href: "/user-management", icon: Users },
   { title: "Audit Log", href: "/audit-log", icon: ClipboardPlus },
 ];
 

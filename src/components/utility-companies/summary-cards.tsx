@@ -53,20 +53,20 @@ export default function SummaryCards() {
         </div>
       ) : (
         summaryData.map((item, idx) => (
-          <Card key={idx} className="border border-gray-200 bg-white shadow-sm">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
+          <Card key={idx} className="border shadow-none rounded-lg border-gray-200 bg-white">
+            <CardContent>
+              <div className="flex items-start px-0 justify-between">
                 <div className="flex-1">
-                  <p className="mb-2 text-sm font-medium text-gray-600">
+                  <p className="mb-2 text-base font-normal text-gray-700">
                     {item.title}
                   </p>
-                  <p className="mb-1 text-2xl font-bold text-gray-900">
+                  <p className="mb-1 text-xl font-medium text-gray-900">
                     {item.value}
                   </p>
                   <p className="text-sm text-gray-500">{item.subtitle}</p>
                 </div>
                 <div
-                  className={`rounded-lg p-5 ${item.iconBg} ${item.iconColor}`}
+                  className={`rounded-lg bg-gray-50 p-3 border border-gray-200 mt-2 ${item.iconBg} ${item.iconColor}`}
                 >
                   {item.icon}
                 </div>

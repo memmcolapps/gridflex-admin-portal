@@ -112,7 +112,7 @@ export default function AdminManagementTable() {
           <TableHeader>
             <TableRow
               className="border-b border-black hover:bg-[hsla(0,0%,20%,0.1)]"
-              style={{ backgroundColor: "hsla(0, 0%, 20%, 0.1)" }}
+              style={{ backgroundColor: "hsla(0, 0%, 96%)" }}
             >
               <TableHead className="h-12 pl-6 text-base font-medium text-gray-700">
                 Admin Name

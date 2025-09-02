@@ -50,31 +50,31 @@ export default function UtilityCompaniesTable() {
           <TableHeader>
             <TableRow
               className="border-b border-black hover:bg-[hsla(0,0%,20%,0.1)]"
-              style={{ backgroundColor: "hsla(0, 0%, 20%, 0.1)" }}
+              style={{ backgroundColor: "hsla(0, 0%, 96%)" }}
             >
-              <TableHead className="h-12 pl-6 text-xs font-bold text-gray-700 uppercase">
-                COMPANY
+              <TableHead className="h-12 pl-6 text-base font-medium text-gray-700">
+              Utility Name
               </TableHead>
-              <TableHead className="h-12 text-xs font-bold text-gray-700 uppercase">
-                ADMIN
+              <TableHead className="h-12 text-base font-medium text-gray-700">
+                Admin
               </TableHead>
-              <TableHead className="h-12 text-xs font-bold text-gray-700 uppercase">
-                STATUS
+              <TableHead className="h-12 text-base font-medium text-gray-700">
+                Status
               </TableHead>
-              <TableHead className="h-12 text-xs font-bold text-gray-700 uppercase">
-                CUSTOMERS
+              <TableHead className="h-12 text-base font-medium text-gray-700">
+                Customers
               </TableHead>
-              <TableHead className="h-12 text-xs font-bold text-gray-700 uppercase">
-                TOTAL VENDING
+              <TableHead className="h-12 text-base font-medium text-gray-700">
+                Total Vending
               </TableHead>
-              <TableHead className="h-12 text-xs font-bold text-gray-700 uppercase">
-                TOTAL BILLING
+              <TableHead className="h-12 text-base font-medium text-gray-700">
+                Total Billing
               </TableHead>
-              <TableHead className="h-12 text-xs font-bold text-gray-700 uppercase">
-                REGISTRATION DATE
+              <TableHead className="h-12 text-base font-medium text-gray-700">
+                Registration Date
               </TableHead>
-              <TableHead className="h-12 pr-6 text-right text-xs font-bold text-gray-700 uppercase">
-                ACTION
+              <TableHead className="h-12 pr-6 text-right text-base font-medium text-gray-700">
+                Action
               </TableHead>
             </TableRow>
           </TableHeader>

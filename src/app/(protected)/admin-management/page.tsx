@@ -42,10 +42,10 @@ export default function AdminManagement() {
     return (
         <div className="flex flex-col gap-6 py-4">
             <div>
-                <h1 className="text-2xl font-semibold text-gray-900">
+                <h1 className="text-2xl font-medium text-gray-900">
                     Admin Management
                 </h1>
-                <p className="mt-1 text-gray-500">
+                <p className="mt-1 text-lg text-gray-500">
                     Manage administrators who oversee utility companies on the GridFlex platform
                 </p>
             </div>

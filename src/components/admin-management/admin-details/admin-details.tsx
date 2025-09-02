@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dot, Mail, MapPin, Phone, User } from "lucide-react";
+import {  Mail, MapPin, Phone, User } from "lucide-react";
 import { useState } from "react";
 
 const RECENT_ACTIVITIES = [

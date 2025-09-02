@@ -39,7 +39,7 @@ export const EditAdminDialog = ({
     onSubmit,
     initialData = {},
 }: Props) => {
-    const [formData, setFormData] = useState<UnifiedFormData>(initialData);
+    const [formData] = useState<UnifiedFormData>(initialData);
     const {
         mutate: createOrg,
         isError,

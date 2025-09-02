@@ -25,9 +25,6 @@ export const SuspendAdminDialog = ({
 }: Props) => {
     const {
         mutate: createOrg,
-        isError,
-        error,
-        isSuccess,
         isPending,
     } = useCreateOrg();
 

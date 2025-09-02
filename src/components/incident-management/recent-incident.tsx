@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, Dot } from "lucide-react";
+import { Clock } from "lucide-react";
 
 const RECENT_INCIDENTS = [
     {

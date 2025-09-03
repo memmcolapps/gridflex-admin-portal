@@ -1,13 +1,12 @@
 'use client'
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus } from "lucide-react";
+import { ArrowDownUp, ListFilter, Search } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import { AddNewAdminDialog } from "@/components/admin-management/admin-management-dialogs/add-new-admin-dialog";
-import AdminSummaryTab from "@/components/admin-management/summary-tab";
+import AuditSummaryTab from "@/components/audit-log/summary-tab";
 
 const ALL_ROLES = [
     {
@@ -30,7 +29,7 @@ const ALL_STATUS = [
     },
 ]
 
-export default function AdminManagement() {
+export default function AuditLog() {
     const [activeTab, setActiveTab] = useState("summary");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -43,10 +42,10 @@ export default function AdminManagement() {
         <div className="flex flex-col gap-6 py-4">
             <div>
                 <h1 className="text-2xl font-medium text-gray-900">
-                    Admin Management
+                    Audit Log
                 </h1>
                 <p className="mt-1 text-lg text-gray-500">
-                    Manage administrators who oversee utility companies on the GridFlex platform
+                    Track system events and user actions for security and accountability here.
                 </p>
             </div>
 
@@ -63,20 +62,23 @@ export default function AdminManagement() {
                     </button>
                 </div>
 
-                <div className="mt-6 mb-6 flex items-center justify-between">
-                    <div className="flex gap-4">
+                <div className="mt-6 mb-6 flex items-center justify-between overflow-visible">
+                    <div className="flex gap-4 overflow-visible">
                         <div className="relative">
                             <Input
                                 type="search"
-                                placeholder="Search by name, Email..."
+                                placeholder="Search by name, Role..."
                                 className="h-11 w-70 bg-white"
                             />
                             <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         </div>
 
                         <Select>
-                            <SelectTrigger className="w-full h-11">
-                                <SelectValue placeholder="All Roles" />
+                            <SelectTrigger className="w-full flex justify-center h-11 [&>svg]:hidden">
+                                <div className="flex items-center gap-2">
+                                    <ListFilter size={14} strokeWidth={1.5} />
+                                    <SelectValue placeholder="Filter" />
+                                </div>
                             </SelectTrigger>
                             <SelectContent>
                                 {ALL_ROLES.map((role, index) => (
@@ -87,8 +89,11 @@ export default function AdminManagement() {
                             </SelectContent>
                         </Select>
                         <Select>
-                            <SelectTrigger className="w-full h-11">
-                                <SelectValue placeholder="All Status" />
+                            <SelectTrigger className="w-full h-11 flex justify-center [&>svg]:hidden">
+                                <div className="flex items-center gap-2">
+                                    <ArrowDownUp size={14} strokeWidth={1.5} />
+                                    <SelectValue placeholder="Sort" />
+                                </div>
                             </SelectTrigger>
                             <SelectContent>
                                 {ALL_STATUS.map((status, index) => (
@@ -99,18 +104,10 @@ export default function AdminManagement() {
                             </SelectContent>
                         </Select>
                     </div>
-
-                    <Button
-                        className="flex h-11 cursor-pointer items-center border border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"
-                        onClick={() => setIsDialogOpen(true)}
-                    >
-                        <Plus size={16} />
-                        Add New Admin
-                    </Button>
                 </div>
 
 
-            {activeTab === "summary" && <AdminSummaryTab />}
+                {activeTab === "summary" && <AuditSummaryTab />}
             </div>
 
             <AddNewAdminDialog

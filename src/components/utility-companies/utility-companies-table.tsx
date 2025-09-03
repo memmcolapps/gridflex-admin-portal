@@ -15,8 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Building2,
   MoreVertical,
-  ChevronLeft,
-  ChevronRight,
   Eye,
   Pencil,
   CircleSlash,

@@ -3,7 +3,7 @@ import { AlertCircle, Building2, TrendingUp, Users } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 
 export default function AdminSummaryCards() {
-    const { data, isLoading, isError } = useGetOrgs();
+    const { isError } = useGetOrgs();
     //   const orgs = data?.organizations ?? [];
     //   const totalActive = orgs.filter((org) => org.status).length;
     //   const totalSuspended = orgs.filter((org) => !org.status).length;

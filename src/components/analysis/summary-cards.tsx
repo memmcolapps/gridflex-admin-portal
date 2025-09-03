@@ -1,9 +1,9 @@
 import { useGetOrgs } from "@/hooks/use-orgs";
-import { AlertCircle, Building2, Clock, TrendingUp, Users } from "lucide-react";
+import { AlertCircle, Building2, Clock, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 
 export default function AnalysisSummaryCards() {
-    const { data, isLoading, isError } = useGetOrgs();
+    const {isError } = useGetOrgs();
     //   const orgs = data?.organizations ?? [];
     //   const totalActive = orgs.filter((org) => org.status).length;
     //   const totalSuspended = orgs.filter((org) => !org.status).length;

@@ -33,7 +33,7 @@ export default function UtilityCompaniesTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const router = useRouter();
-  const { data: utilityCompaniesData, isLoading, isError } = useGetOrgs();
+  const { data: utilityCompaniesData} = useGetOrgs();
   const totalPages = Math.ceil(
     (utilityCompaniesData?.organizations.length || 0) / itemsPerPage,
   );

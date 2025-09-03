@@ -155,7 +155,7 @@ export default function AdminManagementTable() {
                   {data.role === 'Developer' && (
                     <Badge
                       variant="secondary"
-                      className="bg-blue-100 rounded-sm px-2 py-1 text-[var(--primary)] hover:bg-primary/80"
+                      className="bg-blue-100 rounded-sm px-2 py-1 text-[var(--primary)] hover:bg-blue-100"
                     >
                       Developer
                     </Badge>
@@ -171,7 +171,7 @@ export default function AdminManagementTable() {
                   {data.role === 'Support' && (
                     <Badge
                       variant="secondary"
-                      className="bg-blue-50 rounded-sm px-2 py-1 font-normal text-gray-900 hover:bg-green-50"
+                      className="bg-blue-50 rounded-sm px-2 py-1 font-normal text-gray-900 hover:bg-blue-50"
                     >
                       Support
                     </Badge>

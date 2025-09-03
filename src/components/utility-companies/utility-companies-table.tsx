@@ -20,6 +20,8 @@ import {
   Eye,
   Pencil,
   CircleSlash,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -179,12 +181,12 @@ export default function UtilityCompaniesTable() {
         <div className="flex items-center justify-between border-t px-6 py-4">
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="flex cursor-pointer items-center gap-1 bg-gray-50 text-gray-600"
+            className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
           >
-            <ChevronLeft size={16} />
+            <ArrowLeft color="#414651" strokeWidth={1.75} />
             Previous
           </Button>
 
@@ -197,8 +199,8 @@ export default function UtilityCompaniesTable() {
                 onClick={() => setCurrentPage(page)}
                 className={`h-8 w-8 cursor-pointer p-0 ${
                   currentPage === page
-                    ? "bg-gray-900 text-white hover:bg-gray-800"
-                    : "text-gray-600 hover:bg-gray-50"
+                    ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                    : "text-gray-500 hover:bg-gray-50"
                 }`}
               >
                 {page}
@@ -211,7 +213,10 @@ export default function UtilityCompaniesTable() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setCurrentPage(page)}
-                className="h-8 w-8 cursor-pointer p-0 text-gray-600 hover:bg-gray-100"
+                className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
+                  ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                  : "text-gray-500 hover:bg-gray-50"
+                  }`}
               >
                 {page}
               </Button>
@@ -220,15 +225,15 @@ export default function UtilityCompaniesTable() {
 
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             onClick={() =>
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
             disabled={currentPage === totalPages}
-            className="flex cursor-pointer items-center gap-1 bg-gray-50 text-gray-600"
+            className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
           >
             Next
-            <ChevronRight size={16} />
+            <ArrowRight color="#414651" strokeWidth={1.75} />
           </Button>
         </div>
       </CardContent>

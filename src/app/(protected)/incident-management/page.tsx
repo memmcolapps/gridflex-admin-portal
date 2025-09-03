@@ -3,7 +3,7 @@
 import { useState } from "react";
 import RecentIncidents from "@/components/incident-management/recent-incident";
 
-export default function incidentManagement() {
+export default function IncidentManagement() {
     const [activeTab, setActiveTab] = useState("summary");
 
     return (

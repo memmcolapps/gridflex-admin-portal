@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock } from "lucide-react";
+import { Button } from "../ui/button";
 
 const RECENT_INCIDENTS = [
     {
@@ -66,27 +67,38 @@ export default function RecentIncidents() {
                                         ${incident.status === 'Error' ? 'bg-red-100' : ''}
                                         ${incident.status === 'Processing' ? 'bg-yellow-100' : ''}
                                         `}>
+                                        <div className="flex justify-between items-center pr-4">
+                                            <div>
+                                                <ul>
+                                                    <div className="flex py-2 gap-2">
+                                                        <div className="pt-2 pl-2">
+                                                            <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
+                                                        </div>
+                                                        <li className="flex flex-col">
+                                                            <span className="text-gray-900">{incident.action}</span>
+                                                            <span className="text-gray-600">User: {incident.user} </span>
+                                                            <span className="text-gray-600">Utility Company: {incident.name} </span>
+                                                            <span className="text-gray-600 gap-1 flex items-center">
+                                                                {incident.date}
+                                                                <div className="w-[4px] h-[4px] bg-[#6D6D6D] rounded-full"></div>
+                                                                <Clock size={16} color="#6D6D6D" />
+                                                                {incident.time}
+                                                            </span>
 
-                                        <ul>
-                                            <div className="flex py-2 gap-2">
-                                                <div className="pt-2 pl-2">
-                                                    <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
-                                                </div>
-                                                <li className="flex flex-col">
-                                                    <span className="text-gray-900">{incident.action}</span>
-                                                    <span className="text-gray-600">User: {incident.user} </span>
-                                                    <span className="text-gray-600">Utility Company: {incident.name} </span>
-                                                    <span className="text-gray-600 gap-1 flex items-center">
-                                                        {incident.date}
-                                                        <div className="w-[4px] h-[4px] bg-[#6D6D6D] rounded-full"></div>
-                                                        <Clock size={16} color="#6D6D6D" />
-                                                        {incident.time}
-                                                    </span>
+                                                        </li>
+                                                    </div>
 
-                                                </li>
+                                                </ul>
                                             </div>
+                                            <div>
+                                                <Button
+                                                    className="flex h-10 cursor-pointer text-black items-center border border-1 border-gray-400 gap-2 bg-gray-50 hover:bg-gray-100"
+                                                >
+                                                    Resolve
+                                                </Button>
+                                            </div>
+                                        </div>
 
-                                        </ul>
                                     </div>
 
                                 ))}

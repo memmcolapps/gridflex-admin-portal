@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { ArrowDownUp, ListFilter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import { AddNewAdminDialog } from "@/components/admin-management/admin-management-dialogs/add-new-admin-dialog";
-import AuditSummaryTab from "@/components/audit-log/summary-tab";
+import { DatePicker } from "@/components/atoms/date-picker";
+import ContactSummaryTab from "@/components/contact-messages/summary-tab";
 
 const ALL_ROLES = [
     {
@@ -29,7 +30,7 @@ const ALL_STATUS = [
     },
 ]
 
-export default function AuditLog() {
+export default function ContactMessage() {
     const [activeTab, setActiveTab] = useState("summary");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -42,10 +43,10 @@ export default function AuditLog() {
         <div className="flex flex-col gap-6 py-4">
             <div>
                 <h1 className="text-2xl font-medium text-gray-900">
-                    Audit Log
+                    Contact Messages
                 </h1>
                 <p className="mt-1 text-lg text-gray-500">
-                    Track system events and user actions for security and accountability here.
+                    Manage and respond to incoming inquiries
                 </p>
             </div>
 
@@ -62,25 +63,22 @@ export default function AuditLog() {
                     </button>
                 </div>
 
-                <div className="mt-6 mb-6 flex items-center justify-between overflow-visible">
-                    <div className="flex gap-4 overflow-visible">
+                <div className="mt-6 mb-6 flex items-center justify-between">
+                    <div className="flex gap-4">
                         <div className="relative">
                             <Input
                                 type="search"
-                                placeholder="Search by name, Role..."
+                                placeholder="Search by name, Email..."
                                 className="h-10 w-70 bg-white"
                             />
                             <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         </div>
 
                         <Select>
-                            <SelectTrigger className="w-full flex justify-center h-10 [&>svg]:hidden">
-                                <div className="flex items-center gap-2">
-                                    <ListFilter size={14} strokeWidth={1.5} />
-                                    <SelectValue placeholder="Filter" />
-                                </div>
+                            <SelectTrigger className="w-35 h-10">
+                                <SelectValue placeholder="All Sizes" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent >
                                 {ALL_ROLES.map((role, index) => (
                                     <SelectItem key={index} value={role.role}>
                                         {role.role}
@@ -89,11 +87,8 @@ export default function AuditLog() {
                             </SelectContent>
                         </Select>
                         <Select>
-                            <SelectTrigger className="w-full h-10 flex justify-center [&>svg]:hidden">
-                                <div className="flex items-center gap-2">
-                                    <ArrowDownUp size={14} strokeWidth={1.5} />
-                                    <SelectValue placeholder="Sort" />
-                                </div>
+                            <SelectTrigger className="w-35 h-10">
+                                <SelectValue placeholder="All Status" />
                             </SelectTrigger>
                             <SelectContent>
                                 {ALL_STATUS.map((status, index) => (
@@ -103,11 +98,16 @@ export default function AuditLog() {
                                 ))}
                             </SelectContent>
                         </Select>
+                        <div className="w-full">
+                            <DatePicker placeHolder={"Date Range"} className={"w-35"} />
+
+                        </div>
+
                     </div>
                 </div>
 
 
-                {activeTab === "summary" && <AuditSummaryTab />}
+                {activeTab === "summary" && <ContactSummaryTab />}
             </div>
 
             <AddNewAdminDialog

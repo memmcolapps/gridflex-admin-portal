@@ -18,7 +18,7 @@ export default function Analysis() {
                 </p>
             </div>
             <div>
-                <DatePicker/>
+                <DatePicker placeHolder={"Today"} className={"w-30"}/>
             </div>
 
             <div className="w-full">

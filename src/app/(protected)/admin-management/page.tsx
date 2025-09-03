@@ -69,13 +69,13 @@ export default function AdminManagement() {
                             <Input
                                 type="search"
                                 placeholder="Search by name, Email..."
-                                className="h-11 w-70 bg-white"
+                                className="h-10 w-70 bg-white"
                             />
                             <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         </div>
 
                         <Select>
-                            <SelectTrigger className="w-full h-11">
+                            <SelectTrigger className="w-full h-10">
                                 <SelectValue placeholder="All Roles" />
                             </SelectTrigger>
                             <SelectContent>
@@ -87,7 +87,7 @@ export default function AdminManagement() {
                             </SelectContent>
                         </Select>
                         <Select>
-                            <SelectTrigger className="w-full h-11">
+                            <SelectTrigger className="w-full h-10">
                                 <SelectValue placeholder="All Status" />
                             </SelectTrigger>
                             <SelectContent>
@@ -101,7 +101,7 @@ export default function AdminManagement() {
                     </div>
 
                     <Button
-                        className="flex h-11 cursor-pointer items-center border border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"
+                        className="flex h-10 cursor-pointer items-center border border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"
                         onClick={() => setIsDialogOpen(true)}
                     >
                         <Plus size={16} />

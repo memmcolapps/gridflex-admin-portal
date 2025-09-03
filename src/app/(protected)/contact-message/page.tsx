@@ -54,7 +54,7 @@ export default function ContactMessage() {
                 <div className="border-b border-gray-200">
                     <button
                         onClick={() => setActiveTab("summary")}
-                        className={`relative pb-3 text-medium font-medium transition-colors ${activeTab === "summary"
+                        className={`relative pb-3 text-base font-normal transition-colors ${activeTab === "summary"
                             ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
                             : "text-gray-600 hover:text-gray-900"
                             } `}
@@ -68,7 +68,7 @@ export default function ContactMessage() {
                         <div className="relative">
                             <Input
                                 type="search"
-                                placeholder="Search by name, Email..."
+                                placeholder="Search by organization, Email..."
                                 className="h-10 w-70 bg-white"
                             />
                             <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />

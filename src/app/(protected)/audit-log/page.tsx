@@ -53,7 +53,7 @@ export default function AuditLog() {
                 <div className="border-b border-gray-200">
                     <button
                         onClick={() => setActiveTab("summary")}
-                        className={`relative pb-3 text-medium font-medium transition-colors ${activeTab === "summary"
+                        className={`relative pb-3 text-base font-normal transition-colors ${activeTab === "summary"
                             ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
                             : "text-gray-600 hover:text-gray-900"
                             } `}

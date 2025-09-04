@@ -54,7 +54,7 @@ export default function AdminManagement() {
                 <div className="border-b border-gray-200">
                     <button
                         onClick={() => setActiveTab("summary")}
-                        className={`relative pb-3 text-medium font-medium transition-colors ${activeTab === "summary"
+                        className={`relative pb-3 text-base font-normal transition-colors ${activeTab === "summary"
                             ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
                             : "text-gray-600 hover:text-gray-900"
                             } `}
@@ -69,13 +69,13 @@ export default function AdminManagement() {
                             <Input
                                 type="search"
                                 placeholder="Search by name, Email..."
-                                className="h-11 w-70 bg-white"
+                                className="h-10 w-70 bg-white"
                             />
                             <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         </div>
 
                         <Select>
-                            <SelectTrigger className="w-full h-11">
+                            <SelectTrigger className="w-full h-10">
                                 <SelectValue placeholder="All Roles" />
                             </SelectTrigger>
                             <SelectContent>
@@ -87,7 +87,7 @@ export default function AdminManagement() {
                             </SelectContent>
                         </Select>
                         <Select>
-                            <SelectTrigger className="w-full h-11">
+                            <SelectTrigger className="w-full h-10">
                                 <SelectValue placeholder="All Status" />
                             </SelectTrigger>
                             <SelectContent>
@@ -101,7 +101,7 @@ export default function AdminManagement() {
                     </div>
 
                     <Button
-                        className="flex h-11 cursor-pointer items-center border border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"
+                        className="flex h-10 cursor-pointer items-center border border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"
                         onClick={() => setIsDialogOpen(true)}
                     >
                         <Plus size={16} />

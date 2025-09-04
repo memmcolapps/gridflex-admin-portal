@@ -163,7 +163,7 @@ export default function AdminManagementTable() {
                   {data.role === 'Admin' && (
                     <Badge
                       variant="secondary"
-                      className="bg-green-50 rounded-sm px-2 py-1 font-normal text-green-700 hover:bg-green-50"
+                      className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
                     >
                       Admin
                     </Badge>
@@ -171,7 +171,7 @@ export default function AdminManagementTable() {
                   {data.role === 'Support' && (
                     <Badge
                       variant="secondary"
-                      className="bg-blue-50 rounded-sm px-2 py-1 font-normal text-gray-900 hover:bg-blue-50"
+                      className="bg-blue-50 rounded-sm px-2 py-1 font-semibold text-gray-900 hover:bg-blue-50"
                     >
                       Support
                     </Badge>
@@ -181,14 +181,14 @@ export default function AdminManagementTable() {
                   {data.status === true ? (
                     <Badge
                       variant="secondary"
-                      className="bg-green-50 rounded-sm px-2 py-1 font-normal text-green-700 hover:bg-green-50"
+                      className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
                     >
                       Active
                     </Badge>
                   ) : (
                     <Badge
                       variant="secondary"
-                      className="bg-red-50 rounded-sm px-2 py-1 font-normal text-red-700 hover:bg-red-50"
+                      className="bg-red-50 rounded-sm px-2 py-1 font-semibold text-red-700 hover:bg-red-50"
                     >
                       Suspended
                     </Badge>

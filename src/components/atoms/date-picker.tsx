@@ -25,29 +25,33 @@ function formatDate(date: Date | undefined) {
   })
 }
 
+interface Props {
+  placeHolder: string;
+  className?: string;
+}
 
-export function DatePicker() {
+export function DatePicker({ placeHolder, className }: Props) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("Today")
-  const [date, setDate] = React.useState<Date | undefined>(
-    parseDate(value) || undefined
-  )
-  const [month, setMonth] = React.useState<Date | undefined>(date)
+  const [value, setValue] = React.useState("")
+  const [date, setDate] = React.useState<Date | undefined>(undefined)
+  const [month, setMonth] = React.useState<Date | undefined>(new Date())
 
   return (
-    <div className="flex w-30 flex-col gap-3">
+    <div className={`flex ${className} flex-col gap-3`}>
       <div className="relative flex items-center">
         <Input
           id="date"
           value={value}
-          placeholder="Today"
-          className="bg-white border pl-9"
+          placeholder={placeHolder}
+          className="bg-white h-10 border pl-9"
           onChange={(e) => {
             setValue(e.target.value)
             const parsed = parseDate(e.target.value)
             if (parsed) {
               setDate(parsed)
               setMonth(parsed)
+            } else {
+              setDate(undefined)
             }
           }}
           onKeyDown={(e) => {

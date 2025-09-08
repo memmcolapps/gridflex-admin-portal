@@ -23,10 +23,10 @@ const ALL_ROLES = [
 
 const ALL_STATUS = [
     {
-        status: 'Active'
+        status: 'New'
     },
     {
-        status: 'Suspended'
+        status: 'Read'
     },
 ]
 

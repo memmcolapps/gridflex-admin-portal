@@ -114,14 +114,15 @@ export const AddNewUtilityCompanyDialog = ({
         <DialogHeader>
           <DialogTitle>Add New Utility Company</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <Label>Company Information</Label>
+        <div className="grid gap-4">
+          <Label className="text-base">Company Information</Label>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="organizationName">
                 Organization Name <span className="text-red-500">*</span>
               </Label>
               <Input
+                className="w-[200px] h-11"
                 id="organizationName"
                 name="organizationName"
                 value={formData.organizationName ?? ""}
@@ -137,7 +138,7 @@ export const AddNewUtilityCompanyDialog = ({
                 onValueChange={handleSelectChange("country")}
                 defaultValue={formData.country}
               >
-                <SelectTrigger className="w-55">
+                <SelectTrigger className="w-[200px] h-11">
                   <SelectValue placeholder="Select country" />
                 </SelectTrigger>
                 <SelectContent>
@@ -156,7 +157,7 @@ export const AddNewUtilityCompanyDialog = ({
                 value={formData.stateProvince}
                 disabled={isLoadingStates || states?.length === 0}
               >
-                <SelectTrigger className="w-55">
+                <SelectTrigger className="w-[200px] h-11">
                   <SelectValue
                     placeholder={
                       isLoadingStates ? "Loading states..." : "Select state"
@@ -185,7 +186,7 @@ export const AddNewUtilityCompanyDialog = ({
                   cities?.length === 0
                 }
               >
-                <SelectTrigger className="w-55">
+                <SelectTrigger className="w-[200px] h-11">
                   <SelectValue
                     placeholder={
                       isLoadingCities ? "Loading cities..." : "Select city"
@@ -207,6 +208,7 @@ export const AddNewUtilityCompanyDialog = ({
               <Label htmlFor="postalCode">Postal Code</Label>
               <Input
                 id="postalCode"
+                className="w-[200px] h-11"
                 name="postalCode"
                 value={formData.postalCode ?? ""}
                 onChange={handleChange}
@@ -219,6 +221,7 @@ export const AddNewUtilityCompanyDialog = ({
               </Label>
               <Input
                 id="streetAddress"
+                className="w-[200px] h-11"
                 name="streetAddress"
                 value={formData.streetAddress ?? ""}
                 onChange={handleChange}
@@ -228,32 +231,34 @@ export const AddNewUtilityCompanyDialog = ({
           </div>
           <div className="space-y-2">
             <Label htmlFor="companyLogo">+ Add company logo</Label>
-            <Input id="companyLogo" type="file" onChange={handleFileChange} />
+            <Input className="h-11" id="companyLogo" type="file" onChange={handleFileChange} />
           </div>
           <Label className="mt-4">Admin Details</Label>
           <div className="mt-2 grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="adminName">
-                Admin Name <span className="text-red-500">*</span>
+                First Name <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="adminName"
+                className="w-[200px] h-11"
                 name="adminName"
                 value={formData.adminName ?? ""}
                 onChange={handleChange}
-                placeholder="Enter person name"
+                placeholder="Enter First Name"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="adminPhoneNumber">
-                Admin Phone Number <span className="text-red-500">*</span>
+                Last Name <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="adminPhoneNumber"
+                className="w-[200px] h-11"
                 name="adminPhoneNumber"
                 value={formData.adminPhoneNumber ?? ""}
                 onChange={handleChange}
-                placeholder="Enter person number"
+                placeholder="Enter Last Name"
               />
             </div>
           </div>
@@ -265,20 +270,37 @@ export const AddNewUtilityCompanyDialog = ({
               <Input
                 id="email"
                 name="email"
+                className="w-[200px] h-11"
                 value={formData.email ?? ""}
                 onChange={handleChange}
-                placeholder="Enter contact email"
+                placeholder="Enter Email"
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="phoneNumber">
+                Phone Number <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                className="w-[200px] h-10"
+                value={formData.defaultPassword ?? ""}
+                onChange={handleChange}
+                placeholder="Enter Phone Number"
+              />
+            </div>
+          </div>
+          <div>
+            <div className="space-y-4">
               <Label htmlFor="defaultPassword">
                 Default Password <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="defaultPassword"
                 name="defaultPassword"
-                value={formData.defaultPassword ?? ""}
-                onChange={handleChange}
+                className="w-full h-11"
+                // value={formData.defaultPassword ?? ""}
+                // onChange={handleChange}
                 placeholder="Enter default password"
               />
             </div>
@@ -297,13 +319,13 @@ export const AddNewUtilityCompanyDialog = ({
             <Button
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="border-[#161CCA] text-[#161CCA] hover:text-[#161CCA]"
+              className="border-[var(--primary)] px-6 py-5 rounded-sm border-1 bg-white text-[#161CCA] hover:text-[#161CCA]"
             >
               Cancel
             </Button>
             <Button
               onClick={handleSubmit}
-              className="bg-[#161CCA] text-white hover:bg-[#161CCA]"
+              className="bg-[#161CCA] px-6 py-5 rounded-sm text-white hover:bg-[#161CCA]"
               disabled={!isFormComplete || isPending}
             >
               {isPending ? "Adding..." : "Add Company"}

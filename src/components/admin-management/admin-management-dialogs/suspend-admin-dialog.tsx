@@ -52,7 +52,7 @@ export const SuspendAdminDialog = ({
                             Cancel
                         </Button>
                         <Button
-                            className="bg-red-700 font-semibold px-6 py-6 rounded-sm text-white hover:bg-red-600"
+                            className="bg-red-700 font-semibold px-6 py-5 rounded-sm text-white hover:bg-red-600"
                         >
                             {isPending ? "..." : "Suspend"}
                         </Button>

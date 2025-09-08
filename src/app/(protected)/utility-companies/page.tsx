@@ -33,8 +33,8 @@ export default function UtilityCompaniesPage() {
           <button
             onClick={() => setActiveTab("summary")}
             className={`relative pb-3 text-sm font-medium transition-colors ${activeTab === "summary"
-                ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
-                : "text-gray-600 hover:text-gray-900"
+              ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
+              : "text-gray-600 hover:text-gray-900"
               } `}
           >
             Summary
@@ -42,14 +42,14 @@ export default function UtilityCompaniesPage() {
         </div>
 
         <div className="mt-6 mb-6 flex items-center justify-between">
-        <div className="relative">
-                            <Input
-                                type="search"
-                                placeholder="Search Companies..."
-                                className="h-11 w-70 bg-white" 
-                            />
-                            <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                        </div>
+          <div className="relative">
+            <Input
+              type="search"
+              placeholder="Search Companies..."
+              className="h-11 w-70 bg-white"
+            />
+            <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          </div>
 
           <Button
             className="flex h-11 cursor-pointer items-center border border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"

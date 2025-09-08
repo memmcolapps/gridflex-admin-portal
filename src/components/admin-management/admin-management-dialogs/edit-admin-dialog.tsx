@@ -189,7 +189,7 @@ export const EditAdminDialog = ({
                         </Button>
                         <Button
                             onClick={handleSubmit}
-                            className="bg-[#161CCA] px-6 py-6 rounded-sm text-white hover:bg-[#161CCA]"
+                            className="bg-[#161CCA] px-6 py-5 rounded-sm text-white hover:bg-[#161CCA]"
                             disabled={!isFormComplete || isPending}
                         >
                             {isPending ? "Editing..." : "Edit Admin"}

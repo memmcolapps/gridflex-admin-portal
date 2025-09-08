@@ -19,8 +19,9 @@ import { Button } from "@/components/ui/button";
 import {
   Building2,
   LayoutDashboard,
-  Users,
+  Mail,
   Shield,
+  CircleAlert,
   ChartColumnDecreasing,
   ClipboardPlus,
   type LucideIcon,
@@ -29,9 +30,10 @@ import {
 const routeMeta: Record<string, { label: string; icon: LucideIcon }> = {
   dashboard: { label: "Dashboard", icon: LayoutDashboard },
   "utility-companies": { label: "Utility Companies", icon: Building2 },
-  "user-management": { label: "User Management", icon: Users },
   "admin-management": { label: "Admin Management", icon: Shield },
   analysis: { label: "Analysis", icon: ChartColumnDecreasing },
+  "incident-report": { label: "Incident Report", icon: CircleAlert },
+  "contact-messages": { label: "Contact Messages", icon: Mail },
   "audit-log": { label: "Audit Log", icon: ClipboardPlus },
 };
 
@@ -65,10 +67,10 @@ export function Navbar() {
         <div className="flex items-center gap-1">
           <IconComponent
             size={16}
-            className={cn(isLast ? "text-gray-400" : "text-gray-600")}
+            className={cn(isLast ? "text-gray-800" : "text-gray-600")}
           />
           {isLast ? (
-            <span className="text-sm text-gray-400 capitalize">{label}</span>
+            <span className="text-sm text-gray-800 capitalize">{label}</span>
           ) : (
             <Link
               href={href}
@@ -83,8 +85,8 @@ export function Navbar() {
   });
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-[#FEFAF5] px-4 sm:px-6 lg:px-8">
-      <div className="flex items-center gap-4">
+    <header className="fixed top-0 right-0 left-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-[#FEFAF5] px-4 sm:px-6 lg:px-4">
+      <div className="flex items-center">
         {/* Logo Section */}
         <div className="mr-45 flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2">

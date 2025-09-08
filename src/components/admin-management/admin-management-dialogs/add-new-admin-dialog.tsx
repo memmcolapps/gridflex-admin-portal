@@ -197,7 +197,7 @@ export const AddNewAdminDialog = ({
                             variant="outline"
                             size='lg'
                             onClick={() => onOpenChange(false)}
-                            className="border-[var(--primary)] px-6 py-6 rounded-sm border-1 bg-white text-[#161CCA] hover:text-[#161CCA]"
+                            className="border-[var(--primary)] px-6 py-5 rounded-sm border-1 bg-white text-[#161CCA] hover:text-[#161CCA]"
                         >
                             Cancel
                         </Button>

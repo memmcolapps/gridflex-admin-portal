@@ -53,8 +53,8 @@ export default function DashboardSummaryCards() {
                 </div>
             ) : (
                 summaryData.map((item, idx) => (
-                    <Card key={idx} className="border shadow-none rounded-lg border-gray-200 bg-white">
-                        <CardContent>
+                    <Card key={idx} className="border px-0 py-4 shadow-none rounded-lg border-gray-200 bg-white">
+                        <CardContent className="mt-2">
                             <div className="flex items-start px-0 justify-between">
                                 <div className="flex-1">
                                     <p className="mb-2 text-base font-normal text-gray-700">

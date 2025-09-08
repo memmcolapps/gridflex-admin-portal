@@ -6,7 +6,6 @@ export default function SummaryTab() {
   return (
     <div className="flex flex-col gap-6">
       <SummaryCards />
-
       <UtilityCompaniesTable />
     </div>
   );

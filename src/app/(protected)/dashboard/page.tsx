@@ -49,23 +49,8 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        <div className="mt-6 mb-6 flex items-center justify-between">
-          <div className="flex gap-4">
-            <Select>
-              <SelectTrigger className=" h-10">
-                <SelectValue placeholder="All Utilities" />
-              </SelectTrigger>
-              <SelectContent>
-                {ALL_STATUS.map((status, index) => (
-                  <SelectItem key={index} value={status.status}>
-                    {status.status}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div className="mt-6 mb-6 flex items-center justify-between">            
           <DatePicker placeHolder={"Today"} className={"w-30"}/>
-
-          </div>
         </div>
 
 

@@ -88,21 +88,6 @@ export default function AuditLog() {
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Select>
-                            <SelectTrigger className="w-full h-10 flex justify-center [&>svg]:hidden">
-                                <div className="flex items-center gap-2">
-                                    <ArrowDownUp size={14} strokeWidth={1.5} />
-                                    <SelectValue placeholder="Sort" />
-                                </div>
-                            </SelectTrigger>
-                            <SelectContent>
-                                {ALL_STATUS.map((status, index) => (
-                                    <SelectItem key={index} value={status.status}>
-                                        {status.status}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
                     </div>
                 </div>
 

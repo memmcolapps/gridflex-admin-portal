@@ -38,6 +38,25 @@ export default function UtilityCompaniesTable() {
     (utilityCompaniesData?.organizations.length || 0) / itemsPerPage,
   );
 
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 10;
+
+    for (let i = 1; i <= Math.min(totalPages, maxVisiblePages); i++) {
+      pages.push(i);
+    }
+
+    if (totalPages > maxVisiblePages) {
+      pages.push('...');
+      for (let i = Math.max(maxVisiblePages + 1, totalPages - 2); i <= totalPages; i++) {
+        if (!pages.includes(i)) {
+          pages.push(i);
+        }
+      }
+    }
+    return pages;
+  };
+
   return (
     <Card className="shadow-sm">
       <CardHeader className="pb-1">
@@ -176,7 +195,7 @@ export default function UtilityCompaniesTable() {
           </TableBody>
         </Table>
 
-        <div className="flex items-center justify-between border-t px-6 py-4">
+        <div className="flex items-center justify-between px-6 py-4">
           <Button
             variant="outline"
             size="lg"
@@ -189,35 +208,23 @@ export default function UtilityCompaniesTable() {
           </Button>
 
           <div className="flex items-center gap-1">
-            {[1, 2, 3].map((page) => (
-              <Button
-                key={page}
-                variant={currentPage === page ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setCurrentPage(page)}
-                className={`h-8 w-8 cursor-pointer p-0 ${
-                  currentPage === page
+            {getPageNumbers().map((page, index) => (
+              page === '...' ? (
+                <span key={index} className="px-2 text-gray-400">...</span>
+              ) : (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setCurrentPage(page as number)}
+                  className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
                     ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
                     : "text-gray-500 hover:bg-gray-50"
-                }`}
-              >
-                {page}
-              </Button>
-            ))}
-            <span className="px-2 text-gray-400">...</span>
-            {[8, 9, 10].map((page) => (
-              <Button
-                key={page}
-                variant="ghost"
-                size="sm"
-                onClick={() => setCurrentPage(page)}
-                className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
-                  ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
-                  : "text-gray-500 hover:bg-gray-50"
-                  }`}
-              >
-                {page}
-              </Button>
+                    }`}
+                >
+                  {page}
+                </Button>
+              )
             ))}
           </div>
 

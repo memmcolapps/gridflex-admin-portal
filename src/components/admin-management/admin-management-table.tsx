@@ -32,16 +32,35 @@ import { useGetAdminResponse } from "@/hooks/use-orgs";
 
 export default function AdminManagementTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  // const itemsPerPage = 10;
+  const itemsPerPage = 10;
   const router = useRouter();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false)
   const [isUnsuspendDialogOpen, setIsUnsuspendDialogOpen] = useState(false)
   const { data: admin, isLoading, isError } = useGetAdminResponse()
   const adminData = admin?.data?.operators ?? [];
-  // const totalPages = Math.ceil(
-  //   (utilityCompaniesData?.organizations.length || 0) / itemsPerPage,
-  // );
+  const totalPages = Math.ceil(
+    (adminData?.length || 0) / itemsPerPage,
+  );
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 10; 
+    
+    for (let i = 1; i <= Math.min(totalPages, maxVisiblePages); i++) {
+        pages.push(i);
+    }
+    
+    if (totalPages > maxVisiblePages) {
+        pages.push('...');
+        for (let i = Math.max(maxVisiblePages + 1, totalPages - 2); i <= totalPages; i++) {
+            if (!pages.includes(i)) {
+                pages.push(i);
+            }
+        }
+    }
+    return pages;
+};
 
   return (
     <Card>
@@ -172,7 +191,7 @@ export default function AdminManagementTable() {
           </TableBody>
         </Table>
 
-        <div className="flex items-center justify-between px-6 py-4">
+        {/* <div className="flex items-center justify-between px-6 py-4">
           <Button
             variant="outline"
             size="lg"
@@ -228,7 +247,54 @@ export default function AdminManagementTable() {
             Next
             <ArrowRight color="#414651" strokeWidth={1.75} />
           </Button>
-        </div>
+        </div> */}
+
+<div className="flex items-center justify-between px-6 py-4">
+                    <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
+                    >
+                        <ArrowLeft color="#414651" strokeWidth={1.75} />
+                        Previous
+                    </Button>
+
+                    <div className="flex items-center gap-1">
+                        {getPageNumbers().map((page, index) => (
+                            page === '...' ? (
+                                <span key={index} className="px-2 text-gray-400">...</span>
+                            ) : (
+                                <Button
+                                    key={page}
+                                    variant={currentPage === page ? "default" : "ghost"}
+                                    size="sm"
+                                    onClick={() => setCurrentPage(page as number)}
+                                    className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
+                                        ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                                        : "text-gray-500 hover:bg-gray-50"
+                                        }`}
+                                >
+                                    {page}
+                                </Button>
+                            )
+                        ))}
+                    </div>
+
+                    <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={() =>
+                          setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                        }
+                        disabled={currentPage === totalPages}
+                        className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
+                    >
+                        Next
+                        <ArrowRight color="#414651" strokeWidth={1.75} />
+                    </Button>
+                </div>
       </CardContent>
 
       {/* Dialogs */}

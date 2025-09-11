@@ -403,8 +403,9 @@ export interface CreateAdminPayload {
   lastname: string;
   email: string;
   password: string;
-  phonenumber: string;
-  role: string;
+  department: string;
+  phoneNo: string;
+  role?: string;
 }
 
 export interface CreateAdminResponse {

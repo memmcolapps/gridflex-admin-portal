@@ -34,6 +34,15 @@ const ALL_ROLES = [
     }
 ]
 
+const ALL_DEPARTMENT = [
+    {
+        department: 'System Integration'
+    },
+    {
+        department: 'R$D Software'
+    },
+]
+
 export const AddNewAdminDialog = ({
     isOpen,
     onOpenChange,
@@ -48,44 +57,46 @@ export const AddNewAdminDialog = ({
         isSuccess,
         isPending,
     } = useCreateAdmin();
-  
+
     const mapToCreateAdminPayload = (data: UnifiedFormData) => ({
-        firstname: data.organizationName ?? "",
-        lastname: data.organizationName ?? "",
+        firstname: data.firstname ?? "",
+        lastname: data.lastname ?? "",
         email: data.email ?? '',
+        department: data.department ?? '',
         password: data.defaultPassword ?? '',
         role: data.role ?? '',
-        phonenumber: data.phoneNumber ?? ''
-      });
+        phoneNo: data.phoneNo ?? ''
+    });
 
-      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-      };
+    };
 
-      const handleSelectChange = (name: string) => (value: string) => {
+    const handleSelectChange = (name: string) => (value: string) => {
         setFormData({ ...formData, [name]: value });
-      };
+    };
 
     const handleSubmit = () => {
         const payload = mapToCreateAdminPayload(formData);
         createAdmin(payload, {
-          onSuccess: () => {
-            onSubmit(formData);
-            onOpenChange(false);
-          },
-          onError: () => {
-            toast.error("Failed to create organization");
-          },
+            onSuccess: () => {
+                onSubmit(formData);
+                onOpenChange(false);
+            },
+            onError: () => {
+                toast.error("Failed to create Admin");
+            },
         });
     };
 
     const requiredFields: (keyof UnifiedFormData)[] = [
         'firstname',
         'lastname',
-        // 'role',
+        'role',
+        'department',
         'email',
         'defaultPassword',
-        'phoneNumber',
+        'phoneNo',
     ];
 
     const isFormComplete = requiredFields.every(
@@ -139,14 +150,14 @@ export const AddNewAdminDialog = ({
                         />
                     </div>
                     <div className="space-y-4">
-                        <Label htmlFor="phoneNumber">
+                        <Label htmlFor="phoneNo">
                             Phone Number <span className="text-red-500">*</span>
                         </Label>
                         <Input
-                            id="phoneNumber"
-                            name="phoneNumber"
+                            id="phoneNo"
+                            name="phoneNo"
                             className="w-[250px] h-12"
-                            value={formData.phoneNumber ?? ""}
+                            value={formData.phoneNo ?? ""}
                             onChange={handleChange}
                             placeholder="Enter Phone Number"
                         />
@@ -157,7 +168,10 @@ export const AddNewAdminDialog = ({
                         <Label htmlFor="role">
                             Role <span className="text-red-500">*</span>
                         </Label>
-                        <Select>
+                        <Select
+                            value={formData.role ?? ""}
+                            onValueChange={handleSelectChange("role")}
+                        >
                             <SelectTrigger className="text-gray-500 w-[250px] h-12">
                                 <SelectValue placeholder="Select Role" />
                             </SelectTrigger>
@@ -170,6 +184,30 @@ export const AddNewAdminDialog = ({
                             </SelectContent>
                         </Select>
                     </div>
+
+                    <div className="space-y-4">
+                        <Label htmlFor="department">
+                            Department <span className="text-red-500">*</span>
+                        </Label>
+                        <Select
+                            value={formData.department ?? ""}
+                            onValueChange={handleSelectChange("department")}
+                        >
+                            <SelectTrigger className="text-gray-500 w-[250px] h-12">
+                                <SelectValue placeholder="Select Department" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {ALL_DEPARTMENT.map((department, index) => (
+                                    <SelectItem key={index} value={department.department}>
+                                        {department.department}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                </div>
+                <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-4">
                         <Label htmlFor="defaultPassword">
                             Default Password <span className="text-red-500">*</span>
@@ -184,20 +222,22 @@ export const AddNewAdminDialog = ({
                         />
                     </div>
 
+                    <div className="space-y-4">
+                        <Label htmlFor="defaultPassword">
+                            Confirm Default Password <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            id="defaultPassword"
+                            name="defaultPassword"
+                            className="w-full h-12"
+                            value={formData.defaultPassword ?? ""}
+                            onChange={handleChange}
+                            placeholder="Confirm Default Password"
+                        />
+                    </div>
+
                 </div>
-                <div className="space-y-4">
-                    <Label htmlFor="defaultPassword">
-                        Confirm Default Password <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                        id="defaultPassword"
-                        name="defaultPassword"
-                        className="w-full h-12"
-                        value={formData.defaultPassword ?? ""}
-                        onChange={handleChange}
-                        placeholder="Confirm Default Password"
-                    />
-                </div>
+
                 {isError && (
                     <div className="mt-2 text-sm text-red-500">{String(error)}</div>
                 )}

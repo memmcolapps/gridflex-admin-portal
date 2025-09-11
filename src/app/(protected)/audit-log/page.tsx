@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { ArrowDownUp, ListFilter, Search } from "lucide-react";
+import { ListFilter, Search } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import { AddNewAdminDialog } from "@/components/admin-management/admin-management-dialogs/add-new-admin-dialog";
@@ -19,16 +19,6 @@ const ALL_ROLES = [
         role: 'Support'
     }
 ]
-
-const ALL_STATUS = [
-    {
-        status: 'Active'
-    },
-    {
-        status: 'Suspended'
-    },
-]
-
 export default function AuditLog() {
     const [activeTab, setActiveTab] = useState("summary");
     const [isDialogOpen, setIsDialogOpen] = useState(false);

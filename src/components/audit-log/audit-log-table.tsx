@@ -14,158 +14,39 @@ import {
     ArrowLeft,
     ArrowRight,
 } from "lucide-react";
-// import { useGetOrgs } from "@/hooks/use-orgs";
-
-const ADMIN_DATA = [
-    {
-        id: '1',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        role: 'Admin',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '2',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        role: 'Developer',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        status: false,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '3',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        role: 'Developer',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '4',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        role: 'Support',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '5',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        role: 'Developer',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '6',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        role: 'Admin',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '7',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        role: 'Developer',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        status: false,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '8',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        role: 'Developer',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '9',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        role: 'Support',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '10',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        role: 'Developer',
-        activity: 'Created a new utility: IBDEC',
-        userAgent: 'Google Chrome (Windows)',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-]
+import { useGetAuditLog } from "@/hooks/use-orgs";
 
 export default function AuditLogTable() {
     const [currentPage, setCurrentPage] = useState(1);
-    // const itemsPerPage = 10;
-    // const { data: utilityCompaniesData, isLoading, isError } = useGetOrgs();
-    // const totalPages = Math.ceil(
-    //   (utilityCompaniesData?.organizations.length || 0) / itemsPerPage,
-    // );
+    const { data: auditLog } = useGetAuditLog()
+    const auditData = auditLog?.data
+    const itemsPerPage = 10;
+    const totalPages = Math.ceil(
+      (auditData?.data.length || 0) / itemsPerPage,
+    );
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentPageData = auditData?.data.slice(startIndex, endIndex) || [];
+
+    const getPageNumbers = () => {
+        const pages = [];
+        const maxVisiblePages = 10; 
+        
+        for (let i = 1; i <= Math.min(totalPages, maxVisiblePages); i++) {
+            pages.push(i);
+        }
+        
+        if (totalPages > maxVisiblePages) {
+            pages.push('...');
+            for (let i = Math.max(maxVisiblePages + 1, totalPages - 2); i <= totalPages; i++) {
+                if (!pages.includes(i)) {
+                    pages.push(i);
+                }
+            }
+        }
+        return pages;
+    };
 
     return (
         <Card>
@@ -202,16 +83,14 @@ export default function AuditLogTable() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {ADMIN_DATA.map((data) => (
+                        {currentPageData.map((data) => (
                             <TableRow key={data.id} className="hover:bg-gray-50">
                                 <TableCell className="py-4 pl-6">
                                     <div>
                                         <div className="text-sm font-medium text-gray-900">
                                             <div>
                                                 <div>
-                                                    {data.firstName +
-                                                        " " +
-                                                        data.lastName}
+                                                    {data.username}
                                                 </div>
                                                 <div>
                                                     {data.email}
@@ -222,30 +101,17 @@ export default function AuditLogTable() {
                                     </div>
                                 </TableCell>
                                 <TableCell className="text-sm text-gray-900">
-                                    {data.role === 'Developer' && (
-                                        <Badge
-                                            variant="secondary"
-                                            className="bg-blue-100 rounded-sm px-2 py-1 text-[var(--primary)] hover:bg-blue-100"
-                                        >
-                                            Developer
-                                        </Badge>
-                                    )}
-                                    {data.role === 'Admin' && (
-                                        <Badge
-                                            variant="secondary"
-                                            className="bg-green-50 rounded-sm px-2 py-1 font-normal text-green-700 hover:bg-green-50"
-                                        >
-                                            Admin
-                                        </Badge>
-                                    )}
-                                    {data.role === 'Support' && (
-                                        <Badge
-                                            variant="secondary"
-                                            className="bg-blue-50 rounded-sm px-2 py-1 font-normal text-gray-900 hover:bg-blue-50"
-                                        >
-                                            Support
-                                        </Badge>
-                                    )}
+                                    <Badge
+                                        variant="secondary"
+                                        className={`rounded-sm px-2 py-1 font-semibold ${data.role === "SUPER_ADMIN"
+                                            ? "bg-green-50 text-green-700"
+                                            : data.role === "Developer"
+                                                ? "bg-blue-100 text-blue-700"
+                                                : "bg-gray-100 text-gray-900"
+                                            }`}
+                                    >
+                                        {data.role}
+                                    </Badge>
                                 </TableCell>
 
                                 <TableCell className="text-sm font-normal text-gray-900">
@@ -260,7 +126,7 @@ export default function AuditLogTable() {
                                     {data.ipAddress}
                                 </TableCell>
                                 <TableCell className="text-sm text-gray-900">
-                                    {data.lastLogin}
+                                    {data.timeStamp}
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -280,44 +146,33 @@ export default function AuditLogTable() {
                     </Button>
 
                     <div className="flex items-center gap-1">
-                        {[1, 2, 3].map((page) => (
-                            <Button
-                                key={page}
-                                variant={currentPage === page ? "default" : "ghost"}
-                                size="sm"
-                                onClick={() => setCurrentPage(page)}
-                                className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
-                                    ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
-                                    : "text-gray-500 hover:bg-gray-50"
-                                    }`}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                        <span className="px-2 text-gray-400">...</span>
-                        {[8, 9, 10].map((page) => (
-                            <Button
-                                key={page}
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setCurrentPage(page)}
-                                className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
-                                    ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
-                                    : "text-gray-500 hover:bg-gray-50"
-                                    }`}
-                            >
-                                {page}
-                            </Button>
+                        {getPageNumbers().map((page, index) => (
+                            page === '...' ? (
+                                <span key={index} className="px-2 text-gray-400">...</span>
+                            ) : (
+                                <Button
+                                    key={page}
+                                    variant={currentPage === page ? "default" : "ghost"}
+                                    size="sm"
+                                    onClick={() => setCurrentPage(page as number)}
+                                    className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
+                                        ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                                        : "text-gray-500 hover:bg-gray-50"
+                                        }`}
+                                >
+                                    {page}
+                                </Button>
+                            )
                         ))}
                     </div>
 
                     <Button
                         variant="outline"
                         size="lg"
-                        // onClick={() =>
-                        //   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                        // }
-                        // disabled={currentPage === totalPages}
+                        onClick={() =>
+                          setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                        }
+                        disabled={currentPage === totalPages}
                         className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
                     >
                         Next

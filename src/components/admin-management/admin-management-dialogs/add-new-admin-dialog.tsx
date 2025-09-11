@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useCreateOrg } from "@/hooks/use-orgs";
+import { useCreateAdmin } from "@/hooks/use-orgs";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 type Props = {
     isOpen: boolean;
@@ -36,41 +37,55 @@ const ALL_ROLES = [
 export const AddNewAdminDialog = ({
     isOpen,
     onOpenChange,
+    onSubmit,
     initialData = {},
 }: Props) => {
-    const [formData] = useState<UnifiedFormData>(initialData);
+    const [formData, setFormData] = useState<UnifiedFormData>(initialData);
     const {
-        mutate: createOrg,
+        mutate: createAdmin,
         isError,
         error,
         isSuccess,
         isPending,
-    } = useCreateOrg();
+    } = useCreateAdmin();
   
+    const mapToCreateAdminPayload = (data: UnifiedFormData) => ({
+        firstname: data.organizationName ?? "",
+        lastname: data.organizationName ?? "",
+        email: data.email ?? '',
+        password: data.defaultPassword ?? '',
+        role: data.role ?? '',
+        phonenumber: data.phoneNumber ?? ''
+      });
+
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+      };
+
+      const handleSelectChange = (name: string) => (value: string) => {
+        setFormData({ ...formData, [name]: value });
+      };
 
     const handleSubmit = () => {
-        // const payload = mapToCreateOrgPayload(formData);
-        // createOrg(payload, {
-        //   onSuccess: () => {
-        //     onSubmit(formData);
-        //     onOpenChange(false);
-        //   },
-        //   onError: () => {
-        //     toast.error("Failed to create organization");
-        //   },
-        // });
+        const payload = mapToCreateAdminPayload(formData);
+        createAdmin(payload, {
+          onSuccess: () => {
+            onSubmit(formData);
+            onOpenChange(false);
+          },
+          onError: () => {
+            toast.error("Failed to create organization");
+          },
+        });
     };
 
     const requiredFields: (keyof UnifiedFormData)[] = [
-        "organizationName",
-        "country",
-        "city",
-        "stateProvince",
-        "streetAddress",
-        "adminName",
-        "adminPhoneNumber",
-        "email",
-        "defaultPassword",
+        'firstname',
+        'lastname',
+        // 'role',
+        'email',
+        'defaultPassword',
+        'phoneNumber',
     ];
 
     const isFormComplete = requiredFields.every(
@@ -85,28 +100,28 @@ export const AddNewAdminDialog = ({
                 </DialogHeader>
                 <div className="mt-2 grid grid-cols-2 gap-6">
                     <div className="space-y-4">
-                        <Label htmlFor="firstName">
+                        <Label htmlFor="firstname">
                             First Name <span className="text-red-500">*</span>
                         </Label>
                         <Input
-                            id="firstName"
+                            id="firstname"
                             className="w-[250px] h-12 text-sm"
-                            name="firstName"
-                            // value={formData.firstName ?? ""}
-                            // onChange={handleChange}
+                            name="firstname"
+                            value={formData.firstname ?? ""}
+                            onChange={handleChange}
                             placeholder="Enter First Name"
                         />
                     </div>
                     <div className="space-y-4">
-                        <Label htmlFor="lastName">
+                        <Label htmlFor="lastname">
                             Last Name <span className="text-red-500">*</span>
                         </Label>
                         <Input
-                            id="lastName"
-                            name="lastName"
+                            id="lastname"
+                            name="lastname"
                             className="w-[250px] h-12"
-                            // value={formData.lastName ?? ""}
-                            // onChange={handleChange}
+                            value={formData.lastname ?? ""}
+                            onChange={handleChange}
                             placeholder="Enter Last Name"
                         />
                     </div>
@@ -118,8 +133,8 @@ export const AddNewAdminDialog = ({
                             id="email"
                             name="email"
                             className="w-[250px] h-12"
-                            // value={formData.email ?? ""}
-                            // onChange={handleChange}
+                            value={formData.email ?? ""}
+                            onChange={handleChange}
                             placeholder="Enter Email"
                         />
                     </div>
@@ -131,8 +146,8 @@ export const AddNewAdminDialog = ({
                             id="phoneNumber"
                             name="phoneNumber"
                             className="w-[250px] h-12"
-                            // value={formData.phoneNumber ?? ""}
-                            // onChange={handleChange}
+                            value={formData.phoneNumber ?? ""}
+                            onChange={handleChange}
                             placeholder="Enter Phone Number"
                         />
                     </div>
@@ -163,8 +178,8 @@ export const AddNewAdminDialog = ({
                             id="defaultPassword"
                             name="defaultPassword"
                             className="w-[250px] h-12"
-                            // value={formData.defaultPassword ?? ""}
-                            // onChange={handleChange}
+                            value={formData.defaultPassword ?? ""}
+                            onChange={handleChange}
                             placeholder="Enter Default Password"
                         />
                     </div>
@@ -178,8 +193,8 @@ export const AddNewAdminDialog = ({
                         id="defaultPassword"
                         name="defaultPassword"
                         className="w-full h-12"
-                        // value={formData.defaultPassword ?? ""}
-                        // onChange={handleChange}
+                        value={formData.defaultPassword ?? ""}
+                        onChange={handleChange}
                         placeholder="Confirm Default Password"
                     />
                 </div>

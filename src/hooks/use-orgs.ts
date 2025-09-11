@@ -1,15 +1,21 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  createAdminApi,
   createOrgApi,
   createRegionBhubServiceCenter,
   createSubstationTransfomerFeeder,
+  getAdmin,
   getAllNodes,
+  getAnalytics,
+  getAuditLog,
   getOneOrg,
   getOrgs,
+  getRecentActivities,
   updateRegionBhubServiceCenter,
   updateSubstationTransfomerFeeder,
 } from "../services/org.service";
 import type {
+  CreateAdminPayload,
   CreateOrgPayload,
   CreateRegionBhubServiceCenterPayload,
   CreateSubstationTransfomerFeederPayload,
@@ -115,3 +121,44 @@ export const useUpdateSubstationTransfomerFeeder = () => {
     },
   });
 };
+
+export const useGetAnalytics = (year: number, month: number) => {
+  return useQuery({
+    queryKey: ["analytics", year, month],
+    queryFn: () => getAnalytics(year,month),
+  });
+};
+
+export const useGetAdminResponse = () => {
+  return useQuery({
+    queryKey: ["admin"], 
+    queryFn: () => getAdmin(),
+  });
+};
+
+export const useGetRecentActiviy = () => {
+  return useQuery({
+    queryKey: ['recentactivity'],
+    queryFn: () => getRecentActivities()
+  })
+}
+
+export const useGetAuditLog = () => {
+  return useQuery({
+    queryKey: ['auditlog'],
+    queryFn: () => getAuditLog()
+  })
+}
+
+export const useCreateAdmin = () => {
+  return useMutation({
+    mutationFn: async (admin: CreateAdminPayload) => {
+      const response = await createAdminApi(admin);
+      if (!response.success && 'error' in response){
+        throw new Error(response.error)
+      }
+      return response;
+    }
+  })
+}
+

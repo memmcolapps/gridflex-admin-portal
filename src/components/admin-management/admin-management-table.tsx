@@ -25,68 +25,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { useGetOrgs } from "@/hooks/use-orgs";
 import { EditAdminDialog } from "./admin-management-dialogs/edit-admin-dialog";
 import { SuspendAdminDialog } from "./admin-management-dialogs/suspend-admin-dialog";
 import { UnsuspendAdminDialog } from "./admin-management-dialogs/unsuspend-admin-dialog";
-
-const ADMIN_DATA = [
-  {
-    id: '1',
-    firstName: 'Adeyemi',
-    lastName: ' Oyewo',
-    email: 'Deyemioyewo@gmail.com',
-    role: 'Admin',
-    phoneNumber: '+234 810 XXX XXXX',
-    address: '12 Adeola Odeku St, Lagos',
-    status: true,
-    lastLogin: '2024-01-15 09:30',
-  },
-  {
-    id: '2',
-    firstName: 'Adeyemi',
-    lastName: ' Oyewo',
-    email: 'Deyemioyewo@gmail.com',
-    role: 'Developer',
-    phoneNumber: '+234 810 XXX XXXX',
-    address: '12 Adeola Odeku St, Lagos',
-    status: false,
-    lastLogin: '2024-01-15 09:30',
-  },
-  {
-    id: '3',
-    firstName: 'Adeyemi',
-    lastName: ' Oyewo',
-    email: 'Deyemioyewo@gmail.com',
-    phoneNumber: '+234 810 XXX XXXX',
-    address: '12 Adeola Odeku St, Lagos',
-    role: 'Developer',
-    status: true,
-    lastLogin: '2024-01-15 09:30',
-  },
-  {
-    id: '4',
-    firstName: 'Adeyemi',
-    lastName: ' Oyewo',
-    email: 'Deyemioyewo@gmail.com',
-    phoneNumber: '+234 810 XXX XXXX',
-    address: '12 Adeola Odeku St, Lagos',
-    role: 'Support',
-    status: true,
-    lastLogin: '2024-01-15 09:30',
-  },
-  {
-    id: '5',
-    firstName: 'Adeyemi',
-    lastName: ' Oyewo',
-    email: 'Deyemioyewo@gmail.com',
-    phoneNumber: '+234 810 XXX XXXX',
-    address: '12 Adeola Odeku St, Lagos',
-    role: 'Developer',
-    status: true,
-    lastLogin: '2024-01-15 09:30',
-  },
-]
+import { useGetAdminResponse } from "@/hooks/use-orgs";
 
 export default function AdminManagementTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -95,7 +37,8 @@ export default function AdminManagementTable() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false)
   const [isUnsuspendDialogOpen, setIsUnsuspendDialogOpen] = useState(false)
-  // const { data: utilityCompaniesData, isLoading, isError } = useGetOrgs();
+  const { data: admin, isLoading, isError } = useGetAdminResponse()
+  const adminData = admin?.data?.operators ?? [];
   // const totalPages = Math.ceil(
   //   (utilityCompaniesData?.organizations.length || 0) / itemsPerPage,
   // );
@@ -135,14 +78,14 @@ export default function AdminManagementTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {ADMIN_DATA.map((data) => (
+            {adminData.map((data) => (
               <TableRow key={data.id} className="hover:bg-gray-50">
                 <TableCell className="py-6 pl-6">
                   <div>
                     <div className="text-sm font-medium text-gray-900">
-                      {data.firstName +
+                      {data.firstname +
                         " " +
-                        data.lastName}
+                        data.lastname}
                     </div>
                     <div className="text-xs text-gray-500">{""}</div>
                   </div>
@@ -152,33 +95,24 @@ export default function AdminManagementTable() {
                   {data.email}
                 </TableCell>
                 <TableCell className="text-sm text-gray-900">
-                  {data.role === 'Developer' && (
+                  {data.roles.map((role, idx) => (
                     <Badge
+                      key={idx}
                       variant="secondary"
-                      className="bg-blue-100 rounded-sm px-2 py-1 text-[var(--primary)] hover:bg-blue-100"
+                      className={`rounded-sm px-2 py-1 font-semibold ${role.userRole === "SUPER_ADMIN"
+                        ? "bg-green-50 text-green-700"
+                        : role.userRole === "Developer"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-gray-100 text-gray-900"
+                        }`}
                     >
-                      Developer
+                      {role.userRole}
                     </Badge>
-                  )}
-                  {data.role === 'Admin' && (
-                    <Badge
-                      variant="secondary"
-                      className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
-                    >
-                      Admin
-                    </Badge>
-                  )}
-                  {data.role === 'Support' && (
-                    <Badge
-                      variant="secondary"
-                      className="bg-blue-50 rounded-sm px-2 py-1 font-semibold text-gray-900 hover:bg-blue-50"
-                    >
-                      Support
-                    </Badge>
-                  )}
+                  ))}
+
                 </TableCell>
                 <TableCell className="py-4">
-                  {data.status === true ? (
+                  {data.status ? (
                     <Badge
                       variant="secondary"
                       className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
@@ -195,7 +129,7 @@ export default function AdminManagementTable() {
                   )}
                 </TableCell>
                 <TableCell className="text-sm text-gray-900">
-                  {data.lastLogin}
+                  {data.updatedAt}
                 </TableCell>
                 <TableCell className="pr-6 text-right">
                   <DropdownMenu>

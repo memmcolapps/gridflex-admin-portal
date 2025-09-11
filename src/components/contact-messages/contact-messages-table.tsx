@@ -15,6 +15,7 @@ import {
     Eye,
     ArrowLeft,
     ArrowRight,
+    SquareCheckBig,
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -33,7 +34,7 @@ interface Contact {
     size: string
     status: boolean
     lastLogin: string
-  }
+}
 
 const CONTACT_DATA = [
     {
@@ -41,7 +42,7 @@ const CONTACT_DATA = [
         organization: 'TechCorp Solutions',
         email: 'Deyemioyewo@gmail.com',
         message: 'Interested in your enterprise solution for our growing team. We are looking for a comprehensive platform that can handle our workflow management and team collaboration needs. Please provide more details about pricing and implementation timeline.',
-        size: '51-100',
+        size: '1-50',
         status: true,
         lastLogin: '2024-01-15 09:30',
     },
@@ -77,21 +78,31 @@ const CONTACT_DATA = [
         organization: 'Creative Agency Plus',
         email: 'Deyemioyewo@gmail.com',
         message: 'As a creative agency, we need flexible project management tools that can adapt to our unique workflows. We work with multiple clients simultaneously and need better visibility into project progress and resource allocation.',
-        size: '51-100',
+        size: '101-200',
         status: false,
         lastLogin: '2024-01-15 09:30',
     },
-]
+];
 
 export default function ContactMessagesTable() {
     const [currentPage, setCurrentPage] = useState(1);
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
     const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+    const [contactData, setContactData] = useState<Contact[]>(CONTACT_DATA);
 
     const handleViewDetails = (contact: Contact) => {
         setSelectedContact(contact);
         setIsViewDialogOpen(true);
     };
+
+    const handleMarkAsRead = (contactId: string) => {
+        setContactData(prevData =>
+            prevData.map(contact =>
+                contact.id === contactId
+                    ?
+                    { ...contact, status: false }
+                    : contact))
+    }
 
     return (
         <Card>
@@ -131,7 +142,7 @@ export default function ContactMessagesTable() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {CONTACT_DATA.map((data) => (
+                        {contactData.map((data) => (
                             <TableRow key={data.id} className="hover:bg-gray-50">
                                 <TableCell className="py-6 pl-6">
                                     <div>
@@ -185,12 +196,20 @@ export default function ContactMessagesTable() {
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="center">
-                                            <DropdownMenuItem 
-                                                onClick={() => handleViewDetails(data)} 
+                                            <DropdownMenuItem
                                                 className="align-items-center cursor-pointer"
+                                                onClick={() => handleViewDetails(data)}
                                             >
                                                 <Eye size={14} className="mt-1 mr-2 text-black" />
                                                 View Details
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                className="align-items-center cursor-pointer"
+                                                onClick={() => handleMarkAsRead(data.id)}
+                                                disabled={!data.status} 
+                                            >
+                                                <SquareCheckBig className="mr-2 text-black" />
+                                                Mark as read
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>

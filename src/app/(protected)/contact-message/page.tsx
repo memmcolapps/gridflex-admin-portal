@@ -11,13 +11,13 @@ import ContactSummaryTab from "@/components/contact-messages/summary-tab";
 
 const ALL_ROLES = [
     {
-        role: 'Admin'
+        role: '1 - 50'
     },
     {
-        role: 'Developer'
+        role: '51 - 100'
     },
     {
-        role: 'Support'
+        role: '101 - 200'
     }
 ]
 

@@ -6,6 +6,7 @@ import type {
   AnalyticsResponse,
   AuditLog,
   CreateAdminPayload,
+  CreateAdminResponse,
   CreateOrgPayload,
   CreateOrgResponse,
   CreateRegionBhubServiceCenterPayload,
@@ -376,7 +377,6 @@ export const getAnalytics = async (year: number, month: number): Promise<{
   }
 };
 
-
 export const getAdmin = async (): Promise<{
   success: boolean;
   data?: Admins['responsedata']
@@ -458,24 +458,27 @@ export const getAuditLog = async (): Promise<{
 export const createAdminApi = async (
   payload: CreateAdminPayload,
 ): Promise<{ success: boolean} | {success: boolean; error: string}> => {
-  try{
-    const FormData = (await import ('form-data')).default;
-    const data = new FormData();
-    data.append('firstname', payload?.firstname)
-    data.append('lastname', payload?.lastname)
-    data.append('email', payload?.email)
-    data.append('password', payload?.password)
-    data.append('phonenumber', payload.phonenumber)
-    data.append('role', payload?.role)
-
+  try {
+    console.log("Creating admin with payload:", payload);
+    
     const token = localStorage.getItem("access_token");
-    const response = await axios.post<CreateOrgResponse>(
+    
+    const response = await axios.post<CreateAdminResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/create`,
-      data,
+      {
+        firstname: payload.firstname,
+        lastname: payload.lastname,
+        email: payload.email,
+        department: payload.department,
+        password: payload.password,
+        phoneNo: payload.phoneNo,
+        role: payload.role,
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,
           custom: CUSTOM_HEADER,
+          "Content-Type": "application/json",
         },
       },
     );
@@ -496,5 +499,34 @@ export const createAdminApi = async (
       success: false,
       error: errorResult.error,
     };
+  }
+};
+
+export const suspendAdminApi = async (
+  id: string,
+  status: boolean
+): Promise<{ success: boolean } | { success: boolean; error: string }> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.patch(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/change-status`,
+      null, 
+      {
+        params: { id, status },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          custom: CUSTOM_HEADER,
+        },
+      }
+    );
+
+    if (response.data.responsecode !== "000") {
+      return { success: false, error: response.data.responsedesc };
+    }
+
+    return { success: true };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "suspendAdmin");
+    return { success: false, error: errorResult.error };
   }
 };

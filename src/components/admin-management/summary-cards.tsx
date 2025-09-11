@@ -1,44 +1,39 @@
-import { useGetOrgs } from "@/hooks/use-orgs";
+import { useGetAdminResponse } from "@/hooks/use-orgs";
 import { AlertCircle, Building2, TrendingUp, Users } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 
 export default function AdminSummaryCards() {
-    const { isError } = useGetOrgs();
-    //   const orgs = data?.organizations ?? [];
-    //   const totalActive = orgs.filter((org) => org.status).length;
-    //   const totalSuspended = orgs.filter((org) => !org.status).length;
-    //   const totalUtilities = orgs.length;
-    //   const totalCustomers = data?.overallCustomers ?? 0;
+    const { data: admin, isLoading, isError } = useGetAdminResponse()
+    const totalActive = admin?.data?.totalActiveAdmins;
+    const totalAdmins = admin?.data?.totalPortalUsers;
+    const totalInActiveAdmins = admin?.data?.totalInActiveAdmins;
+    const totalSuspendedAdmins = admin?.data?.totalSuspendedAdmins;
 
     const summaryData = [
         {
-            title: "Total Active",
-            //   value: isLoading ? "..." : totalActive,
-            value: '200',
+            title: "Total Admins",
+            value: isLoading ? "..." : totalAdmins,
             icon: <TrendingUp size={20} />,
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",
         },
         {
-            title: "Total Suspended",
-            //   value: isLoading ? "..." : totalSuspended,
-            value: '200',
+            title: "Active Admins",
+            value: isLoading ? "..." : totalActive,
             icon: <AlertCircle size={20} />,
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",
         },
         {
-            title: "Total Customers",
-            //   value: isLoading ? "..." : totalCustomers.toLocaleString(),
-            value: '200',
+            title: "Suspended Admins",
+            value: isLoading ? "..." : totalSuspendedAdmins,
             icon: <Users size={20} />,
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",
         },
         {
-            title: "Total Utilities",
-            //   value: isLoading ? "..." : totalUtilities,
-            value: '200',
+            title: "Inactive Admins",
+            value: isLoading ? "..." : totalInActiveAdmins,
             icon: <Building2 size={20} />,
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",
@@ -57,7 +52,7 @@ export default function AdminSummaryCards() {
                         <CardContent>
                             <div className="flex items-start px-0 justify-between">
                                 <div className="flex-1">
-                  <p className="mb-2 text-base font-normal text-gray-700">
+                                    <p className="mb-2 text-base font-normal text-gray-700">
                                         {item.title}
                                     </p>
                                     <p className="mb-1 font-medium text-xl text-gray-900">

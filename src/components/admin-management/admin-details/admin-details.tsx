@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGetAdminResponse, useGetRecentActiviy } from "@/hooks/use-orgs";
 import { Mail, MapPin, Phone, User } from "lucide-react";
 import { useState } from "react";
 
@@ -48,67 +49,12 @@ const RECENT_ACTIVITIES = [
     },
 ]
 
-const ADMIN_DATA = [
-    {
-        id: '1',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        role: 'Admin',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '2',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        role: 'Developer',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        status: false,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '3',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        role: 'Developer',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '4',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        role: 'Support',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-    {
-        id: '5',
-        firstName: 'Adeyemi',
-        lastName: ' Oyewo',
-        email: 'Deyemioyewo@gmail.com',
-        phoneNumber: '+234 810 XXX XXXX',
-        address: '12 Adeola Odeku St, Lagos',
-        role: 'Developer',
-        status: true,
-        lastLogin: '2024-01-15 09:30',
-    },
-]
 
 export default function AdminDetails({ params }: { params: { id: string } }) {
     const id = params.id
-    const admin = ADMIN_DATA.find((a) => a.id === id);
+    const { data: admin, isLoading, isError } = useGetAdminResponse()
+    const { data: recentactivities } = useGetRecentActiviy()
+    const adminData = admin?.data?.operators.find((a => a.id === id));
     const [activeTab, setActiveTab] = useState('summary');
 
     return (
@@ -139,40 +85,30 @@ export default function AdminDetails({ params }: { params: { id: string } }) {
                     <div className="space-y-4 lg:col-span-3">
                         <Card className="w-full rounded-lg pb-2 pt-6 gap-0 shadow-none bg-white">
                             <CardHeader>
-                                <CardTitle key={admin?.id} className="flex items-center gap-2 text-xl font-medium">
+                                <CardTitle key={adminData?.id} className="flex items-center gap-2 text-xl font-medium">
                                     <User color="#333333" strokeWidth={1.5} />
                                     <div className="flex flex-col">
-                                        <span>{admin?.firstName + ' ' + admin?.lastName}</span>
+                                        <span>{adminData?.firstname + ' ' + adminData?.lastname}</span>
                                         <div className="flex gap-4">
                                             <div>
-                                                {admin?.role === 'Developer' && (
+                                                {adminData?.roles.map((role, idx) => (
                                                     <Badge
+                                                        key={idx}
                                                         variant="secondary"
-                                                        className="bg-blue-100 rounded-sm px-2 py-1 text-[var(--primary)] hover:bg-primary/80"
+                                                        className={`rounded-sm px-2 py-1 font-semibold ${role.userRole === "SUPER_ADMIN"
+                                                            ? "bg-green-50 text-green-700"
+                                                            : role.userRole === "Developer"
+                                                                ? "bg-blue-100 text-blue-700"
+                                                                : "bg-gray-100 text-gray-900"
+                                                            }`}
                                                     >
-                                                        Developer
+                                                        {role.userRole}
                                                     </Badge>
-                                                )}
-                                                {admin?.role === 'Admin' && (
-                                                    <Badge
-                                                        variant="secondary"
-                                                        className="bg-green-50 rounded-sm px-2 py-1 font-normal text-green-700 hover:bg-green-50"
-                                                    >
-                                                        Admin
-                                                    </Badge>
-                                                )}
-                                                {admin?.role === 'Support' && (
-                                                    <Badge
-                                                        variant="secondary"
-                                                        className="bg-blue-50 rounded-sm px-2 py-1 font-normal text-gray-900 hover:bg-green-50"
-                                                    >
-                                                        Support
-                                                    </Badge>
-                                                )}
+                                                ))}
                                             </div>
 
                                             <div>
-                                                {admin?.status === true ? (
+                                                {adminData?.status === true ? (
                                                     <Badge
                                                         variant="secondary"
                                                         className="bg-green-50 rounded-sm px-2 py-1 font-normal text-green-700 hover:bg-green-50"
@@ -201,8 +137,8 @@ export default function AdminDetails({ params }: { params: { id: string } }) {
                                     <li className="flex pt-2 items-center gap-3">
                                         <Mail color="#333333" size={16} strokeWidth={1} />
                                         <div className="mt-2 space-y-0">
-                                            <p className="text-sm font-medium text-black">
-                                                {admin?.email}
+                                            <p className="text-sm text-black">
+                                                {adminData?.email}
                                             </p>
                                             <p className=" text-gray-400">Email</p>
                                         </div>
@@ -211,18 +147,9 @@ export default function AdminDetails({ params }: { params: { id: string } }) {
                                         <Phone size={16} color="#333333" strokeWidth={1} />
                                         <div className="space-y-0">
                                             <p className="text-sm font-medium text-black">
-                                                {admin?.phoneNumber}
+                                                {adminData?.phoneNo}
                                             </p>
                                             <p className=" text-gray-400">Phone</p>
-                                        </div>
-                                    </li>
-                                    <li className="flex items-center gap-3">
-                                        <MapPin size={16} color="#333333" strokeWidth={1} />
-                                        <div className="space-y-0">
-                                            <p className="text-sm font-medium text-black">
-                                                {admin?.address}
-                                            </p>
-                                            <p className=" text-gray-400">Address</p>
                                         </div>
                                     </li>
                                 </ul>
@@ -239,19 +166,19 @@ export default function AdminDetails({ params }: { params: { id: string } }) {
                             </CardHeader>
                             <CardContent className="pt-4">
                                 <div className="flex flex-col gap-5">
-                                    {RECENT_ACTIVITIES.map((activity, index) => (
-                                        <div key={index}  className="bg-gray-50 rounded-lg flex flex-col gap-1">
+                                    {recentactivities?.data?.map((activity) => (
+                                        <div key={activity.id} className="bg-gray-50 rounded-lg flex flex-col gap-1">
 
                                             <ul>
-                                            <div className="flex py-2 gap-2">
-                                                <div className="pt-2 pl-2">
-                                                    <div className="w-[5.5px] h-[5.5px]  bg-[#161CCA] rounded-full"></div>
-                                                </div>
+                                                <div className="flex py-2 gap-2">
+                                                    <div className="pt-2 pl-2">
+                                                        <div className="w-[5.5px] h-[5.5px]  bg-[#161CCA] rounded-full"></div>
+                                                    </div>
                                                     <li className="flex flex-col">
-                                                        <span className="text-black">{activity.action + ': ' + activity.name}</span>
+                                                        <span className="text-black">{activity.description}</span>
                                                         <span className="text-gray-400">Ip Address:{activity.ipAddress} </span>
                                                         <span className="text-gray-400">User Agent:{activity.userAgent} </span>
-                                                        <span className="text-gray-400">{activity.date + ', ' + activity.time}</span>
+                                                        <span className="text-gray-400">{activity.createdAt}</span>
                                                     </li>
                                                 </div>
 

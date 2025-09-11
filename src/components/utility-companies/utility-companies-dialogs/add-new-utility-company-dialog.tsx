@@ -249,14 +249,14 @@ export const AddNewUtilityCompanyDialog = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="adminPhoneNumber">
+              <Label htmlFor="adminName">
                 Last Name <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="adminPhoneNumber"
+                id="adminLastName"
                 className="w-[200px] h-11"
-                name="adminPhoneNumber"
-                value={formData.adminPhoneNumber ?? ""}
+                name="adminLastName"
+                // value={formData.adminName ?? ""}
                 onChange={handleChange}
                 placeholder="Enter Last Name"
               />
@@ -277,14 +277,14 @@ export const AddNewUtilityCompanyDialog = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">
+              <Label htmlFor="adminPhoneNumber">
                 Phone Number <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="phoneNumber"
-                name="phoneNumber"
+                id="adminPhoneNumber"
+                name="adminPhoneNumber"
                 className="w-[200px] h-10"
-                value={formData.defaultPassword ?? ""}
+                value={formData.adminPhoneNumber ?? ""}
                 onChange={handleChange}
                 placeholder="Enter Phone Number"
               />
@@ -299,8 +299,8 @@ export const AddNewUtilityCompanyDialog = ({
                 id="defaultPassword"
                 name="defaultPassword"
                 className="w-full h-11"
-                // value={formData.defaultPassword ?? ""}
-                // onChange={handleChange}
+                value={formData.defaultPassword ?? ""}
+                onChange={handleChange}
                 placeholder="Enter default password"
               />
             </div>

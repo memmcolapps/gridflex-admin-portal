@@ -295,3 +295,193 @@ export interface GetOneNode {
   };
   nodesTree: GetOneNode[];
 }
+
+export interface DashboardResponse {
+  responsecode: string;
+  responsedesc: string;
+  responsedata: {
+    analytics: string[];
+    data: {
+      content: {
+        id: string;
+        creator: Creator[];
+        description: string;
+        type: string;
+        ipAddress: string;
+        userAgent: string;
+        createdAt: string;
+      }
+    }
+  }
+}
+
+export interface Creator {
+  id: string;
+  orgId: string;
+  firstname: string;
+  lastname: string;
+  position: string;
+  location: string;
+  status: boolean;
+  permission: boolean;
+  active: boolean;
+  roles: Role[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AnalyticsResponse {
+  responsecode: string;
+  responsedesc: string;
+  responsedata: ResponseData;
+}
+
+export interface ResponseData {
+  monthlySummaries: MonthlySummary[];
+  activeUtilityCompany: number;
+  totalDailySummary: Summary;
+  dailyReports: DailyReport[];
+  averageRecoveryTime: number;
+  totalUtilityCompany: number;
+  monthlyReports: MonthlyReport[];
+  totalMonthlySummary: Summary;
+  incidentReport: number;
+  dailySummaries: DailySummary[];
+}
+
+export interface MonthlySummary {
+  uptimeMinutes: number;
+  month: string;
+  uptimePercent: number;
+  downtimeMinutes: number;
+  services: string[];
+  downtimePercent: number;
+}
+
+export interface Summary {
+  uptimeMinutes: number;
+  uptimePercent: number;
+  downtimeMinutes: number;
+  services: string[];
+  downtimePercent: number;
+}
+
+export interface DailyReport {
+  id: string;
+  serviceName: string;
+  reportType: "DAILY";
+  createdAt: string;
+  uptimePercent: number;
+  downtimePercent: number;
+  uptimeMinutes: number;
+  downtimeMinutes: number;
+}
+
+export interface MonthlyReport {
+  id: string;
+  serviceName: string;
+  reportType: "MONTHLY";
+  month: string;
+  uptimePercent: number;
+  downtimePercent: number;
+  uptimeMinutes: number;
+  downtimeMinutes: number;
+}
+
+export interface DailySummary {
+  date: string;
+  uptimeMinutes: number;
+  uptimePercent: number;
+  downtimeMinutes: number;
+  services: string[];
+  downtimePercent: number;
+}
+
+
+export interface CreateAdminPayload {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  phonenumber: string;
+  role: string;
+}
+
+export interface CreateAdminResponse {
+  responsecode: string;
+  responsedesc: string;
+  responsedata: string;
+}
+
+export interface Role {
+  id: string;
+  userId: string;
+  userRole: string;
+}
+
+export interface Admin {
+  id: string;
+  firstname: string;
+  lastname: string;
+  department: string;
+  email: string;
+  status: boolean;
+  active: boolean;
+  roles: Role[];
+  createdAt: string;
+  updatedAt: string;
+  phoneNo: string;
+}
+
+export interface AdminResponse {
+  responsecode: string;
+  responsedata: Admin[];
+  responsedesc: string;
+}
+
+export interface Admins {
+  responsecode: string;
+  responsedesc: string;
+  responsedata: {
+    totalInActiveAdmins: number;
+    operators: Admin[];
+    totalActiveAdmins: string;
+    totalPortalUsers: string;
+    totalSuspendedAdmins: string;
+  }
+}
+
+
+export interface RecentActivities {
+  responsecode: string;
+  responsedesc: string;
+  responsedata: {
+    id: string;
+    creator: Admin[];
+    description: string;
+    type: string;
+    userAgent: string;
+    ipAddress: string;
+    createdAt: string;
+  }[]
+}
+
+export interface User {
+  id: string;
+  type: string;
+  username: string;
+  email: string;
+  activity: string;
+  userAgent: string;
+  ipAddress: string;
+  role: string;
+  timeStamp: string;
+}
+
+export interface AuditLog {
+  responsecode: string;
+  responsedesc: string;
+  responsedata: {
+    data: User[];
+  }
+}

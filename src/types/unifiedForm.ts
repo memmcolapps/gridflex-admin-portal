@@ -1,6 +1,9 @@
 // types/unifiedForm.ts
 export interface UnifiedFormData {
   assetId?: string;
+  firstname?: string;
+  lastname?: string;
+  role?: string;
   address?: string;
   businessHubId?: string;
   businessHubName?: string;

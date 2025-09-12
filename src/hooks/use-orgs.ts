@@ -11,12 +11,14 @@ import {
   getOneOrg,
   getOrgs,
   getRecentActivities,
+  suspendAdminApi,
   updateRegionBhubServiceCenter,
   updateSubstationTransfomerFeeder,
 } from "../services/org.service";
 import type {
   CreateAdminPayload,
   CreateOrgPayload,
+  SuspendAdminPayload,
   CreateRegionBhubServiceCenterPayload,
   CreateSubstationTransfomerFeederPayload,
   UpdateRegionBhubServiceCenterPayload,
@@ -162,4 +164,14 @@ export const useCreateAdmin = () => {
   })
 }
 
-
+export const useSuspendAdmin = () => {
+  return useMutation({
+    mutationFn: async ({ id, status }: SuspendAdminPayload) => {
+      const response = await suspendAdminApi(id, status);
+      if (!response.success && 'error' in response){
+        throw new Error(response.error)
+      }
+      return response;
+    },
+  });
+};

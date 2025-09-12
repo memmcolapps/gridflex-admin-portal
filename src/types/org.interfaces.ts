@@ -486,3 +486,8 @@ export interface AuditLog {
     data: User[];
   }
 }
+
+export type SuspendAdminPayload = {
+  id: string;
+  status: boolean; 
+};

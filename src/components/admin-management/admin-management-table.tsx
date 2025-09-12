@@ -34,11 +34,19 @@ export default function AdminManagementTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const router = useRouter();
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false)
-  const [isUnsuspendDialogOpen, setIsUnsuspendDialogOpen] = useState(false)
-  const { data: admin, isLoading, isError } = useGetAdminResponse()
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
+  const [isUnsuspendDialogOpen, setIsUnsuspendDialogOpen] = useState(false);
+
+  const [selectedAdmin, setSelectedAdmin] = useState<{
+    id: string;
+    name: string;
+    status: boolean;
+  } | null>(null);
+
+  const { data: admin, isLoading, isError } = useGetAdminResponse();
   const adminData = admin?.data?.operators ?? [];
+
   const totalPages = Math.ceil(
     (adminData?.length || 0) / itemsPerPage,
   );
@@ -128,7 +136,6 @@ export default function AdminManagementTable() {
                       {role.userRole}
                     </Badge>
                   ))}
-
                 </TableCell>
                 <TableCell className="py-4">
                   {data.status ? (
@@ -171,18 +178,59 @@ export default function AdminManagementTable() {
                         <Eye size={14} className="mt-1 mr-2 text-black" />
                         View Details
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)} className="align-items-center cursor-pointer">
+
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setIsEditDialogOpen(true);
+                        }}
+                        className="align-items-center cursor-pointer"
+                      >
                         <Pencil size={14} className="mr-2 text-black" />
                         Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setIsSuspendDialogOpen(true)} className="align-items-center cursor-pointer">
+
+                      <DropdownMenuItem
+                        disabled={data.status === false}
+                        onClick={() => {
+                          if (data.status !== false) {
+                            setSelectedAdmin({
+                              id: data.id,
+                              name: `${data.firstname} ${data.lastname}`,
+                              status: data.status
+                            });
+                            setIsSuspendDialogOpen(true);
+                          }
+                        }}
+                        className={`
+                          align-items-center cursor-pointer
+                          ${data.status === false ? 'opacity-50 cursor-not-allowed' : ''}
+                          `}
+                      >
                         <CircleSlash size={14} className="mr-2 text-black" />
-                        Suspend
+                        <span>Suspend</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setIsUnsuspendDialogOpen(true)} className="align-items-center cursor-pointer">
+
+                      <DropdownMenuItem
+                        disabled={data.status === true}
+                        onClick={() => {
+                          if (data.status !== true) {
+                            setSelectedAdmin({
+                              id: data.id,
+                              name: `${data.firstname} ${data.lastname}`,
+                              status: data.status,
+                            });
+                            setIsUnsuspendDialogOpen(true);
+                          }
+                        }}
+                        className={`
+                        align-items-center cursor-pointer
+                        ${data.status === true ? "opacity-50 cursor-not-allowed" : ""}
+                        `}
+                      >
                         <CircleSlash size={14} className="mr-2 text-black" />
-                        Unsuspend
+                        <span>Unsuspend</span>
                       </DropdownMenuItem>
+
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -244,13 +292,25 @@ export default function AdminManagementTable() {
         isOpen={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
       />
+
       <SuspendAdminDialog
         isOpen={isSuspendDialogOpen}
-        onOpenChange={setIsSuspendDialogOpen}
+        onOpenChange={(open) => {
+          setIsSuspendDialogOpen(open);
+          if (!open) setSelectedAdmin(null);
+        }}
+        adminId={selectedAdmin?.id || ""}
+        adminName={selectedAdmin?.name}
       />
+
       <UnsuspendAdminDialog
         isOpen={isUnsuspendDialogOpen}
-        onOpenChange={setIsUnsuspendDialogOpen}
+        onOpenChange={(open) => {
+          setIsUnsuspendDialogOpen(open);
+          if (!open) setSelectedAdmin(null);
+        }}
+        adminId={selectedAdmin?.id || ""}
+        adminName={selectedAdmin?.name}
       />
     </Card>
   );

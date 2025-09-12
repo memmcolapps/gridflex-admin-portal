@@ -44,7 +44,7 @@ export default function AdminManagementTable() {
     status: boolean;
   } | null>(null);
 
-  const { data: admin, isLoading, isError } = useGetAdminResponse();
+  const { data: admin } = useGetAdminResponse();
   const adminData = admin?.data?.operators ?? [];
 
   const totalPages = Math.ceil(

@@ -424,7 +424,7 @@ export const getRecentActivities = async (): Promise<{
     }
 
     return { success: true, data: response.data.responsedata };
-  } catch (err) {
+  } catch {
     return { success: false, error: "Something went wrong" };
   }
 };
@@ -450,7 +450,7 @@ export const getAuditLog = async (): Promise<{
     }
 
     return { success: true, data: response.data.responsedata };
-  } catch (err) {
+  } catch {
     return { success: false, error: "Something went wrong" };
   }
 };

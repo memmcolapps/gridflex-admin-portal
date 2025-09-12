@@ -35,7 +35,7 @@ export const SuspendAdminDialog = ({
                     toast.success(`${adminName} suspended successfully`);
                     onOpenChange(false);
                 },
-                onError: (err: any) => {
+                onError: (err) => {
                     toast.error(`Failed to suspend ${adminName}`);
                     console.error(err);
                 },

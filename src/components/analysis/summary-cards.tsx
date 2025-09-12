@@ -7,7 +7,7 @@ export default function AnalysisSummaryCards() {
   const currentMonth = new Date().getMonth() + 1;
   const { data: analytics, isLoading, isError } = useGetAnalytics(currentYear, currentMonth);
   const summary = analytics?.data;
-  const systemUptime = summary?.dailySummaries;
+  // const systemUptime = summary?.dailySummaries;
   const activeUtilityCompany = summary?.activeUtilityCompany;
   const incidentReported = summary?.incidentReport;
   const averageRecovery = summary?.averageRecoveryTime;

@@ -1,5 +1,5 @@
 "use client";
-import { useCreateOrg, useSuspendAdmin } from "@/hooks/use-orgs";
+import {  useSuspendAdmin } from "@/hooks/use-orgs";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -9,7 +9,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import type { UnifiedFormData } from "@/types/unifiedForm";
 import { Ban } from "lucide-react";
 import { toast } from "sonner";
 
@@ -36,7 +35,7 @@ export const UnsuspendAdminDialog = ({
                     toast.success(`${adminName} unsuspended successfully`);
                     onOpenChange(false);
                 },
-                onError: (err: any) => {
+                onError: (err) => {
                     toast.error(`Failed to unsuspend ${adminName}`);
                     console.error(err);
                 },

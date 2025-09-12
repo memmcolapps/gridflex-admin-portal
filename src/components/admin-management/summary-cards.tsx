@@ -31,13 +31,6 @@ export default function AdminSummaryCards() {
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",
         },
-        {
-            title: "Inactive Admins",
-            value: isLoading ? "..." : totalInActiveAdmins,
-            icon: <Building2 size={20} />,
-            iconBg: "bg-gray-100",
-            iconColor: "text-gray-600",
-        },
     ];
 
     return (

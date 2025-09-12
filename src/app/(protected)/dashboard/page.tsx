@@ -1,20 +1,10 @@
 'use client'
 
 import { useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import { AddNewAdminDialog } from "@/components/admin-management/admin-management-dialogs/add-new-admin-dialog";
 import { DatePicker } from "@/components/atoms/date-picker";
 import DashboardSummaryTab from "@/components/dashboard/summary-tab";
-
-const ALL_STATUS = [
-  {
-    status: 'Active'
-  },
-  {
-    status: 'Suspended'
-  },
-]
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("summary");

@@ -1,5 +1,5 @@
 "use client";
-import { useCreateOrg } from "@/hooks/use-orgs";
+import {  useSuspendAdmin } from "@/hooks/use-orgs";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -9,25 +9,40 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import type { UnifiedFormData } from "@/types/unifiedForm";
 import { Ban } from "lucide-react";
+import { toast } from "sonner";
 
 type Props = {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
-    onSubmit?: (data: UnifiedFormData) => void;
-    initialData?: Partial<UnifiedFormData>;
+    adminId: string; 
+    adminName?: string; 
 };
 
 export const UnsuspendAdminDialog = ({
     isOpen,
     onOpenChange,
+    adminId,
+    adminName,
 }: Props) => {
-    const {
-        mutate: createOrg,
-        isPending,
-    } = useCreateOrg();
+    const { mutate: suspendAdmin, isPending } = useSuspendAdmin();
 
+    const handleUnSuspend = () => {
+        suspendAdmin(
+            { id: adminId, status: true }, 
+            {
+                onSuccess: () => {
+                    toast.success(`${adminName} unsuspended successfully`);
+                    onOpenChange(false);
+                },
+                onError: (err) => {
+                    toast.error(`Failed to unsuspend ${adminName}`);
+                    console.error(err);
+                },
+            }
+        );
+    };
+    
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="gap-0">
@@ -38,7 +53,7 @@ export const UnsuspendAdminDialog = ({
 
                     <DialogTitle className="pt-4 font-medium">Unsuspend Admin</DialogTitle>
                     <DialogDescription className="pt-0 text-lg">
-                        Are you sure you want to suspend Adeyemi Oyewo
+                        Are you sure you want to unsuspend {adminName}
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
@@ -52,9 +67,11 @@ export const UnsuspendAdminDialog = ({
                             Cancel
                         </Button>
                         <Button
-                            className="bg-[var(--primary)] font-semibold px-6 py-5 rounded-sm text-white hover:bg-blue-500"
+                            className="bg-[var(--primary)] font-semibold px-6 py-6 rounded-sm text-white hover:bg-blue-500"
+                            onClick={handleUnSuspend}
+                            disabled={isPending}
                         >
-                            {isPending ? "..." : "Suspend"}
+                            {isPending ? "..." : "Unsuspend"}
                         </Button>
                     </div>
                 </DialogFooter>

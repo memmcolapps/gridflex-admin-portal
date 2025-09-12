@@ -424,7 +424,7 @@ export const getRecentActivities = async (): Promise<{
     }
 
     return { success: true, data: response.data.responsedata };
-  } catch (err) {
+  } catch {
     return { success: false, error: "Something went wrong" };
   }
 };
@@ -450,7 +450,7 @@ export const getAuditLog = async (): Promise<{
     }
 
     return { success: true, data: response.data.responsedata };
-  } catch (err) {
+  } catch {
     return { success: false, error: "Something went wrong" };
   }
 };
@@ -462,6 +462,8 @@ export const createAdminApi = async (
     console.log("Creating admin with payload:", payload);
     
     const token = localStorage.getItem("access_token");
+    console.log("Token exists:", !!token);
+    console.log("Token preview:", token?.substring(0, 20) + "...");
     
     const response = await axios.post<CreateAdminResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/create`,

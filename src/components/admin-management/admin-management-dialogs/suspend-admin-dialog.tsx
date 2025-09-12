@@ -1,5 +1,5 @@
 "use client";
-import { useCreateOrg } from "@/hooks/use-orgs";
+import { useSuspendAdmin } from "@/hooks/use-orgs";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -9,24 +9,39 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import type { UnifiedFormData } from "@/types/unifiedForm";
 import { Ban } from "lucide-react";
+import { toast } from "sonner";
 
 type Props = {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
-    onSubmit?: (data: UnifiedFormData) => void;
-    initialData?: Partial<UnifiedFormData>;
+    adminId: string;
+    adminName?: string;
 };
 
 export const SuspendAdminDialog = ({
     isOpen,
     onOpenChange,
+    adminId,
+    adminName,
 }: Props) => {
-    const {
-        mutate: createOrg,
-        isPending,
-    } = useCreateOrg();
+    const { mutate: suspendAdmin, isPending } = useSuspendAdmin();
+
+    const handleSuspend = () => {
+        suspendAdmin(
+            { id: adminId, status: false },
+            {
+                onSuccess: () => {
+                    toast.success(`${adminName} suspended successfully`);
+                    onOpenChange(false);
+                },
+                onError: (err) => {
+                    toast.error(`Failed to suspend ${adminName}`);
+                    console.error(err);
+                },
+            }
+        );
+    };
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -38,21 +53,23 @@ export const SuspendAdminDialog = ({
 
                     <DialogTitle className="pt-4 font-medium">Suspend Admin</DialogTitle>
                     <DialogDescription className="pt-0 text-lg">
-                        Are you sure you want to suspend Adeyemi Oyewo
+                        Are you sure you want to suspend {adminName}?
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                     <div className="flex mt-3 w-full justify-between gap-2">
                         <Button
                             variant="outline"
-                            size='lg'
+                            size="lg"
                             onClick={() => onOpenChange(false)}
                             className="border-red-700 hover:border-red-600 hover:bg-white px-6 py-6 rounded-sm border-1 bg-white text-red-700 hover:text-red-600"
                         >
                             Cancel
                         </Button>
                         <Button
-                            className="bg-red-700 font-semibold px-6 py-5 rounded-sm text-white hover:bg-red-600"
+                            className="bg-red-700 font-semibold px-6 py-6 rounded-sm text-white hover:bg-red-600"
+                            onClick={handleSuspend}
+                            disabled={isPending}
                         >
                             {isPending ? "..." : "Suspend"}
                         </Button>

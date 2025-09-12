@@ -3,56 +3,13 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetAdminResponse, useGetRecentActiviy } from "@/hooks/use-orgs";
-import { Mail, MapPin, Phone, User } from "lucide-react";
+import { Mail, Phone, User } from "lucide-react";
 import { useState } from "react";
-
-const RECENT_ACTIVITIES = [
-    {
-        action: 'Created a new utility',
-        name: 'IBDEC',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        userAgent: 'Google Chrome (Windows)',
-        date: '12/8/2024',
-        time: '3:15:00 PM'
-    },
-    {
-        action: 'Added a new admin',
-        name: 'Chinedu Okafor (Admin) ',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        userAgent: 'Google Chrome (Windows)',
-        date: '12/8/2024',
-        time: '3:15:00 PM'
-    },
-    {
-        action: 'Created a new utility',
-        name: 'IBDEC',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        userAgent: 'Google Chrome (Windows)',
-        date: '12/8/2024',
-        time: '3:15:00 PM'
-    },
-    {
-        action: 'Added a new admin',
-        name: 'Chinedu Okafor (Admin) ',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        userAgent: 'Google Chrome (Windows)',
-        date: '12/8/2024',
-        time: '3:15:00 PM'
-    },
-    {
-        action: 'Created a new utility',
-        name: 'IBDEC',
-        ipAddress: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
-        userAgent: 'Google Chrome (Windows)',
-        date: '12/8/2024',
-        time: '3:15:00 PM'
-    },
-]
 
 
 export default function AdminDetails({ params }: { params: { id: string } }) {
     const id = params.id
-    const { data: admin, isLoading, isError } = useGetAdminResponse()
+    const { data: admin } = useGetAdminResponse()
     const { data: recentactivities } = useGetRecentActiviy()
     const adminData = admin?.data?.operators.find((a => a.id === id));
     const [activeTab, setActiveTab] = useState('summary');

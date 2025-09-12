@@ -1,6 +1,4 @@
 "use client";
-import { useState } from "react";
-import { useCreateOrg } from "@/hooks/use-orgs";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -36,45 +34,7 @@ const ALL_ROLES = [
 export const EditAdminDialog = ({
     isOpen,
     onOpenChange,
-    initialData = {},
 }: Props) => {
-    const [formData] = useState<UnifiedFormData>(initialData);
-    const {
-        mutate: createOrg,
-        isError,
-        error,
-        isSuccess,
-        isPending,
-    } = useCreateOrg();
-
-    const handleSubmit = () => {
-        // const payload = mapToCreateOrgPayload(formData);
-        // createOrg(payload, {
-        //   onSuccess: () => {
-        //     onSubmit(formData);
-        //     onOpenChange(false);
-        //   },
-        //   onError: () => {
-        //     toast.error("Failed to create organization");
-        //   },
-        // });
-    };
-
-    const requiredFields: (keyof UnifiedFormData)[] = [
-        "organizationName",
-        "country",
-        "city",
-        "stateProvince",
-        "streetAddress",
-        "adminName",
-        "adminPhoneNumber",
-        "email",
-        "defaultPassword",
-    ];
-
-    const isFormComplete = requiredFields.every(
-        (field) => formData[field] && String(formData[field]).trim() !== "",
-    );
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -169,14 +129,14 @@ export const EditAdminDialog = ({
                     </div>
 
                 </div>
-                {isError && (
+                {/* {isError && (
                     <div className="mt-2 text-sm text-red-500">{String(error)}</div>
                 )}
                 {isSuccess && (
                     <div className="mt-2 text-sm text-green-600">
                         Admin edited successfully!
                     </div>
-                )}
+                )} */}
                 <DialogFooter>
                     <div className="flex mt-10 w-full justify-between gap-2">
                         <Button
@@ -188,11 +148,9 @@ export const EditAdminDialog = ({
                             Cancel
                         </Button>
                         <Button
-                            onClick={handleSubmit}
                             className="bg-[#161CCA] px-6 py-5 rounded-sm text-white hover:bg-[#161CCA]"
-                            disabled={!isFormComplete || isPending}
                         >
-                            {isPending ? "Editing..." : "Edit Admin"}
+                            {"Edit Admin"}
                         </Button>
                     </div>
                 </DialogFooter>

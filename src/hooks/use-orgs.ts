@@ -12,6 +12,7 @@ import {
   getOneOrg,
   getOrgs,
   getRecentActivities,
+  resolveIncident,
   suspendAdminApi,
   updateAdminApi,
   updateRegionBhubServiceCenter,
@@ -25,6 +26,7 @@ import type {
   CreateSubstationTransfomerFeederPayload,
   UpdateRegionBhubServiceCenterPayload,
   UpdateSubstationTransfomerFeederPayload,
+  resolveIncidentPayload,
 } from "@/types/org.interfaces";
 import { queryClient } from "@/lib/queryClient";
 
@@ -154,6 +156,21 @@ export const useIncidentReports = (status?: boolean) => {
     queryFn: () => getIncidentReports(status)
   })
 }
+
+export const useResolveIncidents = () => {
+  return useMutation({
+    mutationFn: async ({ id, status }: resolveIncidentPayload) => {
+      const response = await resolveIncident(id, status);
+      if (!response.success && 'error' in response){
+        throw new Error(response.error)
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['incidentReport']})
+    }
+  });
+};
 
 export const useGetAuditLog = () => {
   return useQuery({

@@ -610,21 +610,19 @@ export const getIncidentReports = async (
 };
 
 export const resolveIncident = async (
-  incidentId: string | number
-): Promise<{
-  success: boolean;
-  data?: string; 
-  error?: string;
-}> => {
+  id: string,
+  status: boolean
+): Promise<{ success: boolean } | { success: boolean; error: string }> => {
   try {
     const token = localStorage.getItem("access_token");
-    const response = await axios.post(
+    const response = await axios.patch(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report/resolve`,
-      { incidentId }, 
+      null, 
       {
+        params: { id, status },
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          custom: CUSTOM_HEADER,
         },
       }
     );
@@ -633,10 +631,7 @@ export const resolveIncident = async (
       return { success: false, error: response.data.responsedesc };
     }
 
-    return { 
-      success: true, 
-      data: response.data.responsedata 
-    };
+    return { success: true };
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "resolveIncident");
     return { success: false, error: errorResult.error };

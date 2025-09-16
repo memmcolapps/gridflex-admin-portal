@@ -516,6 +516,11 @@ export interface AuditLog {
 }
 
 export type SuspendAdminPayload = {
-  id: string;
+  id: string ;
+  status: boolean;
+};
+
+export type resolveIncidentPayload = {
+  id: string ;
   status: boolean;
 };

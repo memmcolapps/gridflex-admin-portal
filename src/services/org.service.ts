@@ -613,7 +613,7 @@ export const resolveIncident = async (
   incidentId: string | number
 ): Promise<{
   success: boolean;
-  data?: string;
+  data?: string; 
   error?: string;
 }> => {
   try {

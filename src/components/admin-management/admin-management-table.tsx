@@ -25,10 +25,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EditAdminDialog } from "./admin-management-dialogs/edit-admin-dialog";
+import { EditAdminDialog, type AdminData } from "./admin-management-dialogs/edit-admin-dialog";
 import { SuspendAdminDialog } from "./admin-management-dialogs/suspend-admin-dialog";
 import { UnsuspendAdminDialog } from "./admin-management-dialogs/unsuspend-admin-dialog";
 import { useGetAdminResponse } from "@/hooks/use-orgs";
+import type { UnifiedFormData } from "@/types/unifiedForm";
 
 export default function AdminManagementTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,6 +44,8 @@ export default function AdminManagementTable() {
     name: string;
     status: boolean;
   } | null>(null);
+
+const [selectedUser, setSelectedUser] = useState<AdminData | null>(null);
 
   const { data: admin } = useGetAdminResponse();
   const adminData = admin?.data?.operators ?? [];
@@ -69,6 +72,10 @@ export default function AdminManagementTable() {
     }
     return pages;
   };
+
+  function handleAdminUpdate(data: UnifiedFormData): void {
+    console.log("Admin updated:", data);
+  }
 
   return (
     <Card>
@@ -181,6 +188,16 @@ export default function AdminManagementTable() {
 
                       <DropdownMenuItem
                         onClick={() => {
+                          setSelectedUser({
+                            id: data.id,
+                            firstname: data.firstname,
+                            lastname: data.lastname,
+                            email: data.email,
+                            defaultPassword: data.defaultPassword || '', 
+                            department: "", 
+                            phoneNo: data.phoneNo || "", 
+                            role: data.roles[0]?.userRole || "" 
+                          });
                           setIsEditDialogOpen(true);
                         }}
                         className="align-items-center cursor-pointer"
@@ -291,6 +308,8 @@ export default function AdminManagementTable() {
       <EditAdminDialog
         isOpen={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
+        selectedContact={selectedUser} 
+        onSubmit={handleAdminUpdate}
       />
 
       <SuspendAdminDialog

@@ -1,12 +1,12 @@
 import { useGetAdminResponse } from "@/hooks/use-orgs";
-import { AlertCircle, Building2, TrendingUp, Users } from "lucide-react";
+import { AlertCircle, TrendingUp, Users } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 
 export default function AdminSummaryCards() {
     const { data: admin, isLoading, isError } = useGetAdminResponse()
     const totalActive = admin?.data?.totalActiveAdmins;
     const totalAdmins = admin?.data?.totalPortalUsers;
-    const totalInActiveAdmins = admin?.data?.totalInActiveAdmins;
+    // const totalInActiveAdmins = admin?.data?.totalInActiveAdmins;
     const totalSuspendedAdmins = admin?.data?.totalSuspendedAdmins;
 
     const summaryData = [
@@ -28,13 +28,6 @@ export default function AdminSummaryCards() {
             title: "Suspended Admins",
             value: isLoading ? "..." : totalSuspendedAdmins,
             icon: <Users size={20} />,
-            iconBg: "bg-gray-100",
-            iconColor: "text-gray-600",
-        },
-        {
-            title: "Inactive Admins",
-            value: isLoading ? "..." : totalInActiveAdmins,
-            icon: <Building2 size={20} />,
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",
         },

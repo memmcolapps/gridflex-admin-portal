@@ -3,52 +3,31 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 import { Button } from "../ui/button";
-
-const RECENT_INCIDENTS = [
-    {
-        action: 'Login API 505',
-        name: 'IBDEC',
-        user: 'Auto',
-        date: 'Aug 19, 2025',
-        time: '8:42 AM',
-        status: 'Error'
-    },
-    {
-        action: 'Payment not going through',
-        name: 'IBDEC',
-        user: 'Margeret Adeleke',
-        date: 'Aug 19, 2025',
-        time: '8:42 AM',
-        status: 'Processing'
-    },
-    {
-        action: 'Payment not going through',
-        name: 'IBDEC',
-        user: 'Margeret Adeleke',
-        date: 'Aug 19, 2025',
-        time: '8:42 AM',
-        status: 'Processing'
-    },
-    {
-        action: 'Payment not going through',
-        name: 'IBDEC',
-        user: 'Margeret Adeleke',
-        date: 'Aug 19, 2025',
-        time: '8:42 AM',
-        status: 'Processing'
-    },
-    {
-        action: 'Payment not going through',
-        name: 'IBDEC',
-        user: 'Margeret Adeleke',
-        date: 'Aug 19, 2025',
-        time: '8:42 AM',
-        status: 'Processing'
-    },
-]
-
+import { useIncidentReports, useResolveIncidents } from "@/hooks/use-orgs";
+import { toast } from "sonner";
 
 export default function RecentIncidents() {
+    const { data: incidents } = useIncidentReports()
+    const { mutate: resolveIncident } = useResolveIncidents();
+    const userName = incidents?.data?.map((incident) => (
+        `${incident.organization.businessName}`
+    ))
+
+    const handleResolve = (incidentId: string) => {
+        resolveIncident(
+            { id: incidentId, status: true },
+            {
+                onSuccess: () => {
+                    toast.success(`${userName} resolved successfully`);
+                },
+                onError: (err) => {
+                    toast.error(`Failed to resolve ${userName}`);
+                    console.error(err);
+                },
+            }
+        );
+    }
+
     return (
         <div className="py-8">
             <div className="w-full">
@@ -61,47 +40,63 @@ export default function RecentIncidents() {
                         </CardHeader>
                         <CardContent className="pt-4">
                             <div className="flex flex-col gap-5">
-                                {RECENT_INCIDENTS.map((incident, index) => (
-                                    <div key={index} className={`
+                                {incidents?.data
+                                    ?.filter((incident) => incident.status === false)
+                                    .map((incident, index) => (
+                                        <div key={index} className={`
                                         rounded-lg flex flex-col gap-1
-                                        ${incident.status === 'Error' ? 'bg-red-100' : ''}
-                                        ${incident.status === 'Processing' ? 'bg-yellow-100' : ''}
+                                        ${incident.status === false ? 'bg-red-100' : ''}
+                                        ${incident.status === true ? 'bg-yellow-100' : ''}
                                         `}>
-                                        <div className="flex justify-between items-center pr-4">
-                                            <div>
-                                                <ul>
-                                                    <div className="flex py-2 gap-2">
-                                                        <div className="pt-2 pl-2">
-                                                            <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
+                                            <div className="flex justify-between items-center pr-4">
+                                                <div>
+                                                    <ul>
+                                                        <div className="flex py-2 gap-2">
+                                                            <div className="pt-2 pl-2">
+                                                                <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
+                                                            </div>
+                                                            <li className="flex flex-col">
+                                                                <span className="text-gray-900">{incident.message}</span>
+                                                                {incident?.user && (
+                                                                    <span className="text-gray-600">User: `{incident.user.firstname} {incident.user.lastname} `</span>
+                                                                )}
+                                                                {incident?.organization && (
+                                                                    <span className="text-gray-600">Utility Company: {incident.organization.businessName} </span>
+                                                                )}
+                                                                <span className="text-gray-600 gap-1 flex items-center">
+                                                                    {new Date(incident.createdAt).toLocaleDateString("en-US", {
+                                                                        month: "short",
+                                                                        day: "numeric",
+                                                                        year: "numeric",
+                                                                    })}
+                                                                    <div className="w-[4px] h-[4px] bg-[#6D6D6D] rounded-full"></div>
+                                                                    <Clock size={16} color="#6D6D6D" />
+                                                                    {new Date(incident.createdAt).toLocaleTimeString("en-US", {
+                                                                        hour: "numeric",
+                                                                        minute: "2-digit",
+                                                                        hour12: true,
+                                                                    })}
+                                                                </span>
+
+
+                                                            </li>
                                                         </div>
-                                                        <li className="flex flex-col">
-                                                            <span className="text-gray-900">{incident.action}</span>
-                                                            <span className="text-gray-600">User: {incident.user} </span>
-                                                            <span className="text-gray-600">Utility Company: {incident.name} </span>
-                                                            <span className="text-gray-600 gap-1 flex items-center">
-                                                                {incident.date}
-                                                                <div className="w-[4px] h-[4px] bg-[#6D6D6D] rounded-full"></div>
-                                                                <Clock size={16} color="#6D6D6D" />
-                                                                {incident.time}
-                                                            </span>
 
-                                                        </li>
-                                                    </div>
+                                                    </ul>
+                                                </div>
+                                                <div>
+                                                    <Button
+                                                        onClick={() => handleResolve(incident.id)}
+                                                        className="flex h-10 cursor-pointer text-black items-center border border-1 border-gray-400 gap-2 bg-gray-50 hover:bg-gray-100"
+                                                    >
+                                                        Resolve
+                                                    </Button>
+                                                </div>
+                                            </div>
 
-                                                </ul>
-                                            </div>
-                                            <div>
-                                                <Button
-                                                    className="flex h-10 cursor-pointer text-black items-center border border-1 border-gray-400 gap-2 bg-gray-50 hover:bg-gray-100"
-                                                >
-                                                    Resolve
-                                                </Button>
-                                            </div>
                                         </div>
 
-                                    </div>
-
-                                ))}
+                                    ))}
                             </div>
 
                         </CardContent>

@@ -11,7 +11,7 @@ import AdminSummaryTab from "@/components/admin-management/summary-tab";
 
 const ALL_ROLES = [
     {
-        role: 'Admin'
+        role: 'SUPER_ADMIN'
     },
     {
         role: 'Developer'

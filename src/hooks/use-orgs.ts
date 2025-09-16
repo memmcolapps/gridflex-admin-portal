@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createAdminApi,
   createOrgApi,
@@ -8,22 +8,27 @@ import {
   getAllNodes,
   getAnalytics,
   getAuditLog,
+  getIncidentReports,
   getOneOrg,
   getOrgs,
   getRecentActivities,
+  resolveIncident,
   suspendAdminApi,
+  updateAdminApi,
   updateRegionBhubServiceCenter,
   updateSubstationTransfomerFeeder,
 } from "../services/org.service";
 import type {
-  CreateAdminPayload,
+  AdminPayload,
   CreateOrgPayload,
   SuspendAdminPayload,
   CreateRegionBhubServiceCenterPayload,
   CreateSubstationTransfomerFeederPayload,
   UpdateRegionBhubServiceCenterPayload,
   UpdateSubstationTransfomerFeederPayload,
+  resolveIncidentPayload,
 } from "@/types/org.interfaces";
+import { queryClient } from "@/lib/queryClient";
 
 export const useCreateOrg = () => {
   return useMutation({
@@ -145,6 +150,28 @@ export const useGetRecentActiviy = () => {
   })
 }
 
+export const useIncidentReports = (status?: boolean) => {
+  return useQuery({
+    queryKey: ['incidentReport', status],
+    queryFn: () => getIncidentReports(status)
+  })
+}
+
+export const useResolveIncidents = () => {
+  return useMutation({
+    mutationFn: async ({ id, status }: resolveIncidentPayload) => {
+      const response = await resolveIncident(id, status);
+      if (!response.success && 'error' in response){
+        throw new Error(response.error)
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['incidentReport']})
+    }
+  });
+};
+
 export const useGetAuditLog = () => {
   return useQuery({
     queryKey: ['auditlog'],
@@ -153,13 +180,32 @@ export const useGetAuditLog = () => {
 }
 
 export const useCreateAdmin = () => {
+const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (admin: CreateAdminPayload) => {
+    mutationFn: async (admin: AdminPayload) => {
       const response = await createAdminApi(admin);
       if (!response.success && 'error' in response){
         throw new Error(response.error)
       }
       return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin']})
+    }
+  })
+}
+
+export const useUpdateAdmin = () => {
+  return useMutation({
+    mutationFn: async (admin: AdminPayload) => {
+      const response = await updateAdminApi(admin);
+      if (!response.success && 'error' in response){
+        throw new Error(response.error)
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin']})
     }
   })
 }
@@ -173,5 +219,10 @@ export const useSuspendAdmin = () => {
       }
       return response;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin']})
+    }
   });
 };
+
+

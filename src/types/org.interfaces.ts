@@ -398,13 +398,14 @@ export interface DailySummary {
 }
 
 
-export interface CreateAdminPayload {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  department: string;
-  phoneNo: string;
+export interface AdminPayload {
+  id?: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  defaultPassword?: string;
+  department?: string;
+  phoneNo?: string;
   role?: string;
 }
 
@@ -422,6 +423,7 @@ export interface Role {
 
 export interface Admin {
   id: string;
+  defaultPassword?: string;
   firstname: string;
   lastname: string;
   department: string;
@@ -467,6 +469,32 @@ export interface RecentActivities {
   }[]
 }
 
+export interface Org {
+  businessName: string;
+  createdAt: string;
+  updatedAt: string
+}
+
+export interface Client{
+  firstname: string;
+  lastname: string;
+  createdAt: string;
+  updatedAt: string
+}
+
+export interface IncidentReport{
+  responsecode: string;
+  responsedesc: string;
+  responsedata: {
+    id: string;
+    message: string;
+    createdAt: string;
+    organization: Org;
+    status: boolean;
+    user: Client;
+  }[]
+}
+
 export interface User {
   id: string;
   type: string;
@@ -488,6 +516,11 @@ export interface AuditLog {
 }
 
 export type SuspendAdminPayload = {
-  id: string;
-  status: boolean; 
+  id: string ;
+  status: boolean;
+};
+
+export type resolveIncidentPayload = {
+  id: string ;
+  status: boolean;
 };

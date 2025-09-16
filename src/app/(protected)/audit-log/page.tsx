@@ -10,7 +10,7 @@ import AuditSummaryTab from "@/components/audit-log/summary-tab";
 
 const ALL_ROLES = [
     {
-        role: 'Admin'
+        role: 'SUPER_ADMIN'
     },
     {
         role: 'Developer'

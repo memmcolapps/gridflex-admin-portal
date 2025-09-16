@@ -5,7 +5,7 @@ import type {
   Admins,
   AnalyticsResponse,
   AuditLog,
-  CreateAdminPayload,
+  AdminPayload,
   CreateAdminResponse,
   CreateOrgPayload,
   CreateOrgResponse,
@@ -19,6 +19,7 @@ import type {
   RecentActivities,
   UpdateRegionBhubServiceCenterPayload,
   UpdateSubstationTransfomerFeederPayload,
+  IncidentReport,
 } from "@/types/org.interfaces";
 
 const BASE_URL = env.NEXT_PUBLIC_API_BASE_URL;
@@ -456,15 +457,11 @@ export const getAuditLog = async (): Promise<{
 };
 
 export const createAdminApi = async (
-  payload: CreateAdminPayload,
+  payload: AdminPayload,
 ): Promise<{ success: boolean} | {success: boolean; error: string}> => {
   try {
-    console.log("Creating admin with payload:", payload);
     
-    const token = localStorage.getItem("access_token");
-    console.log("Token exists:", !!token);
-    console.log("Token preview:", token?.substring(0, 20) + "...");
-    
+    const token = localStorage.getItem("access_token");  
     const response = await axios.post<CreateAdminResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/create`,
       {
@@ -472,7 +469,7 @@ export const createAdminApi = async (
         lastname: payload.lastname,
         email: payload.email,
         department: payload.department,
-        password: payload.password,
+        password: payload.defaultPassword,
         phoneNo: payload.phoneNo,
         role: payload.role,
       },
@@ -529,6 +526,114 @@ export const suspendAdminApi = async (
     return { success: true };
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "suspendAdmin");
+    return { success: false, error: errorResult.error };
+  }
+};
+
+export const updateAdminApi = async (
+  payload: AdminPayload,
+): Promise<{ success: boolean} | {success: boolean; error: string}> => {
+  try {    
+    const token = localStorage.getItem("access_token");  
+    const response = await axios.patch<CreateAdminResponse>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/update`,
+      {
+        firstname: payload.firstname,
+        lastname: payload.lastname,
+        email: payload.email,
+        id: payload.id,
+        // department: payload.department,
+        password: payload.defaultPassword,
+        phoneNo: payload.phoneNo,
+        role: payload.role,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          custom: CUSTOM_HEADER,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    if (response.data.responsecode !== "000") {
+      return {
+        success: false,
+        error: response.data.responsedesc,
+      };
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "updateAdmin");
+    return {
+      success: false,
+      error: errorResult.error,
+    };
+  }
+};
+
+export const getIncidentReports = async (
+  status?: boolean
+): Promise<{
+  success: boolean;
+  data?: IncidentReport['responsedata'];
+  error?: string;
+}> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.get<IncidentReport>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report`,
+      {
+        params: { status },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data.responsecode !== "000") {
+      return { success: false, error: response.data.responsedesc };
+    }
+
+    // Fix: Return the actual data
+    return { 
+      success: true, 
+      data: response.data.responsedata 
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "incidentReport");
+    return { success: false, error: errorResult.error };
+  }
+};
+
+export const resolveIncident = async (
+  id: string,
+  status: boolean
+): Promise<{ success: boolean } | { success: boolean; error: string }> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.patch(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report/resolve`,
+      null, 
+      {
+        params: { id, status },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          custom: CUSTOM_HEADER,
+        },
+      }
+    );
+
+    if (response.data.responsecode !== "000") {
+      return { success: false, error: response.data.responsedesc };
+    }
+
+    return { success: true };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "resolveIncident");
     return { success: false, error: errorResult.error };
   }
 };

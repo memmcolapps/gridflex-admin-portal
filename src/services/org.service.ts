@@ -5,7 +5,7 @@ import type {
   Admins,
   AnalyticsResponse,
   AuditLog,
-  CreateAdminPayload,
+  AdminPayload,
   CreateAdminResponse,
   CreateOrgPayload,
   CreateOrgResponse,
@@ -456,15 +456,11 @@ export const getAuditLog = async (): Promise<{
 };
 
 export const createAdminApi = async (
-  payload: CreateAdminPayload,
+  payload: AdminPayload,
 ): Promise<{ success: boolean} | {success: boolean; error: string}> => {
   try {
-    console.log("Creating admin with payload:", payload);
     
-    const token = localStorage.getItem("access_token");
-    console.log("Token exists:", !!token);
-    console.log("Token preview:", token?.substring(0, 20) + "...");
-    
+    const token = localStorage.getItem("access_token");  
     const response = await axios.post<CreateAdminResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/create`,
       {
@@ -472,7 +468,7 @@ export const createAdminApi = async (
         lastname: payload.lastname,
         email: payload.email,
         department: payload.department,
-        password: payload.password,
+        password: payload.defaultPassword,
         phoneNo: payload.phoneNo,
         role: payload.role,
       },
@@ -530,5 +526,50 @@ export const suspendAdminApi = async (
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "suspendAdmin");
     return { success: false, error: errorResult.error };
+  }
+};
+
+export const updateAdminApi = async (
+  payload: AdminPayload,
+): Promise<{ success: boolean} | {success: boolean; error: string}> => {
+  try {    
+    const token = localStorage.getItem("access_token");  
+    const response = await axios.patch<CreateAdminResponse>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/update`,
+      {
+        firstname: payload.firstname,
+        lastname: payload.lastname,
+        email: payload.email,
+        id: payload.id,
+        // department: payload.department,
+        password: payload.defaultPassword,
+        phoneNo: payload.phoneNo,
+        role: payload.role,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          custom: CUSTOM_HEADER,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    if (response.data.responsecode !== "000") {
+      return {
+        success: false,
+        error: response.data.responsedesc,
+      };
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "updateAdmin");
+    return {
+      success: false,
+      error: errorResult.error,
+    };
   }
 };

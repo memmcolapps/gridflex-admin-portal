@@ -398,13 +398,14 @@ export interface DailySummary {
 }
 
 
-export interface CreateAdminPayload {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  department: string;
-  phoneNo: string;
+export interface AdminPayload {
+  id?: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  defaultPassword?: string;
+  department?: string;
+  phoneNo?: string;
   role?: string;
 }
 
@@ -422,6 +423,7 @@ export interface Role {
 
 export interface Admin {
   id: string;
+  defaultPassword?: string;
   firstname: string;
   lastname: string;
   department: string;
@@ -489,5 +491,5 @@ export interface AuditLog {
 
 export type SuspendAdminPayload = {
   id: string;
-  status: boolean; 
+  status: boolean;
 };

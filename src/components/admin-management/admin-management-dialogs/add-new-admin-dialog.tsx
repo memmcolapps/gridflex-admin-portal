@@ -24,7 +24,7 @@ type Props = {
 
 const ALL_ROLES = [
     {
-        role: 'Admin'
+        role: 'SUPER_ADMIN'
     },
     {
         role: 'Developer'
@@ -39,7 +39,7 @@ const ALL_DEPARTMENT = [
         department: 'System Integration'
     },
     {
-        department: 'R$D Software'
+        department: 'R&D Software'
     },
 ]
 
@@ -50,6 +50,9 @@ export const AddNewAdminDialog = ({
     initialData = {},
 }: Props) => {
     const [formData, setFormData] = useState<UnifiedFormData>(initialData);
+    const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [passwordError, setPasswordError] = useState<string>("");
+    
     const {
         mutate: createAdmin,
         isError,
@@ -63,25 +66,67 @@ export const AddNewAdminDialog = ({
         lastname: data.lastname ?? "",
         email: data.email ?? '',
         department: data.department ?? '',
-        password: data.defaultPassword ?? '',
+        defaultPassword: data.defaultPassword ?? '',
         role: data.role ?? '',
         phoneNo: data.phoneNo ?? ''
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        
+        if (name === 'defaultPassword' && passwordError) {
+            setPasswordError("");
+        }
+    };
+
+    const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setConfirmPassword(value);
+        
+        if (passwordError) {
+            setPasswordError("");
+        }
     };
 
     const handleSelectChange = (name: string) => (value: string) => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const validatePasswords = (): boolean => {
+        const password = formData.defaultPassword ?? "";
+        
+        if (!password) {
+            setPasswordError("Password is required");
+            return false;
+        }
+        
+        if (!confirmPassword) {
+            setPasswordError("Please confirm your password");
+            return false;
+        }
+        
+        if (password !== confirmPassword) {
+            setPasswordError("Passwords do not match");
+            return false;
+        }
+        
+        return true;
+    };
+
     const handleSubmit = () => {
+        if (!validatePasswords()) {
+            return;
+        }
+        
         const payload = mapToCreateAdminPayload(formData);
         createAdmin(payload, {
             onSuccess: () => {
                 onSubmit(formData);
                 onOpenChange(false);
+                setFormData({});
+                setConfirmPassword("");
+                setPasswordError("");
             },
             onError: () => {
                 toast.error("Failed to create Admin");
@@ -101,7 +146,7 @@ export const AddNewAdminDialog = ({
 
     const isFormComplete = requiredFields.every(
         (field) => formData[field] && String(formData[field]).trim() !== "",
-    );
+    ) && confirmPassword.trim() !== "";
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -143,6 +188,7 @@ export const AddNewAdminDialog = ({
                         <Input
                             id="email"
                             name="email"
+                            type="email"
                             className="w-[250px] h-12"
                             value={formData.email ?? ""}
                             onChange={handleChange}
@@ -205,8 +251,8 @@ export const AddNewAdminDialog = ({
                             </SelectContent>
                         </Select>
                     </div>
-
                 </div>
+                
                 <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-4">
                         <Label htmlFor="defaultPassword">
@@ -215,6 +261,7 @@ export const AddNewAdminDialog = ({
                         <Input
                             id="defaultPassword"
                             name="defaultPassword"
+                            type="password"
                             className="w-[250px] h-12"
                             value={formData.defaultPassword ?? ""}
                             onChange={handleChange}
@@ -223,20 +270,24 @@ export const AddNewAdminDialog = ({
                     </div>
 
                     <div className="space-y-4">
-                        <Label htmlFor="defaultPassword">
+                        <Label htmlFor="confirmPassword">
                             Confirm Default Password <span className="text-red-500">*</span>
                         </Label>
                         <Input
-                            id="defaultPassword"
-                            name="defaultPassword"
-                            className="w-full h-12"
-                            value={formData.defaultPassword ?? ""}
-                            onChange={handleChange}
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            type="password"
+                            className="w-[250px] h-12"
+                            value={confirmPassword}
+                            onChange={handleConfirmPasswordChange}
                             placeholder="Confirm Default Password"
                         />
                     </div>
-
                 </div>
+
+                {passwordError && (
+                    <div className="text-sm text-red-500">{passwordError}</div>
+                )}
 
                 {isError && (
                     <div className="mt-2 text-sm text-red-500">{String(error)}</div>

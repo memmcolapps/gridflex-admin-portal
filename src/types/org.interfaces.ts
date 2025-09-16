@@ -337,16 +337,19 @@ export interface AnalyticsResponse {
 }
 
 export interface ResponseData {
+  totalResolvedIncident?: string;
+  totalUnresolvedIncident?: string;
   monthlySummaries: MonthlySummary[];
-  activeUtilityCompany: number;
+  activeUtilityCompany?: number;
+  totalCustomers?: number;
   totalDailySummary: Summary;
   dailyReports: DailyReport[];
-  averageRecoveryTime: number;
-  totalUtilityCompany: number;
-  monthlyReports: MonthlyReport[];
+  averageRecoveryTime?: number;
+  totalUtilityCompany?: number;
+  monthlyReports?: MonthlyReport[];
   totalMonthlySummary: Summary;
-  incidentReport: number;
-  dailySummaries: DailySummary[];
+  incidentReport?: number;
+  dailySummaries?: DailySummary[];
 }
 
 export interface MonthlySummary {

@@ -1,44 +1,42 @@
-import { useGetOrgs } from "@/hooks/use-orgs";
+import { useGetDashboard } from "@/hooks/use-orgs";
 import { AlertCircle, Building2, CircleCheckBig, Users } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 
 export default function DashboardSummaryCards() {
-    const { isError } = useGetOrgs();
-    //   const orgs = data?.organizations ?? [];
-    //   const totalActive = orgs.filter((org) => org.status).length;
-    //   const totalSuspended = orgs.filter((org) => !org.status).length;
-    //   const totalUtilities = orgs.length;
-    //   const totalCustomers = data?.overallCustomers ?? 0;
-
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    const { data: analytics, isLoading, isError } = useGetDashboard(currentYear, currentMonth);
+    const summary = analytics?.data;
+    const totalUtilityCompany = summary?.totalUtilityCompany;
+    const totalCustomers = summary?.totalCustomers;
+    const totalResolvedIncident = summary?.totalResolvedIncident;
+    const totalUnresolvedIncident = summary?.totalUnresolvedIncident;
+    
     const summaryData = [
         {
             title: "Total Utility Companies",
-            //   value: isLoading ? "..." : totalActive,
-            value: '5',
+              value: isLoading ? "..." : totalUtilityCompany,
             icon: <Building2 strokeWidth={1.5} size={20} />,
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",
         },
         {
             title: "Total Customers",
-            //   value: isLoading ? "..." : totalSuspended,
-            value: '1.2 Million',
+              value: isLoading ? "..." : totalCustomers?.toLocaleString(),
             icon: <Users strokeWidth={1.5} size={20} />,
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",
         },
         {
             title: "Total Resolved Incidents",
-            //   value: isLoading ? "..." : totalCustomers.toLocaleString(),
-            value: '20',
+              value: isLoading ? "..." : totalResolvedIncident,
             icon: <CircleCheckBig strokeWidth={1.5} size={20} />,
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",
         },
         {
             title: "Total unresolved Incidents",
-            //   value: isLoading ? "..." : totalUtilities,
-            value: '2',
+              value: isLoading ? "..." : totalUnresolvedIncident,
             icon: <AlertCircle strokeWidth={1.5} size={20} />,
             iconBg: "bg-gray-100",
             iconColor: "text-gray-600",

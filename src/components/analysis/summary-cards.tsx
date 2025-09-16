@@ -7,15 +7,16 @@ export default function AnalysisSummaryCards() {
   const currentMonth = new Date().getMonth() + 1;
   const { data: analytics, isLoading, isError } = useGetAnalytics(currentYear, currentMonth);
   const summary = analytics?.data;
-  // const systemUptime = summary?.dailySummaries;
+  const systemUptime = summary?.dailySummaries?.[0]?.uptimePercent;
   const activeUtilityCompany = summary?.activeUtilityCompany;
   const incidentReported = summary?.incidentReport;
   const averageRecovery = summary?.averageRecoveryTime;
+  
 
   const summaryData = [
     {
       title: "System Uptime",
-      // value: isLoading ? "..." : systemUptime ?? 'N/A',
+      value: isLoading ? "..." : systemUptime ? `${Number(systemUptime.toFixed(2))}%` : 'N/A',
       icon: <TrendingUp size={20} strokeWidth={1.5} />,
       iconBg: "bg-gray-100",
       iconColor: "text-gray-600",

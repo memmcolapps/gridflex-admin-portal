@@ -637,3 +637,44 @@ export const resolveIncident = async (
     return { success: false, error: errorResult.error };
   }
 };
+
+export const getDashboardAnalytics = async (year: number, month: number): Promise<{
+  success: boolean;
+  data?: AnalyticsResponse["responsedata"];
+  error?: string;
+}> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.get<AnalyticsResponse>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/dashboard`, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          custom: CUSTOM_HEADER,
+        },
+        params: {
+          year,
+          month
+        }
+      },
+    );
+
+    if (response.data.responsecode !== "000") {
+      return {
+        success: false,
+        error: response.data.responsedesc,
+      };
+    }
+
+    return {
+      success: true,
+      data: response.data.responsedata,
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "getDashboard");
+    return {
+      success: false,
+      error: errorResult.error,
+    };
+  }
+};

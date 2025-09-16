@@ -8,6 +8,7 @@ import {
   getAllNodes,
   getAnalytics,
   getAuditLog,
+  getDashboardAnalytics,
   getIncidentReports,
   getOneOrg,
   getOrgs,
@@ -133,6 +134,13 @@ export const useGetAnalytics = (year: number, month: number) => {
   return useQuery({
     queryKey: ["analytics", year, month],
     queryFn: () => getAnalytics(year,month),
+  });
+};
+
+export const useGetDashboard = (year: number, month: number) => {
+  return useQuery({
+    queryKey: ["dashboard", year, month],
+    queryFn: () => getDashboardAnalytics(year,month),
   });
 };
 

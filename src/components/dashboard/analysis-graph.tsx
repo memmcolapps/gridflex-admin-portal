@@ -1,70 +1,42 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+  } from "recharts";
+  import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+  } from "@/components/ui/card";
+import { useGetDashboard } from "@/hooks/use-orgs";
 
-const data = [
-    {
-        name: 'Jan',
-        uptime: 40,
-        downtime: 24,
-    },
-    {
-        name: 'Feb',
-        uptime: 30,
-        downtime: 13,
-    },
-    {
-        name: 'Mar',
-        uptime: 20,
-        downtime: 98,
-    },
-    {
-        name: 'Apr',
-        uptime: 27,
-        downtime: 39,
-    },
-    {
-        name: 'May',
-        uptime: 18,
-        downtime: 48,
-    },
-    {
-        name: 'Jun',
-        uptime: 23,
-        downtime: 38,
-    },
-    {
-        name: 'Jul',
-        uptime: 34,
-        downtime: 43,
-    },
-    {
-        name: 'Aug',
-        uptime: 20,
-        downtime: 98,
-    },
-    {
-        name: 'Sep',
-        uptime: 27,
-        downtime: 39,
-    },
-    {
-        name: 'Oct',
-        uptime: 18,
-        downtime: 48,
-    },
-    {
-        name: 'Nov',
-        uptime: 23,
-        downtime: 38,
-    },
-    {
-        name: 'Dec',
-        uptime: 34,
-        downtime: 43,
-    },
-];
 
 export default function DashboardAnalysisGraph() {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    const { data,isLoading, isError, error } = useGetDashboard(currentYear, currentMonth);
+  
+    if (isLoading) return <p>Loading...</p>;
+    if (isError) return <p>Error: {(error as Error).message}</p>;
+  
+    if (!data?.success) {
+      return <p className="text-red-500 text-center">Failed: {data?.error ?? "Something went wrong"}</p>;
+    }
+  
+    const chartData =
+    data.data?.monthlyReports?.map((report) => ({
+      name: report.month,
+      uptime: report.uptimePercent,
+      downtime: report.downtimePercent,
+    })) ?? [];
+  
+
     return (
         <Card className="shadow-none w-full">
             <CardHeader>
@@ -90,7 +62,7 @@ export default function DashboardAnalysisGraph() {
             <CardContent className="p-0">
                 <div style={{ width: '100%', height: '377px' }}>
                     <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={data} margin={{ right: 30, bottom: 20 }}>
+                        <LineChart data={chartData} margin={{ right: 30, bottom: 20 }}>
                             <CartesianGrid strokeDasharray="3 1" />
                             <XAxis dataKey="name" padding={{ left: 30, right: 30 }} axisLine={false} tickLine={false} />
                             <YAxis domain={[0, 100]} axisLine={false} tickLine={false} />

@@ -19,6 +19,7 @@ import type {
   RecentActivities,
   UpdateRegionBhubServiceCenterPayload,
   UpdateSubstationTransfomerFeederPayload,
+  IncidentReport,
 } from "@/types/org.interfaces";
 
 const BASE_URL = env.NEXT_PUBLIC_API_BASE_URL;
@@ -571,5 +572,73 @@ export const updateAdminApi = async (
       success: false,
       error: errorResult.error,
     };
+  }
+};
+
+export const getIncidentReports = async (
+  status?: boolean
+): Promise<{
+  success: boolean;
+  data?: IncidentReport['responsedata'];
+  error?: string;
+}> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.get<IncidentReport>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report`,
+      {
+        params: { status },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data.responsecode !== "000") {
+      return { success: false, error: response.data.responsedesc };
+    }
+
+    // Fix: Return the actual data
+    return { 
+      success: true, 
+      data: response.data.responsedata 
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "incidentReport");
+    return { success: false, error: errorResult.error };
+  }
+};
+
+export const resolveIncident = async (
+  incidentId: string | number
+): Promise<{
+  success: boolean;
+  data?: any;
+  error?: string;
+}> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.post(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report/resolve`,
+      { incidentId }, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (response.data.responsecode !== "000") {
+      return { success: false, error: response.data.responsedesc };
+    }
+
+    return { 
+      success: true, 
+      data: response.data.responsedata 
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "resolveIncident");
+    return { success: false, error: errorResult.error };
   }
 };

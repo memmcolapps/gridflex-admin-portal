@@ -8,6 +8,7 @@ import {
   getAllNodes,
   getAnalytics,
   getAuditLog,
+  getIncidentReports,
   getOneOrg,
   getOrgs,
   getRecentActivities,
@@ -144,6 +145,13 @@ export const useGetRecentActiviy = () => {
   return useQuery({
     queryKey: ['recentactivity'],
     queryFn: () => getRecentActivities()
+  })
+}
+
+export const useIncidentReports = (status?: boolean) => {
+  return useQuery({
+    queryKey: ['incidentReport', status],
+    queryFn: () => getIncidentReports(status)
   })
 }
 

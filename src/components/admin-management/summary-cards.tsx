@@ -1,12 +1,12 @@
 import { useGetAdminResponse } from "@/hooks/use-orgs";
-import { AlertCircle, Building2, TrendingUp, Users } from "lucide-react";
+import { AlertCircle, TrendingUp, Users } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 
 export default function AdminSummaryCards() {
     const { data: admin, isLoading, isError } = useGetAdminResponse()
     const totalActive = admin?.data?.totalActiveAdmins;
     const totalAdmins = admin?.data?.totalPortalUsers;
-    const totalInActiveAdmins = admin?.data?.totalInActiveAdmins;
+    // const totalInActiveAdmins = admin?.data?.totalInActiveAdmins;
     const totalSuspendedAdmins = admin?.data?.totalSuspendedAdmins;
 
     const summaryData = [

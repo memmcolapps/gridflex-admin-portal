@@ -9,7 +9,7 @@ export default function AnalysisSummaryCards() {
   const summary = analytics?.data;
   const systemUptime = summary?.dailySummaries?.[0]?.uptimePercent;
   const activeUtilityCompany = summary?.activeUtilityCompany;
-  const incidentReported = summary?.incidentReports;
+  const incidentReported = summary?.incidentReport;
   const averageRecovery = summary?.averageRecoveryTime;
   
 

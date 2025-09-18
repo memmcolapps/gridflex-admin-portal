@@ -348,6 +348,7 @@ export interface ResponseData {
   totalUtilityCompany?: number;
   monthlyReports?: MonthlyReport[];
   totalMonthlySummary: Summary;
+  incidentReport: number;
   incidentReports?: DashIncidentReport[];
   dailySummaries?: DailySummary[];
 }

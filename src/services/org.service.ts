@@ -20,6 +20,7 @@ import type {
   UpdateRegionBhubServiceCenterPayload,
   UpdateSubstationTransfomerFeederPayload,
   IncidentReport,
+  Contact,
 } from "@/types/org.interfaces";
 
 const BASE_URL = env.NEXT_PUBLIC_API_BASE_URL;
@@ -676,5 +677,59 @@ export const getDashboardAnalytics = async (year: number, month: number): Promis
       success: false,
       error: errorResult.error,
     };
+  }
+};
+
+export const getContactMessages = async (): Promise<{
+  success: boolean;
+  data?: Contact['responsedata']
+  error?: string;
+}> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.get<Contact>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/message/get`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data.responsecode !== "000") {
+      return { success: false, error: response.data.responsedesc };
+    }
+
+    return { success: true, data: response.data.responsedata };
+  } catch {
+    return { success: false, error: "Something went wrong" };
+  }
+};
+
+export const markContactApi = async (
+  id: string,
+): Promise<{ success: boolean } | { success: boolean; error: string }> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.post(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/message/read`,
+      null, 
+      {
+        params: { id },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          custom: CUSTOM_HEADER,
+        },
+      }
+    );
+
+    if (response.data.responsecode !== "000") {
+      return { success: false, error: response.data.responsedesc };
+    }
+
+    return { success: true };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "markContact");
+    return { success: false, error: errorResult.error };
   }
 };

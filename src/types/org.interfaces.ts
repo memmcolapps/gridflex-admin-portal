@@ -523,7 +523,35 @@ export type SuspendAdminPayload = {
   status: boolean;
 };
 
+export type MarkContactPayload = {
+  id: string ;
+};
+
 export type resolveIncidentPayload = {
   id: string ;
   status: boolean;
 };
+
+export interface Contacts {
+  id: string;
+  organizationName: string;
+  organizationSize: string;
+  email: string;
+  phoneNo: string;
+  message: string;
+  createdAt: string;
+  status: string;
+
+}
+
+export interface Contact {
+  responsecode: string;
+  responsedesc: string;
+  responsedata: {
+    size: number ;
+    totalPages: number;
+    messages: Contacts[];
+    page:number ;
+    totalCount:number ;
+  }
+}

@@ -13,12 +13,13 @@ import { Label } from "@/components/ui/label";
 
 type ContactData = {
     id: string;
-    organization: string;
+    organizationName: string;
     email: string;
     message: string;
-    size: string;
-    status: boolean;
-    lastLogin: string;
+    organizationSize: string;
+    status: string;
+    // lastLogin: string;
+    createdAt: string;
 };
 
 interface Props {
@@ -44,13 +45,13 @@ export const ViewDetailsDialog = ({
                         <Label htmlFor="organization">
                             Organization
                         </Label>
-                        <p className="text-gray-600">{selectedContact?.organization}</p>
+                        <p className="text-gray-600">{selectedContact?.organizationName}</p>
                     </div>
                     <div className="space-y-4">
                         <Label htmlFor="organizationSize">
                             Organization Size
                         </Label>
-                        <p className="text-gray-600">{selectedContact?.size} employees</p>
+                        <p className="text-gray-600">{selectedContact?.organizationSize} employees</p>
                     </div>
                     <div className="space-y-4">
                         <Label htmlFor="email">
@@ -62,7 +63,7 @@ export const ViewDetailsDialog = ({
                         <Label htmlFor="date">
                             Date Received
                         </Label>
-                        <p className="text-gray-600">{selectedContact?.lastLogin}</p>
+                        <p className="text-gray-600">{selectedContact?.createdAt}</p>
                     </div>
                     <div className="space-y-4">
                         <Label htmlFor="message">

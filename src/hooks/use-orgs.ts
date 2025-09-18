@@ -8,11 +8,13 @@ import {
   getAllNodes,
   getAnalytics,
   getAuditLog,
+  getContactMessages,
   getDashboardAnalytics,
   getIncidentReports,
   getOneOrg,
   getOrgs,
   getRecentActivities,
+  markContactApi,
   resolveIncident,
   suspendAdminApi,
   updateAdminApi,
@@ -28,6 +30,7 @@ import type {
   UpdateRegionBhubServiceCenterPayload,
   UpdateSubstationTransfomerFeederPayload,
   resolveIncidentPayload,
+  MarkContactPayload,
 } from "@/types/org.interfaces";
 import { queryClient } from "@/lib/queryClient";
 
@@ -151,6 +154,28 @@ export const useGetAdminResponse = () => {
   });
 };
 
+export const useGetContactMessages = () => {
+  return useQuery({
+    queryKey: ["contactInfo"], 
+    queryFn: () => getContactMessages(),
+  });
+};
+
+export const useMarkContact = () => {
+  return useMutation({
+    mutationFn: async ({ id }: MarkContactPayload) => {
+      const response = await markContactApi(id);
+      if (!response.success && 'error' in response){
+        throw new Error(response.error)
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contactInfo']})
+    }
+  });
+};
+
 export const useGetRecentActiviy = () => {
   return useQuery({
     queryKey: ['recentactivity'],
@@ -232,5 +257,7 @@ export const useSuspendAdmin = () => {
     }
   });
 };
+
+
 
 

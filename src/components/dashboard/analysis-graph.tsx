@@ -30,8 +30,8 @@ export default function DashboardAnalysisGraph() {
     }
   
     const chartData =
-    data.data?.monthlyReports?.map((report) => ({
-      name: report.month,
+    data.data?.monthlySummaries?.map((report) => ({
+      name: report.monthDisplay,
       uptime: report.uptimePercent,
       downtime: report.downtimePercent,
     })) ?? [];

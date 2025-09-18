@@ -639,7 +639,7 @@ export const resolveIncident = async (
   }
 };
 
-export const getDashboardAnalytics = async (year: number, month: number): Promise<{
+export const getDashboardAnalytics = async (year?: number, month?: number): Promise<{
   success: boolean;
   data?: AnalyticsResponse["responsedata"];
   error?: string;

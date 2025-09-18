@@ -348,13 +348,33 @@ export interface ResponseData {
   totalUtilityCompany?: number;
   monthlyReports?: MonthlyReport[];
   totalMonthlySummary: Summary;
-  incidentReport?: number;
+  incidentReport: number;
+  incidentReports?: DashIncidentReport[];
   dailySummaries?: DailySummary[];
+}
+
+export interface DashIncidentReport {
+  id: string;
+  message: string;
+  createdAt: string;
+  organization: {
+    businessName: string;
+    createdAt: string;
+    updatedAt: string;
+  }
+  status: boolean;
+  user: {
+    firstname: string;
+    lastname: string;
+    createdAt: string;
+    updatedAt: string;
+  }
 }
 
 export interface MonthlySummary {
   uptimeMinutes: number;
   month: string;
+  monthDisplay?: string;
   uptimePercent: number;
   downtimeMinutes: number;
   services: string[];
@@ -478,14 +498,14 @@ export interface Org {
   updatedAt: string
 }
 
-export interface Client{
+export interface Client {
   firstname: string;
   lastname: string;
   createdAt: string;
   updatedAt: string
 }
 
-export interface IncidentReport{
+export interface IncidentReport {
   responsecode: string;
   responsedesc: string;
   responsedata: {
@@ -519,16 +539,16 @@ export interface AuditLog {
 }
 
 export type SuspendAdminPayload = {
-  id: string ;
+  id: string;
   status: boolean;
 };
 
 export type MarkContactPayload = {
-  id: string ;
+  id: string;
 };
 
 export type resolveIncidentPayload = {
-  id: string ;
+  id: string;
   status: boolean;
 };
 
@@ -548,10 +568,10 @@ export interface Contact {
   responsecode: string;
   responsedesc: string;
   responsedata: {
-    size: number ;
+    size: number;
     totalPages: number;
     messages: Contacts[];
-    page:number ;
-    totalCount:number ;
+    page: number;
+    totalCount: number;
   }
 }

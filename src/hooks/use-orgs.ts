@@ -140,7 +140,7 @@ export const useGetAnalytics = (year: number, month: number) => {
   });
 };
 
-export const useGetDashboard = (year: number, month: number) => {
+export const useGetDashboard = (year?: number, month?: number) => {
   return useQuery({
     queryKey: ["dashboard", year, month],
     queryFn: () => getDashboardAnalytics(year,month),

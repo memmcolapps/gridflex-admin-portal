@@ -34,7 +34,10 @@ export default function DashboardAnalysisGraph() {
       name: report.monthDisplay,
       uptime: report.uptimePercent,
       downtime: report.downtimePercent,
-    })) ?? [];
+      month: report.month, 
+    }))
+    .sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime())
+    ?? [];
   
 
     return (

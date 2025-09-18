@@ -355,6 +355,7 @@ export interface ResponseData {
 export interface MonthlySummary {
   uptimeMinutes: number;
   month: string;
+  monthDisplay?: string;
   uptimePercent: number;
   downtimeMinutes: number;
   services: string[];

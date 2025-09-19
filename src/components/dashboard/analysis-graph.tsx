@@ -28,13 +28,32 @@ export default function DashboardAnalysisGraph() {
     if (!data?.success) {
       return <p className="text-red-500 text-center">Failed: {data?.error ?? "Something went wrong"}</p>;
     }
+
+    const monthShortNames: Record<string, string> = {
+        January: "Jan",
+        February: "Feb",
+        March: "Mar",
+        April: "Apr",
+        May: "May",
+        June: "Jun",
+        July: "Jul",
+        August: "Aug",
+        September: "Sep",
+        October: "Oct",
+        November: "Nov",
+        December: "Dec",
+      };
+    
   
     const chartData =
     data.data?.monthlySummaries?.map((report) => ({
-      name: report.monthDisplay,
+      name: monthShortNames[report.monthDisplay ?? ''],
       uptime: report.uptimePercent,
       downtime: report.downtimePercent,
-    })) ?? [];
+      month: report.month, 
+    }))
+    .sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime())
+    ?? [];
   
 
     return (

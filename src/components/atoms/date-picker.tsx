@@ -35,6 +35,9 @@ export function DatePicker({ placeHolder, className }: Props) {
   const [value, setValue] = React.useState("")
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const [month, setMonth] = React.useState<Date | undefined>(new Date())
+  
+  const today = new Date()
+  today.setHours(23, 59, 59, 999) 
 
   return (
     <div className={`flex ${className} flex-col gap-3`}>
@@ -47,9 +50,11 @@ export function DatePicker({ placeHolder, className }: Props) {
           onChange={(e) => {
             setValue(e.target.value)
             const parsed = parseDate(e.target.value)
-            if (parsed) {
+            if (parsed && parsed <= today) {
               setDate(parsed)
               setMonth(parsed)
+            } else if (parsed && parsed > today) {
+              setDate(undefined)
             } else {
               setDate(undefined)
             }
@@ -85,6 +90,7 @@ export function DatePicker({ placeHolder, className }: Props) {
                 setValue(formatDate(date))
                 setOpen(false)
               }}
+              disabled={(date) => date > today}
             />
           </PopoverContent>
         </Popover>

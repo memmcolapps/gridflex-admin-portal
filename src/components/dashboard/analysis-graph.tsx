@@ -16,6 +16,17 @@ import {
   } from "@/components/ui/card";
 import { useGetDashboard } from "@/hooks/use-orgs";
 
+interface CustomPayload {
+  color?: string;
+  name?: string;
+  value?: number;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: CustomPayload[];
+  label?: string;
+}
 
 export default function DashboardAnalysisGraph() {
     const currentYear = new Date().getFullYear();
@@ -48,12 +59,28 @@ export default function DashboardAnalysisGraph() {
     const chartData =
     data.data?.monthlySummaries?.map((report) => ({
       name: monthShortNames[report.monthDisplay ?? ''],
-      uptime: report.uptimePercent,
-      downtime: report.downtimePercent,
+      uptime: Number(report.uptimePercent.toFixed(0)),
+      downtime: Number(report.downtimePercent.toFixed(0)),
       month: report.month, 
     }))
     .sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime())
     ?? [];
+
+    const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+        if (active && payload && payload.length) {
+          return (
+            <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
+              <p className="font-medium mb-2">{`${label}`}</p>
+              {payload.map((entry: CustomPayload, index: number) => (
+                <p key={index} style={{ color: entry.color }} className="text-sm">
+                  {`${entry.name}: ${entry.value}%`}
+                </p>
+              ))}
+            </div>
+          );
+        }
+        return null;
+      };
   
 
     return (
@@ -85,7 +112,7 @@ export default function DashboardAnalysisGraph() {
                             <CartesianGrid strokeDasharray="3 1" />
                             <XAxis dataKey="name" padding={{ left: 30, right: 30 }} axisLine={false} tickLine={false} />
                             <YAxis domain={[0, 100]} axisLine={false} tickLine={false} />
-                            <Tooltip />
+                            <Tooltip content={<CustomTooltip />} />
                             <Line
                                 type="monotone"
                                 dataKey="uptime"

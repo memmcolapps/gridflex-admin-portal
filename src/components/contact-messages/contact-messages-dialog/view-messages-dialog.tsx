@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 
 type ContactData = {
     id: string;
+    phoneNo?: string;
     organizationName: string;
     email: string;
     message: string;
@@ -64,6 +65,17 @@ export const ViewDetailsDialog = ({
                             Date Received
                         </Label>
                         <p className="text-gray-600">{selectedContact?.createdAt}</p>
+                    </div>
+                    <div className="space-y-4">
+                        <Label htmlFor="phone">
+                            Phone Number
+                        </Label>
+                        <p className="text-gray-600">{selectedContact?.phoneNo}</p>
+                    </div>
+                    <div className="space-y-4">
+                        <Label htmlFor="date">
+                        </Label>
+                        <p className="text-gray-600"></p>
                     </div>
                     <div className="space-y-4">
                         <Label htmlFor="message">

@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 
 type ContactData = {
     id: string;
-    phoneNo: string;
+    phoneNo?: string;
     organizationName: string;
     email: string;
     message: string;

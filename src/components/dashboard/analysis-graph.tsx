@@ -16,6 +16,17 @@ import {
   } from "@/components/ui/card";
 import { useGetDashboard } from "@/hooks/use-orgs";
 
+interface CustomPayload {
+  color?: string;
+  name?: string;
+  value?: number;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: CustomPayload[];
+  label?: string;
+}
 
 export default function DashboardAnalysisGraph() {
     const currentYear = new Date().getFullYear();
@@ -55,12 +66,12 @@ export default function DashboardAnalysisGraph() {
     .sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime())
     ?? [];
 
-    const CustomTooltip = ({ active, payload, label }: any) => {
+    const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
         if (active && payload && payload.length) {
           return (
             <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
               <p className="font-medium mb-2">{`${label}`}</p>
-              {payload.map((entry: any, index: number) => (
+              {payload.map((entry: CustomPayload, index: number) => (
                 <p key={index} style={{ color: entry.color }} className="text-sm">
                   {`${entry.name}: ${entry.value}%`}
                 </p>

@@ -28,15 +28,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGetOrgs } from "@/hooks/use-orgs";
+import { SuspendUtilityDialog } from "./utility-companies-dialogs/suspend-utility-dialog";
+import { UnsuspendUtilityDialog } from "./utility-companies-dialogs/unsuspend-utility-dialog";
 
 export default function UtilityCompaniesTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
+  const [isUnsuspendDialogOpen, setIsUnsuspendDialogOpen] = useState(false);
   const router = useRouter();
   const { data: utilityCompaniesData} = useGetOrgs();
   const totalPages = Math.ceil(
     (utilityCompaniesData?.organizations.length || 0) / itemsPerPage,
   );
+  const [selectedOrganization, setSelectedOrganization] = useState<{
+    id: string;
+    name: string;
+    status: boolean;
+  } | null>(null);
 
   const getPageNumbers = () => {
     const pages = [];
@@ -125,7 +134,7 @@ export default function UtilityCompaniesTable() {
                     <div className="text-xs text-gray-500">{""}</div>
                   </div>
                 </TableCell>
-                <TableCell className="py-4">
+                {/* <TableCell className="py-4">
                   {company.status === true ? (
                     <Badge
                       variant="secondary"
@@ -139,6 +148,23 @@ export default function UtilityCompaniesTable() {
                       className="bg-red-50 px-3 font-normal text-red-700 hover:bg-red-50"
                     >
                       Inactive
+                    </Badge>
+                  )}
+                </TableCell> */}
+                      <TableCell className="py-4">
+                  {company.status ? (
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
+                    >
+                      Active
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="secondary"
+                      className="bg-red-50 rounded-sm px-2 py-1 font-semibold text-red-700 hover:bg-red-50"
+                    >
+                      Suspended
                     </Badge>
                   )}
                 </TableCell>
@@ -179,13 +205,46 @@ export default function UtilityCompaniesTable() {
                         <Pencil size={14} className="mr-2 text-black" />
                         Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="align-items-center cursor-pointer">
+                      <DropdownMenuItem
+                        disabled={company.status === false}
+                        onClick={() => {
+                          if (company.status !== false) {
+                            setSelectedOrganization({
+                              id: company.id,
+                              name: `${company.businessName}`,
+                              status: company.status
+                            });
+                            setIsSuspendDialogOpen(true);
+                          }
+                        }}
+                        className={`
+                          align-items-center cursor-pointer
+                          ${company.status === false ? 'opacity-50 cursor-not-allowed' : ''}
+                          `}
+                      >
                         <CircleSlash size={14} className="mr-2 text-black" />
-                        Suspend
+                        <span>Suspend</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="align-items-center cursor-pointer">
+
+                      <DropdownMenuItem
+                        disabled={company.status === true}
+                        onClick={() => {
+                          if (company.status !== true) {
+                            setSelectedOrganization({
+                              id: company.id,
+                              name: `${company.businessName}`,
+                              status: company.status,
+                            });
+                            setIsUnsuspendDialogOpen(true);
+                          }
+                        }}
+                        className={`
+                        align-items-center cursor-pointer
+                        ${company.status === true ? "opacity-50 cursor-not-allowed" : ""}
+                        `}
+                      >
                         <CircleSlash size={14} className="mr-2 text-black" />
-                        Unsuspend
+                        <span>Unsuspend</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -242,6 +301,27 @@ export default function UtilityCompaniesTable() {
           </Button>
         </div>
       </CardContent>
+
+      {/* Dialogs */}
+      <SuspendUtilityDialog
+        isOpen={isSuspendDialogOpen}
+        onOpenChange={(open) => {
+          setIsSuspendDialogOpen(open);
+          if (!open) setSelectedOrganization(null);
+        } } 
+        organizationId={selectedOrganization?.id || ""}
+        organizationName={selectedOrganization?.name}
+      />
+
+      <UnsuspendUtilityDialog
+        isOpen={isUnsuspendDialogOpen}
+        onOpenChange={(open) => {
+          setIsUnsuspendDialogOpen(open);
+          if (!open) setSelectedOrganization(null);
+        }}
+        organizationId={selectedOrganization?.id || ""}
+        organizationName={selectedOrganization?.name}
+      />
     </Card>
   );
 }

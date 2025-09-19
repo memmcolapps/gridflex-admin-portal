@@ -17,6 +17,7 @@ import {
   markContactApi,
   resolveIncident,
   suspendAdminApi,
+  suspendUtility,
   updateAdminApi,
   updateRegionBhubServiceCenter,
   updateSubstationTransfomerFeeder,
@@ -254,6 +255,21 @@ export const useSuspendAdmin = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin']})
+    }
+  });
+};
+
+export const useSuspendUtility = () => {
+  return useMutation({
+    mutationFn: async ({ id, status }: SuspendAdminPayload) => {
+      const response = await suspendUtility(id, status);
+      if (!response.success && 'error' in response){
+        throw new Error(response.error)
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orgs']})
     }
   });
 };

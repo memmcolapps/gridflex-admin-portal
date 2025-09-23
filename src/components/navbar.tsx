@@ -10,8 +10,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -19,26 +17,36 @@ import { Button } from "@/components/ui/button";
 import {
   Building2,
   LayoutDashboard,
-  Users,
+  Mail,
   Shield,
+  CircleAlert,
   ChartColumnDecreasing,
   ClipboardPlus,
   type LucideIcon,
 } from "lucide-react";
+import { useState } from "react";
+import ProfileDropdown from "./profiledropdown";
+import { EditProfileDialog } from "./profile/edit-profile-dialog";
+import type { UnifiedFormData } from "@/types/unifiedForm";
 
 const routeMeta: Record<string, { label: string; icon: LucideIcon }> = {
   dashboard: { label: "Dashboard", icon: LayoutDashboard },
   "utility-companies": { label: "Utility Companies", icon: Building2 },
-  "user-management": { label: "User Management", icon: Users },
   "admin-management": { label: "Admin Management", icon: Shield },
   analysis: { label: "Analysis", icon: ChartColumnDecreasing },
+  "incident-report": { label: "Incident Report", icon: CircleAlert },
+  "contact-messages": { label: "Contact Messages", icon: Mail },
   "audit-log": { label: "Audit Log", icon: ClipboardPlus },
 };
+
 
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
+  const [isProfileViewActive, setIsProfileViewActive] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
   const pathSegments = pathname.split("/").filter(Boolean);
 
   const handleLogout = () => {
@@ -50,14 +58,14 @@ export function Navbar() {
     const href = "/" + pathSegments.slice(0, index + 1).join("/");
     const isLast = index === pathSegments.length - 1;
 
-    // Get metadata with proper fallback
     const segmentKey = segment.toLowerCase();
     const routeData = routeMeta[segmentKey];
 
     const { icon: IconComponent, label } = routeData ?? {
       label: segment.replace(/-/g, " "),
-      icon: Building2, // Default fallback icon
+      icon: Building2, 
     };
+
 
     return (
       <div key={href} className="flex items-center gap-2">
@@ -65,10 +73,10 @@ export function Navbar() {
         <div className="flex items-center gap-1">
           <IconComponent
             size={16}
-            className={cn(isLast ? "text-gray-400" : "text-gray-600")}
+            className={cn(isLast ? "text-gray-800" : "text-gray-600")}
           />
           {isLast ? (
-            <span className="text-sm text-gray-400 capitalize">{label}</span>
+            <span className="text-sm text-gray-800 capitalize">{label}</span>
           ) : (
             <Link
               href={href}
@@ -82,11 +90,15 @@ export function Navbar() {
     );
   });
 
+  function handleProfilepdate(data: UnifiedFormData): void {
+    console.log("Admin updated:", data);
+  }
+
   return (
-    <header className="fixed top-0 right-0 left-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-[#FEFAF5] px-4 sm:px-6 lg:px-8">
-      <div className="flex items-center gap-4">
+    <header className="fixed top-0 right-0 left-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-[#FEFAF5] px-4 sm:px-6 lg:px-4">
+      <div className="flex items-center">
         {/* Logo Section */}
-        <div className="mr-45 flex items-center gap-4">
+        <div className="mr-40 flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/images/gridflex-admin-logo.svg"
@@ -104,35 +116,74 @@ export function Navbar() {
       </div>
 
       {/* User Menu */}
-      {user && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2">
-              <User size={16} />
+      <DropdownMenu
+        onOpenChange={(open) => {
+          if (!open) setIsProfileViewActive(false);
+        }}
+      >
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="flex items-center gap-2">
+            <User size={16} />
+            {user && (
               <span className="text-sm font-medium">
                 {user.firstname} {user.lastname}
               </span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm leading-none font-medium">
-                  {user.firstname} {user.lastname}
-                </p>
-                <p className="text-muted-foreground text-xs leading-none">
-                  {user.email}
-                </p>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
-              <LogOut size={16} />
-              <span>Logout</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          align="end"
+          side="bottom"
+          className="w-fit bg-white mt-4 text-gray-700 p-0"
+          collisionPadding={10}
+          avoidCollisions
+        >
+          {isProfileViewActive ? (
+            <ProfileDropdown
+              closeDropdown={() => setIsProfileViewActive(false)}
+              openEditProfileModal={() => {
+                // setIsProfileViewActive(false);
+                // openEditProfileModal();
+                setIsEditDialogOpen(true);
+              }}
+            />
+          ) : (
+            <>
+              <DropdownMenuItem
+                className="cursor-pointer hover:bg-gray-100"
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setIsProfileViewActive(true);
+                }}
+              >
+                <User size={12} className="mr-2" />
+                Profile
+              </DropdownMenuItem>
+
+
+              <DropdownMenuItem
+                className="cursor-pointer text-red-600 hover:bg-gray-100"
+                onSelect={(e) => {
+                  e.preventDefault();
+                  handleLogout();
+                }}
+              >
+                <LogOut size={12} className="mr-2 text-red-600" />
+                Log out
+              </DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* dialogs  */}
+      <EditProfileDialog
+        isOpen={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        selectedContact={user ?? null} 
+        onSubmit={handleProfilepdate}
+      />
     </header>
   );
 }

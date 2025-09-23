@@ -22,7 +22,7 @@ export const handleApiError = (
 
     statusCode = axiosError.response?.status;
     const serverMessage = axiosError.response?.data?.error;
-    const successStatus = axiosError.response?.data?.success;
+    // const successStatus = axiosError.response?.data?.success;
 
     console.error(`Axios error during ${context}:`, {
       status: statusCode,

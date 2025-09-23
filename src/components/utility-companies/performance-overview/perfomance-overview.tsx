@@ -575,12 +575,12 @@ export default function PerformanceOverview({
   }
 
   return (
-    <div className="space-y-6 bg-white p-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">
+    <div className="space-y-6 bg-white pt-4">
+      <div className="mb-10">
+        <h1 className="text-2xl font-medium text-gray-900">
           Performance Overview
         </h1>
-        <p className="text-sm text-gray-500">
+        <p className="mt-1 text-lg text-gray-500">
           Manage {performanceData?.businessName}
         </p>
       </div>
@@ -589,25 +589,24 @@ export default function PerformanceOverview({
       <div className="border-b border-gray-200">
         <button
           onClick={() => setActiveTab("summary")}
-          className={`relative pb-3 text-sm font-medium transition-colors ${
-            activeTab === "summary"
-              ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
-              : "text-gray-600 hover:text-gray-900"
-          } `}
+          className={`relative pb-3 text-sm font-medium transition-colors ${activeTab === "summary"
+            ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
+            : "text-gray-600 hover:text-gray-900"
+            } `}
         >
           Summary
         </button>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {summary.map((item, idx) => (
-          <Card key={idx} className="border border-gray-200 bg-white shadow-sm">
-            <CardContent className="p-6">
+          <Card key={idx} className="border border-gray-200 bg-white shadow-none">
+            <CardContent className="pt-2">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="mb-2 text-sm font-medium text-gray-600">
+                  <p className="mb-2 text-base font-normal text-gray-700">
                     {item.title}
                   </p>
-                  <p className="mb-1 text-2xl font-bold text-gray-900">
+                  <p className="mb-1 text-xl font-medium text-gray-900">
                     {item.value}
                   </p>
                   <div className="flex items-center gap-1 text-sm text-gray-500">
@@ -618,7 +617,7 @@ export default function PerformanceOverview({
                   </div>
                 </div>
                 <div
-                  className={`mt-4 flex h-15 w-15 items-center justify-center rounded-lg ${item.iconBg}`}
+                  className={`rounded-lg bg-gray-50 p-3 border border-gray-200 mt-2 ${item.iconBg}`}
                 >
                   {item.icon}
                 </div>
@@ -628,7 +627,7 @@ export default function PerformanceOverview({
         ))}
       </div>
 
-      <Card className="h-30 border border-gray-200 bg-white shadow-sm">
+      <Card className="h-30 border border-gray-200 bg-white shadow-none">
         <CardContent className="flex h-full items-center justify-between p-4">
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gray-100">
@@ -636,9 +635,29 @@ export default function PerformanceOverview({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  {performanceData?.businessName}
-                </h2>
+                <div className="flex gap-2">
+                  <h2 className="text-lg font-medium text-gray-900">
+                    {performanceData?.businessName}
+                  </h2>
+                  <div>
+                    {performanceData?.status === true ? (
+                      <Badge
+                        variant="secondary"
+                        className="bg-green-50 rounded-sm px-2 py-1 font-normal text-green-700 hover:bg-green-50"
+                      >
+                        Active
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                        className="bg-red-50 rounded-sm px-2 py-1 font-normal text-red-700 hover:bg-red-50"
+                      >
+                        Suspended
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+
                 <Badge
                   variant="secondary"
                   className="bg-green-50 text-green-700"
@@ -646,8 +665,8 @@ export default function PerformanceOverview({
                   {performanceData?.status}
                 </Badge>
               </div>
-              <p className="text-sm text-gray-500">
-                Registered {performanceData?.createdAt}
+              <p className="text-sm text-gray-900">
+                Registered  {performanceData?.createdAt}
               </p>
             </div>
           </div>
@@ -664,36 +683,38 @@ export default function PerformanceOverview({
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-10">
         <div className="space-y-6 lg:col-span-3">
-          <Card className="w-full border border-gray-200 bg-white shadow-sm">
+          <Card className="w-full border border-gray-200 bg-white shadow-none">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+              <CardTitle className="flex items-center gap-2 text-lg font-medium">
                 <Building2 size={18} className="text-gray-500" />
                 <span>Company Profile</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <h3 className="mb-4 text-sm font-medium text-gray-600">
+            <h3 className="text-lg font-normal text-gray-900">
                 Company Information
               </h3>
+              <div className="border border-gray-100 w-full px-0 "></div>
+
               <ul className="space-y-1">
                 <li className="flex items-center gap-3">
                   <Building2 size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
-                    <p className="text-sm font-bold text-black">
+                    <p className="text-base font-medium text-black">
                       {performanceData?.businessName}
                     </p>
-                    <p className="text-sm font-medium text-gray-400">Company</p>
+                    <p className=" text-gray-400">Company</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <Users size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
-                    <p className="text-sm font-bold text-black">
+                    <p className="text-base font-medium text-black">
                       {performanceData?.operator?.firstname +
                         " " +
                         performanceData?.operator?.lastname}
                     </p>
-                    <p className="text-sm font-medium text-gray-400">
+                    <p className=" text-gray-400">
                       Contact Person
                     </p>
                   </div>
@@ -701,26 +722,26 @@ export default function PerformanceOverview({
                 <li className="flex items-center gap-3">
                   <Mail size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
-                    <p className="text-sm font-bold text-black">
+                    <p className="text-base font-medium text-black">
                       {performanceData?.operator?.email}
                     </p>
-                    <p className="text-sm font-medium text-gray-400">Email</p>
+                    <p className=" text-gray-400">Email</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
-                    <p className="text-sm font-bold text-black">{""}</p>
-                    <p className="text-sm font-medium text-gray-400">Phone</p>
+                    <p className="text-base font-medium text-black">{""}</p>
+                    <p className=" text-gray-400">Phone</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <MapPin size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
-                    <p className="text-sm font-bold text-black">
+                    <p className="text-base font-medium text-black">
                       {performanceData?.address}
                     </p>
-                    <p className="text-sm font-medium text-gray-400">Address</p>
+                    <p className=" text-gray-400">Address</p>
                   </div>
                 </li>
               </ul>
@@ -731,12 +752,12 @@ export default function PerformanceOverview({
         {/* Organization (70%) */}
         <div className="lg:col-span-7">
           {/* Organizational Hierarchy */}
-          <Card className="border border-gray-200 bg-white shadow-sm">
+          <Card className="border border-gray-200 bg-white shadow-none">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium">
                 Organizational Hierarchy
               </CardTitle>
-              <p className="text-sm text-gray-500">
+              <p className=" text-gray-500">
                 Build the organization structure
               </p>
             </CardHeader>
@@ -810,14 +831,14 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  businessHubId: currentEditNode.nodeInfo?.bhubId ?? "",
-                  businessHubName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                businessHubId: currentEditNode.nodeInfo?.bhubId ?? "",
+                businessHubName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />
@@ -828,14 +849,14 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  serviceCenterId: currentEditNode.id,
-                  serviceCenterName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                serviceCenterId: currentEditNode.id,
+                serviceCenterName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />
@@ -846,22 +867,22 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  substationName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                  assetId: "", // Not available in NodeInfo, so default to empty
-                  status: currentEditNode.nodeInfo?.status
-                    ? "Active"
-                    : "Inactive",
-                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                  description: currentEditNode.nodeInfo?.description ?? "",
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                substationName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
+                assetId: "", // Not available in NodeInfo, so default to empty
+                status: currentEditNode.nodeInfo?.status
+                  ? "Active"
+                  : "Inactive",
+                voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
+                longitude: currentEditNode.nodeInfo?.longitude ?? "",
+                latitude: currentEditNode.nodeInfo?.latitude ?? "",
+                description: currentEditNode.nodeInfo?.description ?? "",
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />
@@ -872,22 +893,22 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  feederName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                  assetId: "", // Not available in NodeInfo, so default to empty
-                  status: currentEditNode.nodeInfo?.status
-                    ? "Active"
-                    : "Inactive",
-                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                  description: currentEditNode.nodeInfo?.description ?? "",
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                feederName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
+                assetId: "", // Not available in NodeInfo, so default to empty
+                status: currentEditNode.nodeInfo?.status
+                  ? "Active"
+                  : "Inactive",
+                voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
+                longitude: currentEditNode.nodeInfo?.longitude ?? "",
+                latitude: currentEditNode.nodeInfo?.latitude ?? "",
+                description: currentEditNode.nodeInfo?.description ?? "",
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />
@@ -898,22 +919,22 @@ export default function PerformanceOverview({
           initialData={
             currentEditNode
               ? {
-                  substationName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                  assetId: "", // Not available in NodeInfo, so default to empty
-                  status: currentEditNode.nodeInfo?.status
-                    ? "Active"
-                    : "Inactive",
-                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                  description: currentEditNode.nodeInfo?.description ?? "",
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
+                substationName:
+                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
+                serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
+                assetId: "", // Not available in NodeInfo, so default to empty
+                status: currentEditNode.nodeInfo?.status
+                  ? "Active"
+                  : "Inactive",
+                voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
+                longitude: currentEditNode.nodeInfo?.longitude ?? "",
+                latitude: currentEditNode.nodeInfo?.latitude ?? "",
+                description: currentEditNode.nodeInfo?.description ?? "",
+                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
+                email: currentEditNode.nodeInfo?.email ?? "",
+                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
+                address: currentEditNode.nodeInfo?.address ?? "",
+              }
               : {}
           }
         />

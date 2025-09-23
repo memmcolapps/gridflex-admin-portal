@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
@@ -12,12 +14,15 @@ import { cn } from "@/lib/utils";
 import {
   Building2,
   LayoutDashboard,
-  Users,
+  Mail,
   Shield,
   ChartColumnDecreasing,
   ClipboardPlus,
   type LucideIcon,
+  CircleAlert,
+  LogOut,
 } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface NavItem {
   title: string;
@@ -28,14 +33,22 @@ interface NavItem {
 const navItems: NavItem[] = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { title: "Utility Companies", href: "/utility-companies", icon: Building2 },
-  { title: "User Management", href: "/user-management", icon: Users },
   { title: "Admin Management", href: "/admin-management", icon: Shield },
   { title: "Analysis", href: "/analysis", icon: ChartColumnDecreasing },
+  { title: "Incident Report", href: "/incident-management", icon: CircleAlert },
+  { title: "Contact Messages", href: "/contact-message", icon: Mail },
   { title: "Audit Log", href: "/audit-log", icon: ClipboardPlus },
 ];
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const { logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
 
   return (
     <Sidebar className="fixed top-16 left-0 z-40 hidden h-[calc(100vh-4rem)] overflow-y-auto border-r border-gray-200 md:block">
@@ -83,6 +96,16 @@ export function SidebarNav() {
           })}
         </SidebarMenu>
       </SidebarContent>
+
+      <SidebarFooter className="px-4 py-6">
+        <Button
+        onClick={handleLogout}
+          className="flex bg-white font-medium text-gray-900 shadow-[0px_1px_4px_0px_rgba(0,0,0,0.1),0px_-1px_4px_0px_rgba(0,0,0,0.1)] justify-start h-10 cursor-pointer items-center gap-2 hover:bg-gray-50"
+        >
+          <LogOut color="#FF5F57" />
+          Log Out
+        </Button>
+      </SidebarFooter>
     </Sidebar>
   );
 }

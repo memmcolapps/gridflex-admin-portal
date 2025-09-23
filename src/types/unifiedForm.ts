@@ -1,6 +1,12 @@
 // types/unifiedForm.ts
 export interface UnifiedFormData {
+  id?:string;
   assetId?: string;
+  phoneNumber?: string;
+  firstname?: string;
+  lastname?: string;
+  role?: string;
+  department?: string;
   address?: string;
   businessHubId?: string;
   businessHubName?: string;
@@ -16,7 +22,7 @@ export interface UnifiedFormData {
   longitude?: string;
   organizationName?: string;
   postalCode?: string;
-  phoneNumber?: string;
+  phoneNo?: string;
   adminPhoneNumber?: string;
   adminName?: string;
   regionId?: string;

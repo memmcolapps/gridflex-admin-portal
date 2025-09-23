@@ -8,7 +8,7 @@ export default function PerformanceViewPage() {
   const id = params.id as string;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <PerformanceOverview
         params={{
           id: id,

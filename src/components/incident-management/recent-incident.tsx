@@ -10,7 +10,7 @@ export default function RecentIncidents() {
     const { data: incidents } = useIncidentReports()
     const { mutate: resolveIncident } = useResolveIncidents();
     const userName = incidents?.data?.map((incident) => (
-        `${incident.organization.businessName}`
+        `${incident?.organization?.businessName}`
     ))
 
     const handleResolve = (incidentId: string) => {
@@ -45,8 +45,8 @@ export default function RecentIncidents() {
                                     .map((incident, index) => (
                                         <div key={index} className={`
                                         rounded-lg flex flex-col gap-1
-                                        ${incident.status === false ? 'bg-red-100' : ''}
-                                        ${incident.status === true ? 'bg-yellow-100' : ''}
+                                        ${incident.type === 'auto' ? 'bg-red-100' : ''}
+                                        ${incident.type === 'reported' ? 'bg-yellow-100' : ''}
                                         `}>
                                             <div className="flex justify-between items-center pr-4">
                                                 <div>
@@ -58,10 +58,10 @@ export default function RecentIncidents() {
                                                             <li className="flex flex-col">
                                                                 <span className="text-gray-900">{incident.message}</span>
                                                                 {incident?.user && (
-                                                                    <span className="text-gray-600">User: `{incident.user.firstname} {incident.user.lastname} `</span>
+                                                                    <span className="text-gray-600">User: `{incident?.user?.firstname} {incident?.user?.lastname} `</span>
                                                                 )}
                                                                 {incident?.organization && (
-                                                                    <span className="text-gray-600">Utility Company: {incident.organization.businessName} </span>
+                                                                    <span className="text-gray-600">Utility Company: {incident.organization?.businessName} </span>
                                                                 )}
                                                                 <span className="text-gray-600 gap-1 flex items-center">
                                                                     {new Date(incident.createdAt).toLocaleDateString("en-US", {

@@ -465,6 +465,12 @@ export interface AdminResponse {
   responsedesc: string;
 }
 
+export interface ProfileResponse {
+  responsecode: string;
+  responsedata: Admin;
+  responsedesc: string;
+}
+
 export interface Admins {
   responsecode: string;
   responsedesc: string;
@@ -510,6 +516,7 @@ export interface IncidentReport {
   responsedesc: string;
   responsedata: {
     id: string;
+    type?: string;
     message: string;
     createdAt: string;
     organization: Org;
@@ -520,6 +527,7 @@ export interface IncidentReport {
 
 export interface User {
   id: string;
+  endpoint?: string
   type: string;
   username: string;
   email: string;

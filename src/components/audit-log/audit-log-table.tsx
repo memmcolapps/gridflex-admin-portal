@@ -77,6 +77,9 @@ export default function AuditLogTable() {
                             <TableHead className="h-12 text-base font-medium text-gray-700">
                                 Ip Address
                             </TableHead>
+                            <TableHead className="h-12 text-base font-medium text-gray-700">
+                                Endpoint
+                            </TableHead>
                             <TableHead className="pr-6 text-right text-base font-medium text-gray-700">
                                 Time Stamp
                             </TableHead>
@@ -121,9 +124,11 @@ export default function AuditLogTable() {
                                 <TableCell className="py-4">
                                     {data.userAgent}
                                 </TableCell>
-
                                 <TableCell>
                                     {data.ipAddress}
+                                </TableCell>
+                                <TableCell>
+                                    {data.endpoint}
                                 </TableCell>
                                 <TableCell className="text-sm text-gray-900">
                                     {data.timeStamp}

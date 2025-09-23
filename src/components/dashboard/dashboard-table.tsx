@@ -49,8 +49,8 @@ export default function DasboardIncidentReports() {
                                                         </div>
                                                         <li className="flex flex-col">
                                                             <span className="text-gray-900">{incident.message}</span>
-                                                            <span className="text-gray-600">User: {incident.user.firstname} {incident.user.lastname} </span>
-                                                            <span className="text-gray-600">Utility Company: {incident.organization.businessName} </span>
+                                                            <span className="text-gray-600">User: {incident?.user?.firstname} {incident?.user?.lastname} </span>
+                                                            <span className="text-gray-600">Utility Company: {incident?.organization?.businessName} </span>
                                                             <span className="text-gray-600 gap-1 flex items-center">
                                                                 {new Date(incident.createdAt).toLocaleDateString("en-US", {
                                                                         month: "short",

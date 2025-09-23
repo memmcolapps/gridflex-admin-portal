@@ -1,6 +1,7 @@
 import { handleApiError } from "@/error";
 import axios from "axios";
 import { env } from "@/env";
+import type { ProfileResponse } from "@/types/org.interfaces";
 
 const BASE_URL = env.NEXT_PUBLIC_API_BASE_URL;
 const CUSTOM_HEADER = (env.NEXT_PUBLIC_CUSTOM_HEADER as string) ?? "";
@@ -15,11 +16,19 @@ export interface UserInfo {
   firstname: string;
   lastname: string;
   email: string;
+  phoneNo?: string;
   department: string;
   status: boolean;
   active: boolean;
   lastActive: string;
   role: [
+    {
+      id: string;
+      userId: string;
+      userRole: string;
+    },
+  ];
+  roles?: [
     {
       id: string;
       userId: string;
@@ -73,5 +82,33 @@ export const loginApi = async (
       success: false,
       error: errorResult.error,
     };
+  }
+};
+
+
+export const getProfile = async (id: string): Promise<{
+  success: boolean;
+  data?: ProfileResponse['responsedata']
+  error?: string;
+}> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.get<ProfileResponse>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/profile`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: { id },
+      }
+    );
+
+    if (response.data.responsecode !== "000") {
+      return { success: false, error: response.data.responsedesc };
+    }
+
+    return { success: true, data: response.data.responsedata };
+  } catch {
+    return { success: false, error: "Something went wrong" };
   }
 };

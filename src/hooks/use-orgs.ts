@@ -34,6 +34,7 @@ import type {
   MarkContactPayload,
 } from "@/types/org.interfaces";
 import { queryClient } from "@/lib/queryClient";
+import { getProfile } from "@/services/auth.service";
 
 export const useCreateOrg = () => {
   return useMutation({
@@ -210,6 +211,13 @@ export const useGetAuditLog = () => {
   return useQuery({
     queryKey: ['auditlog'],
     queryFn: () => getAuditLog()
+  })
+}
+
+export const useUser = (id: string) => {
+  return useQuery({
+    queryKey: ['user', id],
+    queryFn: () => getProfile(id)
   })
 }
 

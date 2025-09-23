@@ -346,7 +346,7 @@ export const getAnalytics = async (year: number, month: number): Promise<{
   try {
     const token = localStorage.getItem("access_token");
     const response = await axios.get<AnalyticsResponse>(
-      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/all`, 
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/all`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -459,10 +459,10 @@ export const getAuditLog = async (): Promise<{
 
 export const createAdminApi = async (
   payload: AdminPayload,
-): Promise<{ success: boolean} | {success: boolean; error: string}> => {
+): Promise<{ success: boolean } | { success: boolean; error: string }> => {
   try {
-    
-    const token = localStorage.getItem("access_token");  
+
+    const token = localStorage.getItem("access_token");
     const response = await axios.post<CreateAdminResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/create`,
       {
@@ -510,7 +510,7 @@ export const suspendAdminApi = async (
     const token = localStorage.getItem("access_token");
     const response = await axios.patch(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/change-status`,
-      null, 
+      null,
       {
         params: { id, status },
         headers: {
@@ -539,7 +539,7 @@ export const suspendUtility = async (
     const token = localStorage.getItem("access_token");
     const response = await axios.patch(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/organization/suspend`,
-      null, 
+      null,
       {
         params: { id, status },
         headers: {
@@ -562,9 +562,9 @@ export const suspendUtility = async (
 
 export const updateAdminApi = async (
   payload: AdminPayload,
-): Promise<{ success: boolean} | {success: boolean; error: string}> => {
-  try {    
-    const token = localStorage.getItem("access_token");  
+): Promise<{ success: boolean } | { success: boolean; error: string }> => {
+  try {
+    const token = localStorage.getItem("access_token");
     const response = await axios.patch<CreateAdminResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/update`,
       {
@@ -629,9 +629,9 @@ export const getIncidentReports = async (
     }
 
     // Fix: Return the actual data
-    return { 
-      success: true, 
-      data: response.data.responsedata 
+    return {
+      success: true,
+      data: response.data.responsedata
     };
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "incidentReport");
@@ -647,7 +647,7 @@ export const resolveIncident = async (
     const token = localStorage.getItem("access_token");
     const response = await axios.patch(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report/resolve`,
-      null, 
+      null,
       {
         params: { id, status },
         headers: {
@@ -676,7 +676,7 @@ export const getDashboardAnalytics = async (year?: number, month?: number): Prom
   try {
     const token = localStorage.getItem("access_token");
     const response = await axios.get<AnalyticsResponse>(
-      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/dashboard`, 
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/dashboard`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -742,7 +742,7 @@ export const markContactApi = async (
     const token = localStorage.getItem("access_token");
     const response = await axios.post(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/message/read`,
-      null, 
+      null,
       {
         params: { id },
         headers: {

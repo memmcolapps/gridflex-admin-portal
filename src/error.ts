@@ -70,7 +70,6 @@ export const handleApiError = (
     }
 
     // You could still use these for internal logging or more detailed error displays later
-
     // IMPORTANT: If axiosError.response?.data is a non-string object,
     // and `serverMessage` isn't found, you might want to stringify `data`
     // to provide more context to the user or for logging if `errorMessage` is too generic.

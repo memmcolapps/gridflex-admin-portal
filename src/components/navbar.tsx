@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import ProfileDropdown from "./profiledropdown";
+import { EditProfileDialog } from "./profile/edit-profile-dialog";
+import type { UnifiedFormData } from "@/types/unifiedForm";
 
 const routeMeta: Record<string, { label: string; icon: LucideIcon }> = {
   dashboard: { label: "Dashboard", icon: LayoutDashboard },
@@ -37,11 +39,13 @@ const routeMeta: Record<string, { label: string; icon: LucideIcon }> = {
   "audit-log": { label: "Audit Log", icon: ClipboardPlus },
 };
 
+
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
   const [isProfileViewActive, setIsProfileViewActive] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const pathSegments = pathname.split("/").filter(Boolean);
 
@@ -61,6 +65,7 @@ export function Navbar() {
       label: segment.replace(/-/g, " "),
       icon: Building2, 
     };
+
 
     return (
       <div key={href} className="flex items-center gap-2">
@@ -84,6 +89,10 @@ export function Navbar() {
       </div>
     );
   });
+
+  function handleProfilepdate(data: UnifiedFormData): void {
+    console.log("Admin updated:", data);
+  }
 
   return (
     <header className="fixed top-0 right-0 left-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-[#FEFAF5] px-4 sm:px-6 lg:px-4">
@@ -133,6 +142,11 @@ export function Navbar() {
           {isProfileViewActive ? (
             <ProfileDropdown
               closeDropdown={() => setIsProfileViewActive(false)}
+              openEditProfileModal={() => {
+                // setIsProfileViewActive(false);
+                // openEditProfileModal();
+                setIsEditDialogOpen(true);
+              }}
             />
           ) : (
             <>
@@ -162,6 +176,14 @@ export function Navbar() {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* dialogs  */}
+      <EditProfileDialog
+        isOpen={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        selectedContact={user ?? null} 
+        onSubmit={handleProfilepdate}
+      />
     </header>
   );
 }

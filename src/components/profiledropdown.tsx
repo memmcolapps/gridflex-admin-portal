@@ -19,7 +19,7 @@ export default function ProfileDropdown({
   const { data, isLoading, isError, error } = useUser(String(authUser?.id));
 
   const loggedUser = data?.data;
-  const activeUser = loggedUser ?? authUser; 
+  const activeUser = loggedUser ;
 
   if (isLoading && !authUser) {
     return (
@@ -41,7 +41,7 @@ export default function ProfileDropdown({
   if (!activeUser) {
     return (
       <div className="min-w-[400px] p-6 bg-white rounded-lg shadow-lg">
-        <p>No user data available.</p>
+        {/* <p>No user data available.</p> */}
       </div>
     );
   }

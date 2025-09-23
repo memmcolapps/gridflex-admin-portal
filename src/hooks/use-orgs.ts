@@ -221,6 +221,7 @@ export const useUser = (id: string) => {
   })
 }
 
+
 export const useCreateAdmin = () => {
 const queryClient = useQueryClient();
   return useMutation({
@@ -251,6 +252,25 @@ export const useUpdateAdmin = () => {
     }
   })
 }
+
+
+export const useUpdateProfile = (userId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (admin: AdminPayload) => {
+      const response = await updateAdminApi(admin);
+      if (!response.success && "error" in response) {
+        throw new Error(response.error);
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", userId] });
+    },
+  });
+};
+
 
 export const useSuspendAdmin = () => {
   return useMutation({

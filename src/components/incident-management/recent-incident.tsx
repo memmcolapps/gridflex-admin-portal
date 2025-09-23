@@ -1,19 +1,19 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import { Button } from "../ui/button";
 import { useIncidentReports, useResolveIncidents } from "@/hooks/use-orgs";
 import { toast } from "sonner";
+import { useMemo, useState } from "react";
 
 export default function RecentIncidents() {
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 10;
     const { data: incidents } = useIncidentReports()
     const { mutate: resolveIncident } = useResolveIncidents();
-    const userName = incidents?.data?.map((incident) => (
-        `${incident?.organization?.businessName}`
-    ))
 
-    const handleResolve = (incidentId: string) => {
+    const handleResolve = (incidentId: string, userName: string) => {
         resolveIncident(
             { id: incidentId, status: true },
             {
@@ -28,6 +28,49 @@ export default function RecentIncidents() {
         );
     }
 
+    const filteredIncidents = useMemo(
+        () => incidents?.data?.filter((incident) => incident.status === false) || [],
+        [incidents]
+    );
+
+    const totalPages = Math.ceil(filteredIncidents.length / itemsPerPage);
+
+    const paginatedIncidents = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredIncidents.slice(startIndex, startIndex + itemsPerPage);
+    }, [filteredIncidents, currentPage]);
+
+
+    // without the filtering per status
+    // const paginatedIncidents = useMemo(() => {
+    //     if (!incidents?.data) return [];
+    //     const startIndex = (currentPage - 1) * itemsPerPage;
+    //     return incidents.data.slice(startIndex, startIndex + itemsPerPage);
+    //   }, [incidents, currentPage]);
+
+    // const totalPages = Math.ceil(
+    //     (incidents?.data?.length || 0) / itemsPerPage,
+    // );
+
+    const getPageNumbers = () => {
+        const pages = [];
+        const maxVisiblePages = 10;
+
+        for (let i = 1; i <= Math.min(totalPages, maxVisiblePages); i++) {
+            pages.push(i);
+        }
+
+        if (totalPages > maxVisiblePages) {
+            pages.push('...');
+            for (let i = Math.max(maxVisiblePages + 1, totalPages - 2); i <= totalPages; i++) {
+                if (!pages.includes(i)) {
+                    pages.push(i);
+                }
+            }
+        }
+        return pages;
+    };
+
     return (
         <div className="py-8">
             <div className="w-full">
@@ -40,9 +83,10 @@ export default function RecentIncidents() {
                         </CardHeader>
                         <CardContent className="pt-4">
                             <div className="flex flex-col gap-5">
-                                {incidents?.data
-                                    ?.filter((incident) => incident.status === false)
-                                    .map((incident, index) => (
+                                {
+                                    // incidents?.data
+                                    //     ?.filter((incident) => incident.status === false)
+                                    paginatedIncidents.map((incident, index) => (
                                         <div key={index} className={`
                                         rounded-lg flex flex-col gap-1
                                         ${incident.type === 'auto' ? 'bg-red-100' : ''}
@@ -86,7 +130,7 @@ export default function RecentIncidents() {
                                                 </div>
                                                 <div>
                                                     <Button
-                                                        onClick={() => handleResolve(incident.id)}
+                                                        onClick={() => handleResolve(incident.id, incident?.organization?.businessName)}
                                                         className="flex h-10 cursor-pointer text-black items-center border border-1 border-gray-400 gap-2 bg-gray-50 hover:bg-gray-100"
                                                     >
                                                         Resolve
@@ -99,6 +143,52 @@ export default function RecentIncidents() {
                                     ))}
                             </div>
 
+                            <div className="flex items-center mt-10 justify-between px-6 py-4">
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                    disabled={currentPage === 1}
+                                    className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
+                                >
+                                    <ArrowLeft color="#414651" strokeWidth={1.75} />
+                                    Previous
+                                </Button>
+
+                                <div className="flex items-center gap-1">
+                                    {getPageNumbers().map((page, index) => (
+                                        page === '...' ? (
+                                            <span key={index} className="px-2 text-gray-400">...</span>
+                                        ) : (
+                                            <Button
+                                                key={page}
+                                                variant={currentPage === page ? "default" : "ghost"}
+                                                size="sm"
+                                                onClick={() => setCurrentPage(page as number)}
+                                                className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
+                                                    ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                                                    : "text-gray-500 hover:bg-gray-50"
+                                                    }`}
+                                            >
+                                                {page}
+                                            </Button>
+                                        )
+                                    ))}
+                                </div>
+
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    onClick={() =>
+                                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                                    }
+                                    disabled={currentPage === totalPages}
+                                    className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
+                                >
+                                    Next
+                                    <ArrowRight color="#414651" strokeWidth={1.75} />
+                                </Button>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>

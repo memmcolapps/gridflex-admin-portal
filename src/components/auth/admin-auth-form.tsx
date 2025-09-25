@@ -3,6 +3,7 @@
 import type React from "react";
 import { useState } from "react";
 import { EyeIcon, EyeOffIcon, Loader } from "lucide-react";
+import Link from "next/link";
 
 interface AdminAuthFormProps {
   onSubmit: (email: string, password: string) => void;
@@ -84,12 +85,13 @@ export function AdminAuthForm({
         </div>
 
         <div className="flex justify-end">
-          <button
+          <Link
             type="button"
-            className="text-sm text-blue-600 transition-colors hover:text-blue-800 hover:underline"
-          >
+            className="text-sm text-blue-600 transition-colors hover:text-blue-800 hover:underline" 
+            href={"/forgotpassword"}          
+            >
             Forgot Password?
-          </button>
+          </Link>
         </div>
 
         <button

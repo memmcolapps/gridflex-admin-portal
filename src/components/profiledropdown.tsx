@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUser } from "@/hooks/use-orgs";
+import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
 interface ProfileDropdownProps {
   closeDropdown: () => void;
@@ -18,8 +19,22 @@ export default function ProfileDropdown({
   const { user: authUser } = useAuth();
   const { data, isLoading, isError, error } = useUser(String(authUser?.id));
 
+  const UserAvatar = () => {
+    const { user } = useAuth();
+    const initials = `${user?.firstname?.charAt(0) ?? ""}${user?.lastname?.charAt(0) ?? ""}`.toUpperCase();
+    return (
+      <Avatar className="h-7 w-7 sm:h-18 sm:w-18">
+        <AvatarImage src="" alt="User" />
+        <AvatarFallback className="rounded-full bg-[var(--primary)] text-xs text-white sm:text-lg">
+          {initials}
+        </AvatarFallback>
+      </Avatar>
+    );
+  };
+
+
   const loggedUser = data?.data;
-  const activeUser = loggedUser ;
+  const activeUser = loggedUser;
 
   if (isLoading && !authUser) {
     return (
@@ -58,6 +73,9 @@ export default function ProfileDropdown({
     <div className="min-w-[400px] p-6 bg-white rounded-lg shadow-lg">
       <div className="flex items-center gap-4 w-full">
         <div>
+          <UserAvatar />
+        </div>
+        <div className="space-y-1 mt-2">
           <p className="font-semibold">{fullName}</p>
           <p className="text-sm text-gray-500">{userEmail}</p>
           <p className="text-sm text-black">{userRoles}</p>
@@ -66,7 +84,7 @@ export default function ProfileDropdown({
 
       <hr className="text-gray-200 mt-2" />
 
-      <div className="flex justify-between w-full p-2">
+      <div className="flex justify-between w-full mt-4 p-2">
         <div className="font-semibold">Name</div>
         <p>{fullName}</p>
       </div>
@@ -85,17 +103,17 @@ export default function ProfileDropdown({
 
       <hr className="text-gray-200 mt-2" />
 
-      <div className="mt-4 flex gap-2 justify-between">
+      <div className="mt-10 flex gap-2 justify-between">
         <Button
           variant="outline"
           onClick={closeDropdown}
-          className="cursor-pointer text-[#161CCA]"
+          className="cursor-pointer border-[var(--primary)] w-24 h-11 text-[#161CCA]"
         >
           Cancel
         </Button>
         <Button
           onClick={openEditProfileModal}
-          className="cursor-pointer bg-[#161CCA] text-white"
+          className="cursor-pointer bg-[#161CCA] w-30 h-11 text-white"
         >
           Edit Profile
         </Button>

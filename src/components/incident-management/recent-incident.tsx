@@ -28,7 +28,9 @@ export default function RecentIncidents() {
         );
     }
 
-    const allIncidents = incidents?.data || [];
+    const allIncidents = useMemo(() => {
+        return incidents?.data || [];
+      }, [incidents]);      
 
     const totalPages = Math.ceil(allIncidents.length / itemsPerPage);
 

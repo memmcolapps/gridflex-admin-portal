@@ -231,7 +231,7 @@ export const useResetPassword = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.error("Reset password failed:", error);
     },
   });
@@ -240,7 +240,7 @@ export const useResetPassword = () => {
 export const useGenerateOtp = () => {
   return useMutation({
     mutationFn: generateOtpApi,
-    onError: (error: any) => {
+    onError: (error) => {
       console.error("Generate OTP failed:", error);
     },
   });

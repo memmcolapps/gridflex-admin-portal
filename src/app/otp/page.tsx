@@ -9,11 +9,11 @@ export default function ForgotPasswordPage() {
   const router = useRouter();
   const [error, setError] = useState("");
 
-  const handleSubmit = async (email: string) => {
+  const handleSubmit = async () => {
     setError("");
     try {
       router.push("/resetpassword"); 
-    } catch (err) {
+    } catch (error) {
       setError("Failed to send reset password link. Try again.");
     }
   };

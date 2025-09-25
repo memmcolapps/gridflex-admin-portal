@@ -13,7 +13,6 @@ import type { UnifiedFormData } from "@/types/unifiedForm";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useUpdateProfile } from "@/hooks/use-orgs";
-import Link from "next/link";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { ChangePasswordDialog } from "./change-password-dialog";
 

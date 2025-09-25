@@ -9,7 +9,7 @@ import { useGenerateOtp } from "@/hooks/use-orgs";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const [error] = useState("");
 
   const [email, setEmail] = useState('');
   const generateOtpMutation = useGenerateOtp();

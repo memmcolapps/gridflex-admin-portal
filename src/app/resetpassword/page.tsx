@@ -7,15 +7,15 @@ import { useState } from "react";
 import { AdminResetPassword } from "@/components/auth/admin-reset-password";
 
 export default function AdminLogin() {
-  const { login } = useAuth();
+  // const { login } = useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
 
-  const handleSubmit = async (email: string) => {
+  const handleSubmit = async () => {
     setError("");
     try {
       router.push("/successpassword"); 
-    } catch (err) {
+    } catch (error) {
       setError("Failed to send reset password link. Try again.");
     }
   };

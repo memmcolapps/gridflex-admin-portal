@@ -18,16 +18,6 @@ export default function ForgotPasswordPage() {
     }
   };
 
-// const handleSubmit = async (email: string, password: string) => {
-//     setError("");
-//     const success = await login({ username: email, password });
-//     if (success) {
-//       router.push("/dashboard");
-//     } else {
-    // setError("Failed to send reset password link. Try again.");
-//     }
-//   };
-
   return (
     <div className="bg-background flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-lg">

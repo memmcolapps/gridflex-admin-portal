@@ -6,28 +6,30 @@ import { ArrowLeft, Loader } from "lucide-react";
 import Link from "next/link";
 
 interface AdminAuthFormProps {
-  onSubmit: (email: string) => void; 
+  onSubmit: (payload: { username: string }) => void;
   initialEmail?: string;
+  isLoading?: boolean;
 }
 
 export function AdminForgotPassword({
   onSubmit,
+  isLoading = false,
   initialEmail = "",
 }: AdminAuthFormProps) {
   const [email, setEmail] = useState(initialEmail);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isFormValid = email.trim() !== "";
+  const isFormValid = email.trim() !== "" && email.includes("@");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFormValid || isSubmitting) return;
+    if (!isFormValid || isSubmitting || isLoading) return;
 
     setIsSubmitting(true);
     try {
-      await onSubmit(email);
+      await onSubmit({ username: email.trim()});
     } catch {
-      // Error handling is done in the parent component
+      console.error('Email submission failed:');
     } finally {
       setIsSubmitting(false);
     }

@@ -28,29 +28,14 @@ export default function RecentIncidents() {
         );
     }
 
-    const filteredIncidents = useMemo(
-        () => incidents?.data?.filter((incident) => incident.status === false) || [],
-        [incidents]
-    );
+    const allIncidents = incidents?.data || [];
 
-    const totalPages = Math.ceil(filteredIncidents.length / itemsPerPage);
+    const totalPages = Math.ceil(allIncidents.length / itemsPerPage);
 
     const paginatedIncidents = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
-        return filteredIncidents.slice(startIndex, startIndex + itemsPerPage);
-    }, [filteredIncidents, currentPage]);
-
-
-    // without the filtering per status
-    // const paginatedIncidents = useMemo(() => {
-    //     if (!incidents?.data) return [];
-    //     const startIndex = (currentPage - 1) * itemsPerPage;
-    //     return incidents.data.slice(startIndex, startIndex + itemsPerPage);
-    //   }, [incidents, currentPage]);
-
-    // const totalPages = Math.ceil(
-    //     (incidents?.data?.length || 0) / itemsPerPage,
-    // );
+        return allIncidents.slice(startIndex, startIndex + itemsPerPage);
+    }, [allIncidents, currentPage]);
 
     const getPageNumbers = () => {
         const pages = [];
@@ -83,112 +68,118 @@ export default function RecentIncidents() {
                         </CardHeader>
                         <CardContent className="pt-4">
                             <div className="flex flex-col gap-5">
-                                {
-                                    // incidents?.data
-                                    //     ?.filter((incident) => incident.status === false)
-                                    paginatedIncidents.map((incident, index) => (
-                                        <div key={index} className={`
-                                        rounded-lg flex flex-col gap-1
-                                        ${incident.type === 'auto' ? 'bg-red-100' : ''}
-                                        ${incident.type === 'reported' ? 'bg-yellow-100' : ''}
-                                        `}>
-                                            <div className="flex justify-between items-center pr-4">
-                                                <div>
-                                                    <ul>
-                                                        <div className="flex py-2 gap-2">
-                                                            <div className="pt-2 pl-2">
-                                                                <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
-                                                            </div>
-                                                            <li className="flex flex-col">
-                                                                <span className="text-gray-900">{incident.message}</span>
-                                                                {incident?.user && (
-                                                                    <span className="text-gray-600">User: `{incident?.user?.firstname} {incident?.user?.lastname} `</span>
-                                                                )}
-                                                                {incident?.organization && (
-                                                                    <span className="text-gray-600">Utility Company: {incident.organization?.businessName} </span>
-                                                                )}
-                                                                <span className="text-gray-600 gap-1 flex items-center">
-                                                                    {new Date(incident.createdAt).toLocaleDateString("en-US", {
-                                                                        month: "short",
-                                                                        day: "numeric",
-                                                                        year: "numeric",
-                                                                    })}
-                                                                    <div className="w-[4px] h-[4px] bg-[#6D6D6D] rounded-full"></div>
-                                                                    <Clock size={16} color="#6D6D6D" />
-                                                                    {new Date(incident.createdAt).toLocaleTimeString("en-US", {
-                                                                        hour: "numeric",
-                                                                        minute: "2-digit",
-                                                                        hour12: true,
-                                                                    })}
-                                                                </span>
-
-
-                                                            </li>
+                                {paginatedIncidents.map((incident, index) => (
+                                    <div key={incident.id || index} className={`
+                                    rounded-lg flex flex-col gap-1
+                                    ${incident.status === true
+                                            ? "bg-green-100"
+                                            : incident.type === "auto"
+                                                ? "bg-red-100"
+                                                : incident.type === "reported"
+                                                    ? "bg-yellow-100"
+                                                    : ""
+                                        }
+                                    `}>
+                                        <div className="flex justify-between items-center pr-4">
+                                            <div>
+                                                <ul>
+                                                    <div className="flex py-2 gap-2">
+                                                        <div className="pt-2 pl-2">
+                                                            <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
                                                         </div>
-
-                                                    </ul>
-                                                </div>
-                                                <div>
+                                                        <li className="flex flex-col">
+                                                            <span className="text-gray-900">{incident.message}</span>
+                                                            {incident?.user && (
+                                                                <span className="text-gray-600">User: {incident?.user?.firstname} {incident?.user?.lastname}</span>
+                                                            )}
+                                                            {incident?.organization && (
+                                                                <span className="text-gray-600">Utility Company: {incident.organization?.businessName}</span>
+                                                            )}
+                                                            <span className="text-gray-600 gap-1 flex items-center">
+                                                                {new Date(incident.createdAt).toLocaleDateString("en-US", {
+                                                                    month: "short",
+                                                                    day: "numeric",
+                                                                    year: "numeric",
+                                                                })}
+                                                                <div className="w-[4px] h-[4px] bg-[#6D6D6D] rounded-full"></div>
+                                                                <Clock size={16} color="#6D6D6D" />
+                                                                {new Date(incident.createdAt).toLocaleTimeString("en-US", {
+                                                                    hour: "numeric",
+                                                                    minute: "2-digit",
+                                                                    hour12: true,
+                                                                })}
+                                                            </span>
+                                                        </li>
+                                                    </div>
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                {incident.status === false ? (
                                                     <Button
                                                         onClick={() => handleResolve(incident.id, incident?.organization?.businessName)}
                                                         className="flex h-10 cursor-pointer text-black items-center border border-1 border-gray-400 gap-2 bg-gray-50 hover:bg-gray-100"
                                                     >
                                                         Resolve
                                                     </Button>
-                                                </div>
+                                                ) : (
+                                                    <div className="flex h-10 text-gray-600 font-semibold items-center rounded-md border border-1 border-gray-400 px-4 gap-2 bg-transparent">
+                                                        Resolved
+                                                    </div>
+                                                )}
                                             </div>
-
                                         </div>
-
-                                    ))}
+                                    </div>
+                                ))}
                             </div>
 
-                            <div className="flex items-center mt-10 justify-between px-6 py-4">
-                                <Button
-                                    variant="outline"
-                                    size="lg"
-                                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                    disabled={currentPage === 1}
-                                    className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
-                                >
-                                    <ArrowLeft color="#414651" strokeWidth={1.75} />
-                                    Previous
-                                </Button>
+                            {allIncidents.length > 0 && (
+                                <div className="flex items-center mt-10 justify-between px-6 py-4">
+                                    <Button
+                                        variant="outline"
+                                        size="lg"
+                                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                        disabled={currentPage === 1}
+                                        className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
+                                    >
+                                        <ArrowLeft color="#414651" strokeWidth={1.75} />
+                                        Previous
+                                    </Button>
 
-                                <div className="flex items-center gap-1">
-                                    {getPageNumbers().map((page, index) => (
-                                        page === '...' ? (
-                                            <span key={index} className="px-2 text-gray-400">...</span>
-                                        ) : (
-                                            <Button
-                                                key={page}
-                                                variant={currentPage === page ? "default" : "ghost"}
-                                                size="sm"
-                                                onClick={() => setCurrentPage(page as number)}
-                                                className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
-                                                    ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
-                                                    : "text-gray-500 hover:bg-gray-50"
-                                                    }`}
-                                            >
-                                                {page}
-                                            </Button>
-                                        )
-                                    ))}
+                                    <div className="flex items-center gap-1">
+                                        {getPageNumbers().map((page, index) => (
+                                            page === '...' ? (
+                                                <span key={index} className="px-2 text-gray-400">...</span>
+                                            ) : (
+                                                <Button
+                                                    key={page}
+                                                    variant={currentPage === page ? "default" : "ghost"}
+                                                    size="sm"
+                                                    onClick={() => setCurrentPage(page as number)}
+                                                    className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
+                                                        ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                                                        : "text-gray-500 hover:bg-gray-50"
+                                                        }`}
+                                                >
+                                                    {page}
+                                                </Button>
+                                            )
+                                        ))}
+                                    </div>
+
+                                    <Button
+                                        variant="outline"
+                                        size="lg"
+                                        onClick={() =>
+                                            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                                        }
+                                        disabled={currentPage === totalPages}
+                                        className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
+                                    >
+                                        Next
+                                        <ArrowRight color="#414651" strokeWidth={1.75} />
+                                    </Button>
                                 </div>
-
-                                <Button
-                                    variant="outline"
-                                    size="lg"
-                                    onClick={() =>
-                                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                                    }
-                                    disabled={currentPage === totalPages}
-                                    className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
-                                >
-                                    Next
-                                    <ArrowRight color="#414651" strokeWidth={1.75} />
-                                </Button>
-                            </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

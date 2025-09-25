@@ -101,7 +101,7 @@ export default function AnalysisGraph() {
             </div>
             <div className="flex gap-2 items-center">
               Downtime
-              <div className="w-5 h-5 bg-[#7086FD] rounded-sm"></div>
+              <div className="w-5 h-5 bg-[#FF5F57] rounded-sm"></div>
             </div>
           </div>
         </div>
@@ -140,18 +140,18 @@ export default function AnalysisGraph() {
               <Line
                 type="monotone"
                 dataKey="downtime"
-                stroke="#7086FD"
+                stroke="#FF5F57"
                 strokeWidth={1}
                 dot={{
                   r: 3,
-                  stroke: "#7086FD30",
-                  fill: "#7086FD",
+                  stroke: "#FF5F5730",
+                  fill: "#FF5F57",
                   strokeWidth: 8,
                 }}
                 activeDot={{
                   r: 3,
-                  stroke: "#7086FD30",
-                  fill: "#7086FD",
+                  stroke: "#FF5F5730",
+                  fill: "#FF5F57",
                   strokeWidth: 8,
                 }}
               />

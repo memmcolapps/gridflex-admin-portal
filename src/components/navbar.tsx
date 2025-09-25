@@ -3,7 +3,8 @@
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight, LogOut, User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChevronDown, ChevronRight, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -90,6 +91,19 @@ export function Navbar() {
     );
   });
 
+ const UserAvatar = () => {
+    const { user } = useAuth();
+    const initials = `${user?.firstname?.charAt(0) ?? ""}${user?.lastname?.charAt(0) ?? ""}`.toUpperCase();
+    return (
+      <Avatar className="h-7 w-7 sm:h-10 sm:w-10">
+        <AvatarImage src="" alt="User" />
+        <AvatarFallback className="rounded-full bg-[var(--primary)] text-xs text-white sm:text-sm">
+          {initials}
+        </AvatarFallback>
+      </Avatar>
+    );
+  };
+
   function handleProfilepdate(data: UnifiedFormData): void {
     console.log("Admin updated:", data);
   }
@@ -113,6 +127,7 @@ export function Navbar() {
 
         {/* Breadcrumbs */}
         <div className="flex items-center gap-2">{breadcrumbs}</div>
+       
       </div>
 
       {/* User Menu */}
@@ -123,12 +138,8 @@ export function Navbar() {
       >
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="flex items-center gap-2">
-            <User size={16} />
-            {user && (
-              <span className="text-sm font-medium">
-                {user.firstname} {user.lastname}
-              </span>
-            )}
+          <UserAvatar/>
+          <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
 

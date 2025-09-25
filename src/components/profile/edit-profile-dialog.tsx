@@ -13,6 +13,9 @@ import type { UnifiedFormData } from "@/types/unifiedForm";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useUpdateProfile } from "@/hooks/use-orgs";
+import Link from "next/link";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { ChangePasswordDialog } from "./change-password-dialog";
 
 export interface AdminData {
     id?: number;
@@ -50,6 +53,10 @@ export const EditProfileDialog = ({
         }
         return initialData || {};
     });
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => setShowPassword(!showPassword);
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+
 
     const {
         mutate: updateAdmin,
@@ -81,8 +88,8 @@ export const EditProfileDialog = ({
     };
 
     const handleSubmit = () => {
-        if (!formData.firstname || !formData.lastname || 
-            !formData.phoneNo ) {
+        if (!formData.firstname || !formData.lastname ||
+            !formData.phoneNo) {
             toast.error("Please fill in all required fields");
             return;
         }
@@ -106,6 +113,8 @@ export const EditProfileDialog = ({
                 <DialogHeader>
                     <DialogTitle>Edit Profile</DialogTitle>
                 </DialogHeader>
+        <div className="border-b my-4"></div>
+
                 <div className="mt-2 grid grid-cols-2 gap-6">
                     <div className="space-y-4">
                         <Label htmlFor="firstname">
@@ -162,22 +171,39 @@ export const EditProfileDialog = ({
                     </div>
                 </div>
                 <div className="w-full">
-                    <div className="space-y-4">
+                    <div className="space-y-2">
                         <Label htmlFor="defaultPassword">
-                            Default Password
-                            <span className="text-red-500">*</span>
+                            Default Password <span className="text-red-500">*</span>
                         </Label>
-                        <Input
-                            disabled
-                            id="defaultPassword"
-                            name="defaultPassword"
-                            type="password"
-                            className="w-full h-12"
-                            value={formData.defaultPassword ?? ""}
-                            onChange={handleChange}
-                            placeholder="•••••••••"
-                        />
+
+                        <div className="relative">
+                            <Input
+                                disabled
+                                id="defaultPassword"
+                                name="defaultPassword"
+                                type={showPassword ? "text" : "password"}
+                                className="w-full h-12 pr-12"
+                                value={formData.defaultPassword ?? ""}
+                                placeholder="•••••••••"
+                            />
+
+                            <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-400 hover:text-gray-600"
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                            >
+                                {showPassword ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
+                            </button>
+                        </div>
                     </div>
+
+                    <div
+                        onClick={() => setIsDialogOpen(true)}
+                    >
+                        <span className="flex cursor-pointer justify-start text-[var(--primary)] mt-0">Change Password</span>
+                    </div>
+
                 </div>
                 {isError && (
                     <div className="mt-2 text-sm text-red-500">
@@ -205,11 +231,17 @@ export const EditProfileDialog = ({
                             onClick={handleSubmit}
                             disabled={isPending}
                         >
-                            {isPending ? "Updating..." : "Update Profile"}
+                            {isPending ? "Saving..." : "Save"}
                         </Button>
                     </div>
                 </DialogFooter>
             </DialogContent>
+
+            {/* dialog  */}
+            <ChangePasswordDialog 
+            isOpen={isDialogOpen} 
+            onOpenChange={setIsDialogOpen} 
+            />
         </Dialog>
     );
 };

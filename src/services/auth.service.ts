@@ -1,7 +1,7 @@
 import { handleApiError } from "@/error";
 import axios from "axios";
 import { env } from "@/env";
-import type { ApiResponse, ProfileResponse, ResetPasswordPayload, ServiceResponse } from "@/types/org.interfaces";
+import type { ApiResponse, ChangePasswordPayload, ProfileResponse, ResetPasswordPayload, ServiceResponse } from "@/types/org.interfaces";
 
 const BASE_URL = env.NEXT_PUBLIC_API_BASE_URL;
 const CUSTOM_HEADER = (env.NEXT_PUBLIC_CUSTOM_HEADER as string) ?? "";
@@ -152,6 +152,32 @@ export const generateOtpApi = async ({ username }: { username: string }): Promis
     }
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "generate-otp");
+    return { success: false, message: errorResult.error };
+  }
+};
+
+export const changePasswordApi = async (params: ChangePasswordPayload): Promise<ServiceResponse> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    console.log("Payload sent to backend:", params);
+    const response = await axios.post<ApiResponse>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/change-password`,
+      null,
+      {
+        params, 
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data.responsecode === "000") {
+      return { success: true, message: response.data.responsedesc };
+    } else {
+      return { success: false, message: response.data.responsedesc };
+    }
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "reset-password");
     return { success: false, message: errorResult.error };
   }
 };

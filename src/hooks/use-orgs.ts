@@ -33,9 +33,10 @@ import type {
   resolveIncidentPayload,
   MarkContactPayload,
   ResetPasswordPayload,
+  ChangePasswordPayload,
 } from "@/types/org.interfaces";
 import { queryClient } from "@/lib/queryClient";
-import { generateOtpApi, getProfile, resetPasswordApi } from "@/services/auth.service";
+import { changePasswordApi, generateOtpApi, getProfile, resetPasswordApi } from "@/services/auth.service";
 
 export const useCreateOrg = () => {
   return useMutation({
@@ -233,6 +234,20 @@ export const useResetPassword = () => {
 
   return useMutation({
     mutationFn: (payload: ResetPasswordPayload) => resetPasswordApi(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
+    },
+    onError: (error) => {
+      console.error("Reset password failed:", error);
+    },
+  });
+};
+
+export const useChangePassword = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: ChangePasswordPayload) => changePasswordApi(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth"] });
     },

@@ -99,7 +99,7 @@ export const ChangePasswordDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[580px]">
+      <DialogContent className="w-[580px] h-[450px] ">
         <DialogHeader>
           <DialogTitle>Change Password</DialogTitle>
         </DialogHeader>
@@ -175,26 +175,6 @@ export const ChangePasswordDialog = ({
               {showConfirm ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
             </button>
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="otp">
-            OTP <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="otp"
-            name="otp"
-            type="text"
-            className="w-full h-12"
-            value={formData.otp}
-            onChange={handleChange}
-            placeholder="Enter OTP"
-          />
-          <Link href="" onClick={(e) => e.preventDefault()}>
-            <span className="flex justify-start text-[var(--primary)] mt-0">
-              Get OTP
-            </span>
-          </Link>
         </div>
 
         {isError && (

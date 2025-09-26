@@ -433,7 +433,6 @@ export interface ServiceResponse {
 export interface ResetPasswordPayload {
   username: string;
   password: string;
-  retype_password: string;
   otp: string;
 }
 
@@ -532,15 +531,21 @@ export interface IncidentReport {
   responsecode: string;
   responsedesc: string;
   responsedata: {
-    id: string;
-    type?: string;
-    message: string;
-    createdAt: string;
-    organization: Org;
-    status: boolean;
-    user: Client;
-  }[]
+    totalData: number;
+    data: Incident[];
+  };
 }
+
+export interface Incident {
+  id: string;
+  type?: string;
+  message: string;
+  createdAt: string;
+  status: boolean;
+  organization: Org;
+  user: Client;
+}
+
 
 export interface User {
   id: string;

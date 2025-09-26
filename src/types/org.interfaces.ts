@@ -420,6 +420,23 @@ export interface DailySummary {
   downtimePercent: number;
 }
 
+export interface ApiResponse {
+  responsecode: string;
+  responsedesc: string;
+}
+
+export interface ServiceResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface ResetPasswordPayload {
+  username: string;
+  password: string;
+  retype_password: string;
+  otp: string;
+}
+
 
 export interface AdminPayload {
   id?: string;

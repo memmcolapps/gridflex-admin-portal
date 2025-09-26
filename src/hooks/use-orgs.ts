@@ -32,9 +32,10 @@ import type {
   UpdateSubstationTransfomerFeederPayload,
   resolveIncidentPayload,
   MarkContactPayload,
+  ResetPasswordPayload,
 } from "@/types/org.interfaces";
 import { queryClient } from "@/lib/queryClient";
-import { getProfile } from "@/services/auth.service";
+import { generateOtpApi, getProfile, resetPasswordApi } from "@/services/auth.service";
 
 export const useCreateOrg = () => {
   return useMutation({
@@ -220,6 +221,31 @@ export const useUser = (id: string) => {
     queryFn: () => getProfile(id)
   })
 }
+
+
+export const useResetPassword = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: ResetPasswordPayload) => resetPasswordApi(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
+    },
+    onError: (error) => {
+      console.error("Reset password failed:", error);
+    },
+  });
+};
+
+export const useGenerateOtp = () => {
+  return useMutation({
+    mutationFn: generateOtpApi,
+    onError: (error) => {
+      console.error("Generate OTP failed:", error);
+    },
+  });
+};
+
 
 
 export const useCreateAdmin = () => {

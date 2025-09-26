@@ -9,24 +9,14 @@ export default function ForgotPasswordPage() {
   const router = useRouter();
   const [error, setError] = useState("");
 
-  const handleSubmit = async (email: string) => {
+  const handleSubmit = async () => {
     setError("");
     try {
       router.push("/resetpassword"); 
-    } catch (err) {
+    } catch (error) {
       setError("Failed to send reset password link. Try again.");
     }
   };
-
-// const handleSubmit = async (email: string, password: string) => {
-//     setError("");
-//     const success = await login({ username: email, password });
-//     if (success) {
-//       router.push("/dashboard");
-//     } else {
-    // setError("Failed to send reset password link. Try again.");
-//     }
-//   };
 
   return (
     <div className="bg-background flex min-h-screen items-center justify-center p-4">

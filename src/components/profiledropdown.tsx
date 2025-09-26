@@ -8,13 +8,11 @@ import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 interface ProfileDropdownProps {
   closeDropdown: () => void;
   openEditProfileModal?: () => void;
-  openChangePasswordModal?: () => void;
 }
 
 export default function ProfileDropdown({
   closeDropdown,
   openEditProfileModal,
-  openChangePasswordModal,
 }: ProfileDropdownProps) {
   const { user: authUser } = useAuth();
   const { data, isLoading, isError, error } = useUser(String(authUser?.id));

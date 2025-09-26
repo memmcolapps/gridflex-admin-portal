@@ -55,7 +55,7 @@ export const ChangePasswordDialog = ({
   const [showConfirm, setShowConfirm] = useState(false);
 
   const {
-    mutate: updateAdmin,
+    // mutate: updateAdmin,
     isError,
     error,
     isSuccess,

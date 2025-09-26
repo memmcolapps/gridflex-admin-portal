@@ -8,11 +8,13 @@ import Link from "next/link";
 interface AdminAuthFormProps {
   onSubmit: (password: string) => void;
   initialPassword?: string;
+  isLoading?: boolean; 
 }
 
 export function AdminResetPassword({
   onSubmit,
   initialPassword = "",
+  isLoading = false, 
 }: AdminAuthFormProps) {
   const [password, setPassword] = useState(initialPassword);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,7 +32,7 @@ export function AdminResetPassword({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFormValid || isSubmitting) return;
+    if (!isFormValid || isSubmitting || isLoading) return; 
 
     setIsSubmitting(true);
     try {
@@ -39,6 +41,8 @@ export function AdminResetPassword({
       setIsSubmitting(false);
     }
   };
+
+  const submitting = isSubmitting || isLoading; 
 
   return (
     <div className="w-full">
@@ -61,12 +65,14 @@ export function AdminResetPassword({
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border px-4 py-3 pr-12 text-gray-800 placeholder-gray-400 shadow-sm transition-colors focus:border-[#161CCA] focus:ring-1 focus:ring-blue-500 focus:outline-none"
               required
+              disabled={submitting} 
             />
             <button
               type="button"
               onClick={togglePasswordVisibility}
               className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-400 hover:text-gray-600"
               aria-label={showPassword ? "Hide password" : "Show password"}
+              disabled={submitting} 
             >
               {showPassword ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
             </button>
@@ -89,12 +95,14 @@ export function AdminResetPassword({
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full rounded-lg border px-4 py-3 pr-12 text-gray-800 placeholder-gray-400 shadow-sm transition-colors focus:border-[#161CCA] focus:ring-1 focus:ring-blue-500 focus:outline-none"
               required
+              disabled={submitting} 
             />
             <button
               type="button"
               onClick={toggleConfirmPasswordVisibility}
               className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-400 hover:text-gray-600"
               aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              disabled={submitting} 
             >
               {showConfirmPassword ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
             </button>
@@ -103,14 +111,14 @@ export function AdminResetPassword({
 
         <button
           type="submit"
-          disabled={!isFormValid || isSubmitting}
+          disabled={!isFormValid || submitting} 
           className={`flex w-full mt-10 items-center justify-center gap-2 px-4 py-3 font-medium text-white transition-all duration-200 ${
-            !isFormValid || isSubmitting
+            !isFormValid || submitting 
               ? "cursor-not-allowed bg-[#161CCA]/50"
               : "cursor-pointer bg-[#161CCA] hover:bg-blue-700 active:bg-blue-800"
           }`}
         >
-          {isSubmitting ? (
+          {submitting ? ( 
             <>
               <Loader className="animate-spin" size={20} />
               <span>Resetting...</span>

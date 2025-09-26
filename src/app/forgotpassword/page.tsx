@@ -10,19 +10,17 @@ import { useGenerateOtp } from "@/hooks/use-orgs";
 export default function ForgotPasswordPage() {
   const router = useRouter();
   const [error] = useState("");
-
   const [email, setEmail] = useState('');
   const generateOtpMutation = useGenerateOtp();
 
   const handleEmailSubmit = async ({ username }: { username: string }) => {
     try {
       const result = await generateOtpMutation.mutateAsync( {username} ); 
-      // 👆 send username object to backend
   
       if (result.success) {
-        setEmail(username); // store it in local state
+        setEmail(username); 
         toast.success(result.message || "Verification code sent to your email");
-        router.push("/otp");
+        router.push(`/otp?email=${encodeURIComponent(username)}`);
       } else {
         toast.error(result.message || "Failed to send verification code");
       }

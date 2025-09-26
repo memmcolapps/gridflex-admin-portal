@@ -246,8 +246,6 @@ export const useGenerateOtp = () => {
   });
 };
 
-
-
 export const useCreateAdmin = () => {
 const queryClient = useQueryClient();
   return useMutation({

@@ -186,12 +186,17 @@ export const useGetRecentActiviy = () => {
   })
 }
 
-export const useIncidentReports = (status?: boolean) => {
+export const useIncidentReports = (
+  page: number,
+  size: number,
+  status?: boolean
+) => {
   return useQuery({
-    queryKey: ['incidentReport', status],
-    queryFn: () => getIncidentReports(status)
-  })
-}
+    queryKey: ['incidentReport', page, size, status],
+    queryFn: () => getIncidentReports(page, size, status),
+  });
+};
+
 
 export const useResolveIncidents = () => {
   return useMutation({

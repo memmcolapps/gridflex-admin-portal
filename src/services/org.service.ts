@@ -606,6 +606,8 @@ export const updateAdminApi = async (
 };
 
 export const getIncidentReports = async (
+  page: number,
+  size: number,
   status?: boolean
 ): Promise<{
   success: boolean;
@@ -617,7 +619,7 @@ export const getIncidentReports = async (
     const response = await axios.get<IncidentReport>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report`,
       {
-        params: { status },
+        params: { page, size, status },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -628,16 +630,17 @@ export const getIncidentReports = async (
       return { success: false, error: response.data.responsedesc };
     }
 
-    // Fix: Return the actual data
     return {
       success: true,
-      data: response.data.responsedata
+      data: response.data.responsedata,
     };
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "incidentReport");
     return { success: false, error: errorResult.error };
   }
 };
+
+
 
 export const resolveIncident = async (
   id: string,

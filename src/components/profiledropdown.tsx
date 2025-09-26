@@ -110,7 +110,10 @@ export default function ProfileDropdown({
           Cancel
         </Button>
         <Button
-          onClick={openEditProfileModal}
+          onClick={() =>{
+            closeDropdown() ;
+            openEditProfileModal?.()
+          }}
           className="cursor-pointer bg-[#161CCA] w-30 h-11 text-white"
         >
           Edit Profile

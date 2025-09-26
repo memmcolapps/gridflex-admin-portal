@@ -30,7 +30,6 @@ export default function ResetPassword () {
       const result = await resetPasswordMutation.mutateAsync({
         username: email,
         password: password,
-        retype_password: password, 
         otp: otp
       })
 

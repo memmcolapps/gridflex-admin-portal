@@ -47,6 +47,7 @@ export function Navbar() {
   const { user, logout } = useAuth();
   const [isProfileViewActive, setIsProfileViewActive] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const pathSegments = pathname.split("/").filter(Boolean);
 
@@ -154,8 +155,7 @@ export function Navbar() {
             <ProfileDropdown
               closeDropdown={() => setIsProfileViewActive(false)}
               openEditProfileModal={() => {
-                // setIsProfileViewActive(false);
-                // openEditProfileModal();
+                setIsProfileViewActive(false);
                 setIsEditDialogOpen(true);
               }}
             />
@@ -166,6 +166,7 @@ export function Navbar() {
                 onSelect={(e) => {
                   e.preventDefault();
                   setIsProfileViewActive(true);
+                  setIsDropdownOpen(false)
                 }}
               >
                 <User size={12} className="mr-2" />

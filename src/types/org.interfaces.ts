@@ -436,6 +436,12 @@ export interface ResetPasswordPayload {
   otp: string;
 }
 
+export interface ChangePasswordPayload {
+  username: string;
+  oldPassword: string;
+  password: string;
+}
+
 
 export interface AdminPayload {
   id?: string;

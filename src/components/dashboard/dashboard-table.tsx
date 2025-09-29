@@ -75,8 +75,8 @@ export default function DasboardIncidentReports() {
                                                 <Button className=
                                                     {`
                                                     flex h-10 cursor-pointer rounded text-black items-center gap-2 
-                                                    ${incident.status === true ? 'bg-green-100 border border-1 text-green-600 border-green-300' : ''}
-                                                    ${incident.status === false ? 'bg-yellow-100 border border-1 text-yellow-600 border-yellow-300' : ''}
+                                                    ${incident.status === true ? 'bg-green-100 border border-1 text-green-600 border-green-300 hover:bg-red/90' : ''}
+                                                    ${incident.status === false ? 'bg-yellow-100 border border-1 text-yellow-600 border-yellow-300 hover:bg-red/90' : ''}
                                                 `}
                                                 >
                                                     {incident.status === false ? 'In Progress' : 'Resolved'}

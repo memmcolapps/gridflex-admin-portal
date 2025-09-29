@@ -9,62 +9,47 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { UnifiedFormData } from "@/types/unifiedForm";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { useUpdateProfile } from "@/hooks/use-orgs";
-import Link from "next/link";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-
-export interface AdminData {
-  id?: number;
-  firstname?: string;
-  lastname?: string;
-  email?: string;
-  defaultPassword?: string;
-  phoneNo?: string;
-}
+import { useChangePassword } from "@/hooks/use-orgs";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  selectedContact?: AdminData | null;
-  initialData?: Partial<UnifiedFormData>;
 }
 
 export const ChangePasswordDialog = ({
   isOpen,
   onOpenChange,
-//   initialData,
-  selectedContact,
 }: Props) => {
   const [formData, setFormData] = useState<{
     oldPassword: string;
     newPassword: string;
     confirmPassword: string;
-    otp: string;
   }>({
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
-    otp: "",
   });
 
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const { user } = useAuth();
 
   const {
-    // mutate: updateAdmin,
+    mutate: changePassword,
     isError,
     error,
     isSuccess,
     isPending,
-  } = useUpdateProfile(String(selectedContact?.id ?? ""));
+  } = useChangePassword();
 
   useEffect(() => {
     if (!isOpen) {
-      setFormData({ oldPassword: "", newPassword: "", confirmPassword: "", otp: "" });
+      setFormData({ oldPassword: "", newPassword: "", confirmPassword: ""});
     }
   }, [isOpen]);
 
@@ -76,8 +61,7 @@ export const ChangePasswordDialog = ({
   const isFormValid =
     formData.oldPassword.trim().length > 0 &&
     formData.newPassword.trim().length >= 8 &&
-    formData.confirmPassword === formData.newPassword &&
-    formData.otp.trim().length > 0;
+    formData.confirmPassword === formData.newPassword ;
 
   const handleSubmit = () => {
     if (!isFormValid) {
@@ -85,26 +69,38 @@ export const ChangePasswordDialog = ({
       return;
     }
 
-    // updateAdmin(formData, {
-    //   onSuccess: () => {
-    //     toast.success("Password updated successfully!");
-    //     onOpenChange(false);
-    //   },
-    //   onError: (error) => {
-    //     toast.error("Failed to update password");
-    //     console.error("Update error:", error);
-    //   },
-    // });
+    changePassword(
+      {
+        username: user?.email ?? "",
+        oldPassword: formData.oldPassword,
+        password: formData.newPassword,
+      },
+      {
+        onSuccess: (res) => {
+          if (res.success) {
+            toast.success(res.message || "Password updated successfully!");
+            onOpenChange(false);
+          } else {
+            toast.error(res.message || "Failed to update password");
+          }
+        },
+        onError: (err) => {
+          toast.error("Failed to update password");
+          console.error("Change password error:", err);
+        },
+      }
+    );
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[580px] h-[450px] ">
+      <DialogContent className="w-[580px] h-[450px]">
         <DialogHeader>
           <DialogTitle>Change Password</DialogTitle>
         </DialogHeader>
         <div className="border-b my-4"></div>
 
+        {/* Old Password */}
         <div className="space-y-2">
           <Label htmlFor="oldPassword">
             Old Password <span className="text-red-500">*</span>
@@ -129,6 +125,7 @@ export const ChangePasswordDialog = ({
           </div>
         </div>
 
+        {/* New Password */}
         <div className="space-y-2">
           <Label htmlFor="newPassword">
             New Password <span className="text-red-500">*</span>
@@ -153,6 +150,7 @@ export const ChangePasswordDialog = ({
           </div>
         </div>
 
+        {/* Confirm Password */}
         <div className="space-y-2">
           <Label htmlFor="confirmPassword">
             Confirm Password <span className="text-red-500">*</span>
@@ -177,6 +175,7 @@ export const ChangePasswordDialog = ({
           </div>
         </div>
 
+        {/* Feedback */}
         {isError && (
           <div className="mt-2 text-sm text-red-500">
             {error?.message || "Failed to update password"}
@@ -202,11 +201,7 @@ export const ChangePasswordDialog = ({
             <Button
               className="bg-[#161CCA] px-6 py-6 rounded-sm text-white hover:bg-[#161CCA]"
               onClick={handleSubmit}
-              disabled={
-                // !isFormValid
-                //  ||
-                  isPending
-                }
+              disabled={isPending}
             >
               {isPending ? "Saving..." : "Save"}
             </Button>

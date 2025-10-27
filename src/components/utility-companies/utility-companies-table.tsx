@@ -226,16 +226,18 @@ export default function UtilityCompaniesTable() {
                       <DropdownMenuItem
                         onClick={() => {
                           setSelectedOrg ({
+                            id: company.id ?? '',
                             businessName: company.businessName ?? "",
                             postalCode: company.postalCode ?? "",
                             address: company.address ?? "",
                             country: company.country ?? "",
                             state: company.state ?? "",
                             city: company.city ?? "",
+                            userId: company.operator?.id ?? "",
                             firstName: company.operator?.firstname ?? "",
                             lastName: company.operator?.lastname ?? "",
                             email: company.operator?.email ?? "",
-                            phoneNumber: company.id ?? "",
+                            phoneNumber: company.nodes.nodeInfo?.phoneNo ?? "",
                           })
                           setIsEditOpen(true)
                         }}

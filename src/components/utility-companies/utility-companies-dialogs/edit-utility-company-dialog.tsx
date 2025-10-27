@@ -1,152 +1,167 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useCreateOrg } from "@/hooks/use-orgs";
+import { useUpdateOrg } from "@/hooks/use-orgs";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useNigerianCities, useNigerianStates } from "@/hooks/use-location";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 
 export interface OrganizationData {
-  businessName: string;
-  postalCode: string;
-  address: string;
-  country: string;
-  state: string;
-  city: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
+    id?: string;
+    businessName: string;
+    postalCode: string;
+    address: string;
+    country: string;
+    state: string;
+    userId: string;
+    city: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
 }
 
 type Props = {
-  isOpen: boolean;
-  organizationId?: string;
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (data: UnifiedFormData) => void;
-  initialData?: Partial<UnifiedFormData>;
-  selectedOrganization?: OrganizationData | null;
+    isOpen: boolean;
+    organizationId?: string;
+    onOpenChange: (open: boolean) => void;
+    onSubmit: (data: UnifiedFormData) => void;
+    initialData?: Partial<UnifiedFormData>;
+    selectedOrganization?: OrganizationData | null;
 };
 
 export const EditUtilityCompanyDialog = ({
-  isOpen,
-  onOpenChange,
-  onSubmit,
-  organizationId,
-  selectedOrganization,
-  initialData = {},
+    isOpen,
+    onOpenChange,
+    onSubmit,
+    organizationId,
+    selectedOrganization,
+    initialData = {},
 }: Props) => {
-  const [formData, setFormData] = useState<UnifiedFormData>(initialData || {});
+    const [formData, setFormData] = useState<UnifiedFormData>(initialData || {});
 
-  useEffect(() => {
-    if (selectedOrganization && isOpen) {
-      setFormData((prev) => ({
-        ...prev,
-        organizationName: selectedOrganization.businessName || "",
-        postalCode: selectedOrganization.postalCode || "",
-        streetAddress: selectedOrganization.address || "",
-        country: selectedOrganization.country || "",
-        stateProvince: selectedOrganization.state || "",
-        city: selectedOrganization.city || "",
-        adminName: selectedOrganization.firstName || "",
-        adminLastName: selectedOrganization.lastName || "",
-        email: selectedOrganization.email || "",
-        adminPhoneNumber: selectedOrganization.phoneNumber || "",
-      }));
-    }
-  }, [selectedOrganization, isOpen]);
+    useEffect(() => {
+        if (selectedOrganization && isOpen) {
+          setFormData((prev) => ({
+            ...prev,
+            id: selectedOrganization.id ?? organizationId ?? "",
+            organizationName: selectedOrganization.businessName || "",
+            postalCode: selectedOrganization.postalCode || "",
+            streetAddress: selectedOrganization.address || "",
+            country: selectedOrganization.country || "",
+            userId: selectedOrganization.userId || "",
+            stateProvince: selectedOrganization.state || "",
+            city: selectedOrganization.city || "",
+            firstname: selectedOrganization.firstName || "",
+            lastname: selectedOrganization.lastName || "",
+            email: selectedOrganization.email || "",
+            adminPhoneNumber: selectedOrganization.phoneNumber || "",
+          }));
+        }
+      }, [selectedOrganization, isOpen, organizationId]);
 
-  const {
-    mutate: createOrg,
-    isError,
-    error,
-    isSuccess,
-    isPending,
-  } = useCreateOrg();
+    const {
+        mutate: updateOrg,
+        isError,
+        error,
+        isSuccess,
+        isPending,
+    } = useUpdateOrg();
 
-  const { data: states, isLoading: isLoadingStates } = useNigerianStates();
-  const stateId = states?.find((state) => state.name === formData.stateProvince)?.id;
-  const { data: cities, isLoading: isLoadingCities } = useNigerianCities(stateId);
+    const { data: states, isLoading: isLoadingStates } = useNigerianStates();
+    const stateId = states?.find((state) => state.name === formData.stateProvince)?.id;
+    const { data: cities, isLoading: isLoadingCities } = useNigerianCities(stateId);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFormData({ ...formData, companyLogo: e.target.files[0]?.name });
-    }
-  };
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFormData({ ...formData, companyLogo: e.target.files[0]?.name });
+        }
+    };
 
-  const handleSelectChange = (name: string) => (value: string) => {
-    setFormData({ ...formData, [name]: value });
-  };
+    const handleSelectChange = (name: string) => (value: string) => {
+        setFormData({ ...formData, [name]: value });
+    };
 
-  const mapToCreateOrgPayload = (data: UnifiedFormData) => ({
-    businessName: data.organizationName ?? "",
-    postalCode: data.postalCode ?? "",
-    address: data.streetAddress ?? "",
-    country: data.country ?? "",
-    state: data.stateProvince ?? "",
-    city: data.city ?? "",
-    firstName: data.firstname ?? "",
-    lastName: data.lastname ?? "",
-    email: data.email ?? "",
-    password: data.defaultPassword ?? "",
-    phoneNumber: data.adminPhoneNumber ?? "",
-  });
+    const mapToUpdateOrgPayload = (data: UnifiedFormData) => ({
+        id: data.id ?? organizationId ?? "",
+        businessName: data.organizationName ?? "",
+        postalCode: data.postalCode ?? "",
+        address: data.streetAddress ?? "",
+        country: data.country ?? "",
+        state: data.stateProvince ?? "",
+        city: data.city ?? "",
+        userId: data.userId ?? "",
+        firstName: data.firstname ?? "",
+        lastName: data.lastname ?? "",
+        email: data.email ?? "",
+        password: data.defaultPassword ?? "", 
+        phoneNumber: data.adminPhoneNumber ?? "",
+      });
 
-  const handleSubmit = () => {
-    const payload = mapToCreateOrgPayload(formData);
-    createOrg(payload, {
-      onSuccess: () => {
-        onSubmit(formData);
-        onOpenChange(false);
-      },
-      onError: () => {
-        toast.error("Failed to update organization");
-      },
-    });
-  };
+      const handleSubmit = () => {
+        const payload = mapToUpdateOrgPayload(formData);
+    
+        if (!payload.id) {
+          toast.error("Organization ID is missing — cannot update");
+          return;
+        }
+    
+        updateOrg(payload, {
+          onSuccess: () => {
+            toast.success("Organization updated successfully!");
+            onSubmit(formData);
+            onOpenChange(false);
+          },
+          onError: (err) => {
+            toast.error("Failed to update organization");
+            console.error(err);
+          },
+        });
+      };
 
-  const requiredFields: (keyof UnifiedFormData)[] = [
-    "organizationName",
-    "country",
-    "city",
-    "stateProvince",
-    "streetAddress",
-    "adminName",
-    "adminPhoneNumber",
-    "email",
-    "defaultPassword",
-  ];
+      const requiredFields: (keyof UnifiedFormData)[] = [
+        "organizationName",
+        "country",
+        "city",
+        "stateProvince",
+        "streetAddress",
+        "firstname",
+        "lastname",
+        "adminPhoneNumber",
+        "email",
+        "defaultPassword",
+      ];
 
-  const isFormComplete = requiredFields.every(
-    (field) => formData[field] && String(formData[field]).trim() !== ""
-  );
+    const isFormComplete = requiredFields.every(
+        (field) => formData[field] && String(formData[field]).trim() !== ""
+    );
 
-  return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Utility Company</DialogTitle>
-        </DialogHeader>
+    return (
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Edit Utility Company</DialogTitle>
+                </DialogHeader>
                 <div className="grid gap-4">
                     <Label className="text-base">Company Information</Label>
                     <div className="grid grid-cols-2 gap-4">
@@ -269,27 +284,27 @@ export const EditUtilityCompanyDialog = ({
                     <Label className="mt-4">Admin Details</Label>
                     <div className="mt-2 grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="adminName">
+                            <Label htmlFor="firstName">
                                 First Name <span className="text-red-500">*</span>
                             </Label>
                             <Input
-                                id="adminName"
+                                id="firstname"
                                 className="w-[200px] h-11"
-                                name="adminName"
-                                value={formData.adminName ?? ""}
+                                name="firstname"
+                                value={formData.firstname ?? ""}
                                 onChange={handleChange}
                                 placeholder="Enter First Name"
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="adminName">
+                            <Label htmlFor="lastName">
                                 Last Name <span className="text-red-500">*</span>
                             </Label>
                             <Input
-                                id="adminLastName"
+                                id="lastname"
                                 className="w-[200px] h-11"
-                                name="adminLastName"
-                                // value={formData.adminName ?? ""}
+                                name="lastname"
+                                value={formData.lastname ?? ""}
                                 onChange={handleChange}
                                 placeholder="Enter Last Name"
                             />
@@ -343,7 +358,7 @@ export const EditUtilityCompanyDialog = ({
                     )}
                     {isSuccess && (
                         <div className="mt-2 text-sm text-green-600">
-                            Organization created successfully!
+                            Organization updated successfully!
                         </div>
                     )}
                 </div>

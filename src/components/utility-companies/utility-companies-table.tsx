@@ -33,15 +33,22 @@ import { useGetOrgs } from "@/hooks/use-orgs";
 import { SuspendUtilityDialog } from "./utility-companies-dialogs/suspend-utility-dialog";
 import { UnsuspendUtilityDialog } from "./utility-companies-dialogs/unsuspend-utility-dialog";
 import { SelectModulesDialog } from "./utility-companies-dialogs/add-modules-dialog";
+import { EditUtilityCompanyDialog, type OrganizationData } from "./utility-companies-dialogs/edit-utility-company-dialog";
+import type { UnifiedFormData } from "@/types/unifiedForm";
 
 export default function UtilityCompaniesTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [isSelectModulesDialogOpen, setIsSelectModulesDialogOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
   const [isUnsuspendDialogOpen, setIsUnsuspendDialogOpen] = useState(false);
   const router = useRouter();
   const { data: utilityCompaniesData } = useGetOrgs();
+  const handleSubmit = (data: UnifiedFormData) => {
+    console.log("Submitted data:", data);
+    setIsEditOpen(false);
+  };
   const totalPages = Math.ceil(
     (utilityCompaniesData?.organizations.length || 0) / itemsPerPage,
   );
@@ -50,6 +57,8 @@ export default function UtilityCompaniesTable() {
     name: string;
     status?: boolean;
   } | null>(null);
+
+  const [selectedOrg, setSelectedOrg] = useState<OrganizationData | null>(null)
 
   const getPageNumbers = () => {
     const pages = [];
@@ -214,7 +223,23 @@ export default function UtilityCompaniesTable() {
                         View Details
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem className="align-items-center cursor-pointer">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedOrg ({
+                            businessName: company.businessName ?? "",
+                            postalCode: company.postalCode ?? "",
+                            address: company.address ?? "",
+                            country: company.country ?? "",
+                            state: company.state ?? "",
+                            city: company.city ?? "",
+                            firstName: company.operator?.firstname ?? "",
+                            lastName: company.operator?.lastname ?? "",
+                            email: company.operator?.email ?? "",
+                            phoneNumber: company.id ?? "",
+                          })
+                          setIsEditOpen(true)
+                        }}
+                        className="align-items-center cursor-pointer">
                         <Pencil size={14} className="mr-2 text-black" />
                         Edit
                       </DropdownMenuItem>
@@ -337,6 +362,13 @@ export default function UtilityCompaniesTable() {
         isOpen={isSelectModulesDialogOpen}
         onOpenChange={setIsSelectModulesDialogOpen}
         organizationId={selectedOrganization?.id || ''}
+      />
+      <EditUtilityCompanyDialog
+        isOpen={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        onSubmit={handleSubmit}
+        organizationId={selectedOrganization?.id || ""}
+        selectedOrganization={selectedOrg}
       />
       <SuspendUtilityDialog
         isOpen={isSuspendDialogOpen}

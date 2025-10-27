@@ -72,8 +72,8 @@ export const AddNewUtilityCompanyDialog = ({
     country: data.country ?? "",
     state: data.stateProvince ?? "",
     city: data.city ?? "",
-    firstName: data.firstname?.split(" ")[0] ?? "",
-    lastName: data.lastname ?.split(" ")[1] ?? "",
+    firstName: data.adminName?.split(" ")[0] ?? "",
+    lastName: data.adminName?.split(" ")[1] ?? "",
     email: data.email ?? "",
     password: data.defaultPassword ?? "",
     phoneNumber: data.adminPhoneNumber ?? "",
@@ -98,8 +98,7 @@ export const AddNewUtilityCompanyDialog = ({
     "city",
     "stateProvince",
     "streetAddress",
-    "firstname",
-    "lastname",
+    "adminName",
     "adminPhoneNumber",
     "email",
     "defaultPassword",
@@ -237,26 +236,26 @@ export const AddNewUtilityCompanyDialog = ({
           <Label className="mt-4">Admin Details</Label>
           <div className="mt-2 grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstname">
+              <Label htmlFor="adminName">
                 First Name <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="firstname"
+                id="adminName"
                 className="w-[200px] h-11"
-                name="firstname"
-                value={formData.firstname ?? ""}
+                name="adminName"
+                value={formData.adminName ?? ""}
                 onChange={handleChange}
                 placeholder="Enter First Name"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastname">
+              <Label htmlFor="adminName">
                 Last Name <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="lastname"
+                id="adminLastName"
                 className="w-[200px] h-11"
-                name="lastname"
+                name="adminLastName"
                 // value={formData.adminName ?? ""}
                 onChange={handleChange}
                 placeholder="Enter Last Name"

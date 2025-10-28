@@ -58,23 +58,23 @@ export const EditUtilityCompanyDialog = ({
 
     useEffect(() => {
         if (selectedOrganization && isOpen) {
-          setFormData((prev) => ({
-            ...prev,
-            id: selectedOrganization.id ?? organizationId ?? "",
-            organizationName: selectedOrganization.businessName || "",
-            postalCode: selectedOrganization.postalCode || "",
-            streetAddress: selectedOrganization.address || "",
-            country: selectedOrganization.country || "",
-            userId: selectedOrganization.userId || "",
-            stateProvince: selectedOrganization.state || "",
-            city: selectedOrganization.city || "",
-            firstname: selectedOrganization.firstName || "",
-            lastname: selectedOrganization.lastName || "",
-            email: selectedOrganization.email || "",
-            adminPhoneNumber: selectedOrganization.phoneNumber || "",
-          }));
+            setFormData((prev) => ({
+                ...prev,
+                id: selectedOrganization.id ?? organizationId ?? "",
+                organizationName: selectedOrganization.businessName || "",
+                postalCode: selectedOrganization.postalCode || "",
+                streetAddress: selectedOrganization.address || "",
+                country: selectedOrganization.country || "",
+                userId: selectedOrganization.userId || "",
+                stateProvince: selectedOrganization.state || "",
+                city: selectedOrganization.city || "",
+                firstname: selectedOrganization.firstName || "",
+                lastname: selectedOrganization.lastName || "",
+                email: selectedOrganization.email || "",
+                phoneNumber: selectedOrganization.phoneNumber || "",
+            }));
         }
-      }, [selectedOrganization, isOpen, organizationId]);
+    }, [selectedOrganization, isOpen, organizationId]);
 
     const {
         mutate: updateOrg,
@@ -114,32 +114,32 @@ export const EditUtilityCompanyDialog = ({
         firstName: data.firstname ?? "",
         lastName: data.lastname ?? "",
         email: data.email ?? "",
-        password: data.defaultPassword ?? "", 
-        phoneNumber: data.adminPhoneNumber ?? "",
-      });
+        password: data.defaultPassword ?? "",
+        phoneNumber: data.phoneNumber ?? "",
+    });
 
-      const handleSubmit = () => {
+    const handleSubmit = () => {
         const payload = mapToUpdateOrgPayload(formData);
-    
-        if (!payload.id) {
-          toast.error("Organization ID is missing — cannot update");
-          return;
-        }
-    
-        updateOrg(payload, {
-          onSuccess: () => {
-            toast.success("Organization updated successfully!");
-            onSubmit(formData);
-            onOpenChange(false);
-          },
-          onError: (err) => {
-            toast.error("Failed to update organization");
-            console.error(err);
-          },
-        });
-      };
 
-      const requiredFields: (keyof UnifiedFormData)[] = [
+        if (!payload.id) {
+            toast.error("Organization ID is missing — cannot update");
+            return;
+        }
+
+        updateOrg(payload, {
+            onSuccess: () => {
+                toast.success("Organization updated successfully!");
+                onSubmit(formData);
+                onOpenChange(false);
+            },
+            onError: (err) => {
+                toast.error("Failed to update organization");
+                console.error(err);
+            },
+        });
+    };
+
+    const requiredFields: (keyof UnifiedFormData)[] = [
         "organizationName",
         "country",
         "city",
@@ -147,10 +147,9 @@ export const EditUtilityCompanyDialog = ({
         "streetAddress",
         "firstname",
         "lastname",
-        "adminPhoneNumber",
+        "phoneNumber",
         "email",
-        "defaultPassword",
-      ];
+    ];
 
     const isFormComplete = requiredFields.every(
         (field) => formData[field] && String(formData[field]).trim() !== ""
@@ -325,14 +324,14 @@ export const EditUtilityCompanyDialog = ({
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="adminPhoneNumber">
+                            <Label htmlFor="phoneNumber">
                                 Phone Number <span className="text-red-500">*</span>
                             </Label>
                             <Input
-                                id="adminPhoneNumber"
-                                name="adminPhoneNumber"
+                                id="phoneNumber"
+                                name="phoneNumber"
                                 className="w-[200px] h-10"
-                                value={formData.adminPhoneNumber ?? ""}
+                                value={formData.phoneNumber ?? ""}
                                 onChange={handleChange}
                                 placeholder="Enter Phone Number"
                             />
@@ -344,6 +343,7 @@ export const EditUtilityCompanyDialog = ({
                                 Default Password <span className="text-red-500">*</span>
                             </Label>
                             <Input
+                                disabled
                                 id="defaultPassword"
                                 name="defaultPassword"
                                 className="w-full h-11"

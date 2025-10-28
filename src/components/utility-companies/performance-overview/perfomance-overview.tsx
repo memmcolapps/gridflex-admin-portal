@@ -17,7 +17,6 @@ import {
   Zap,
   FolderRoot,
   CircleCheckBig,
-  CreditCard,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -50,6 +49,9 @@ import {
   useGetOneOrg,
 } from "@/hooks/use-orgs";
 import { toast } from "sonner";
+import { useAtom } from "jotai";
+import { selectedModulesAtom } from "@/atom/modulesAtom";
+import { icons } from "./icons";
 
 export default function PerformanceOverview({
   params,
@@ -126,6 +128,9 @@ export default function PerformanceOverview({
   const updateNode = (nodeName: string, updatedData: UnifiedFormData) => {
     console.log("Updating node:", nodeName, "with data:", updatedData);
   };
+
+  const [modulesByOrg] = useAtom(selectedModulesAtom);
+  const selectedModules = modulesByOrg[id] ?? [];  
 
   const handleAddRegion = (data: UnifiedFormData) => {
     if (!currentParentId) {
@@ -748,29 +753,26 @@ export default function PerformanceOverview({
                 </li>
               </ul>
 
-              <div>
-                <div className="flex gap-2 mt-4 items-center">
-                  <CircleCheckBig size={18} className="text-black" />
-                  <span className="text-lg font-medium">
-                    Assigned Modules
-                  </span>
-                </div>
+              {selectedModules.length > 0 && (
+                <div>
+                  <div className="flex gap-2 mt-4 items-center">
+                    <CircleCheckBig size={18} className="text-black" />
+                    <span className="text-lg font-medium">Assigned Modules</span>
+                  </div>
 
-                <ul className="py-3 px-4 space-y-4">
-                  <li className="flex items-center gap-2">
-                  <CreditCard size={16} className="text-black"/>
-                  <span>
-                    Billing
-                  </span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Zap size={16} className="text-black"/>
-                    <span>
-                      Vending
-                    </span>
-                  </li>
-                </ul>
-              </div>
+                  <ul className="py-3 px-4 space-y-4">
+                    {selectedModules.map((module) => (
+                      <li key={module} className="flex items-center gap-2">
+                        {icons[module]}
+                        <span>{module}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+
+
             </CardContent>
           </Card>
         </div>

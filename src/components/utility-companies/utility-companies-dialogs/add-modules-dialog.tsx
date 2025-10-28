@@ -1,5 +1,4 @@
 "use client";
-import { useSuspendUtility } from "@/hooks/use-orgs";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -11,7 +10,9 @@ import {
 } from "@/components/ui/dialog";
 import { Check, Settings, CreditCard, Zap } from "lucide-react";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { selectedModulesAtom } from "@/atom/modulesAtom";
 
 type Props = {
     isOpen: boolean;
@@ -26,8 +27,15 @@ export const SelectModulesDialog = ({
     organizationId,
     organizationName,
 }: Props) => {
-    const { mutate: suspendUtility, isPending } = useSuspendUtility();
     const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
+    const [modulesByOrg, setModulesByOrg] = useAtom(selectedModulesAtom);
+
+    useEffect(() => {
+        if(!isOpen){
+            const saved = modulesByOrg[organizationId] || [];
+            setSelectedUnits(saved)
+        }
+    },[isOpen, modulesByOrg, organizationId])
 
     const handleSelect = (label: string) => {
         setSelectedUnits((prev) =>
@@ -38,20 +46,14 @@ export const SelectModulesDialog = ({
     };
 
     const handleSave = () => {
-        suspendUtility(
-            { id: organizationId, status: true },
-            {
-                onSuccess: () => {
-                    toast.success(`${organizationName} updated successfully`);
-                    onOpenChange(false);
-                },
-                onError: (err) => {
-                    toast.error(`Failed to update ${organizationName}`);
-                    console.error(err);
-                },
-            }
-        );
-    };
+        setModulesByOrg((prev) => ({
+          ...prev,
+          [organizationId]: selectedUnits,
+        }));
+        toast.success(`${organizationName} updated successfully`);
+        onOpenChange(false);
+      };
+      
 
     const moduleOptions = [
         { label: "Billing", icon: <CreditCard className="text-gray-500" size={16} /> },
@@ -112,9 +114,9 @@ export const SelectModulesDialog = ({
                         <Button
                             className="bg-[var(--primary)] font-semibold px-6 py-6 rounded-sm text-white hover:bg-blue-500"
                             onClick={handleSave}
-                            disabled={isPending || selectedUnits.length === 0}
+                            disabled={selectedUnits.length === 0}
                         >
-                            {isPending ? "Saving..." : "Save Changes"}
+                            {"Save Changes"}
                         </Button>
                     </div>
                 </DialogFooter>

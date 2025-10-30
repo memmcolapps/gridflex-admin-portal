@@ -364,6 +364,7 @@ export default function UtilityCompaniesTable() {
         isOpen={isSelectModulesDialogOpen}
         onOpenChange={setIsSelectModulesDialogOpen}
         organizationId={selectedOrganization?.id || ''}
+        organizationName={selectedOrganization?.name || ''}
       />
       <EditUtilityCompanyDialog
         isOpen={isEditOpen}

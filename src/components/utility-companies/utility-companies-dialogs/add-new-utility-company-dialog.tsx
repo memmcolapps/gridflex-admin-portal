@@ -72,11 +72,11 @@ export const AddNewUtilityCompanyDialog = ({
     country: data.country ?? "",
     state: data.stateProvince ?? "",
     city: data.city ?? "",
-    firstName: data.firstname?.split(" ")[0] ?? "",
-    lastName: data.lastname?.split(" ")[1] ?? "",
+    firstName: data.firstname ?? "",
+    lastName: data.lastname ?? "",
     email: data.email ?? "",
     password: data.defaultPassword ?? "",
-    phoneNumber: data.adminPhoneNumber ?? "",
+    phoneNumber: data.phoneNumber ?? "",
   });
 
   const handleSubmit = () => {
@@ -100,7 +100,7 @@ export const AddNewUtilityCompanyDialog = ({
     "streetAddress",
     "firstname",
     "lastname",
-    "adminPhoneNumber",
+    "phoneNumber",
     "email",
     "defaultPassword",
   ];
@@ -278,14 +278,14 @@ export const AddNewUtilityCompanyDialog = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="adminPhoneNumber">
+              <Label htmlFor="phoneNumber">
                 Phone Number <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="adminPhoneNumber"
-                name="adminPhoneNumber"
+                id="phoneNumber"
+                name="phoneNumber"
                 className="w-[200px] h-10"
-                value={formData.adminPhoneNumber ?? ""}
+                value={formData.phoneNumber ?? ""}
                 onChange={handleChange}
                 placeholder="Enter Phone Number"
               />

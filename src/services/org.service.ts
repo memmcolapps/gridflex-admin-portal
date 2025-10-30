@@ -21,6 +21,7 @@ import type {
   UpdateSubstationTransfomerFeederPayload,
   IncidentReport,
   Contact,
+  UpdateOrgPayload,
 } from "@/types/org.interfaces";
 
 const BASE_URL = env.NEXT_PUBLIC_API_BASE_URL;
@@ -67,6 +68,41 @@ export const createOrgApi = async (
     };
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "createOrg");
+    return {
+      success: false,
+      error: errorResult.error,
+    };
+  }
+};
+
+export const updateOrgApi = async (
+  payload: UpdateOrgPayload,
+): Promise<{ success: boolean } | { success: boolean; error: string }> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.patch<CreateOrgResponse>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/organization/update`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          custom: CUSTOM_HEADER,
+        },
+      },
+    );
+
+    if (response.data.responsecode !== "000") {
+      return {
+        success: false,
+        error: response.data.responsedesc,
+      };
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "UpdateOrgPayload");
     return {
       success: false,
       error: errorResult.error,

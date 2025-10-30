@@ -19,6 +19,7 @@ import {
   suspendAdminApi,
   suspendUtility,
   updateAdminApi,
+  updateOrgApi,
   updateRegionBhubServiceCenter,
   updateSubstationTransfomerFeeder,
 } from "../services/org.service";
@@ -34,6 +35,7 @@ import type {
   MarkContactPayload,
   ResetPasswordPayload,
   ChangePasswordPayload,
+  UpdateOrgPayload,
 } from "@/types/org.interfaces";
 import { queryClient } from "@/lib/queryClient";
 import { changePasswordApi, generateOtpApi, getProfile, resetPasswordApi } from "@/services/auth.service";
@@ -47,8 +49,26 @@ export const useCreateOrg = () => {
       }
       return response;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orgs']})
+    }
   });
 };
+
+export const useUpdateOrg = () => {
+  return useMutation({
+    mutationFn: async (org: UpdateOrgPayload) => {
+      const response = await updateOrgApi(org);
+      if (!response.success && 'error' in response){
+        throw new Error(response.error)
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orgs']})
+    }
+  })
+}
 
 export const useGetOrgs = () => {
   return useQuery({

@@ -12,6 +12,23 @@ export interface CreateOrgPayload {
   phoneNumber: string;
 }
 
+export interface UpdateOrgPayload {
+  id: string;
+  businessName: string;
+  postalCode: string;
+  address: string;
+  country: string;
+  state: string;
+  city: string;
+  userId: string;      
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+}
+
+
 export interface CreateOrgResponse {
   responsecode: string;
   responsedesc: string;

@@ -72,8 +72,8 @@ export const AddNewUtilityCompanyDialog = ({
     country: data.country ?? "",
     state: data.stateProvince ?? "",
     city: data.city ?? "",
-    firstName: data.adminName?.split(" ")[0] ?? "",
-    lastName: data.adminName?.split(" ")[1] ?? "",
+    firstName: data.firstname?.split(" ")[0] ?? "",
+    lastName: data.lastname?.split(" ")[1] ?? "",
     email: data.email ?? "",
     password: data.defaultPassword ?? "",
     phoneNumber: data.adminPhoneNumber ?? "",
@@ -98,7 +98,8 @@ export const AddNewUtilityCompanyDialog = ({
     "city",
     "stateProvince",
     "streetAddress",
-    "adminName",
+    "firstname",
+    "lastname",
     "adminPhoneNumber",
     "email",
     "defaultPassword",
@@ -236,27 +237,27 @@ export const AddNewUtilityCompanyDialog = ({
           <Label className="mt-4">Admin Details</Label>
           <div className="mt-2 grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="adminName">
+              <Label htmlFor="firstName">
                 First Name <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="adminName"
+                id="firstname"
                 className="w-[200px] h-11"
-                name="adminName"
-                value={formData.adminName ?? ""}
+                name="firstname"
+                value={formData.firstname ?? ""}
                 onChange={handleChange}
                 placeholder="Enter First Name"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="adminName">
+              <Label htmlFor="lastName">
                 Last Name <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="adminLastName"
+                id="lastname"
                 className="w-[200px] h-11"
-                name="adminLastName"
-                // value={formData.adminName ?? ""}
+                name="lastname"
+                value={formData.lastname ?? ""}
                 onChange={handleChange}
                 placeholder="Enter Last Name"
               />

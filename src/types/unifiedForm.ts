@@ -22,6 +22,7 @@ export interface UnifiedFormData {
   longitude?: string;
   organizationName?: string;
   postalCode?: string;
+  state?: string
   phoneNo?: string;
   adminPhoneNumber?: string;
   adminName?: string;

@@ -20,6 +20,8 @@ import {
   CircleSlash,
   ArrowLeft,
   ArrowRight,
+  CircleCheckBig,
+  CircleAlert,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -30,21 +32,23 @@ import {
 import { useGetOrgs } from "@/hooks/use-orgs";
 import { SuspendUtilityDialog } from "./utility-companies-dialogs/suspend-utility-dialog";
 import { UnsuspendUtilityDialog } from "./utility-companies-dialogs/unsuspend-utility-dialog";
+import { SelectModulesDialog } from "./utility-companies-dialogs/add-modules-dialog";
 
 export default function UtilityCompaniesTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [isSelectModulesDialogOpen, setIsSelectModulesDialogOpen] = useState(false)
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
   const [isUnsuspendDialogOpen, setIsUnsuspendDialogOpen] = useState(false);
   const router = useRouter();
-  const { data: utilityCompaniesData} = useGetOrgs();
+  const { data: utilityCompaniesData } = useGetOrgs();
   const totalPages = Math.ceil(
     (utilityCompaniesData?.organizations.length || 0) / itemsPerPage,
   );
   const [selectedOrganization, setSelectedOrganization] = useState<{
     id: string;
     name: string;
-    status: boolean;
+    status?: boolean;
   } | null>(null);
 
   const getPageNumbers = () => {
@@ -81,7 +85,7 @@ export default function UtilityCompaniesTable() {
               style={{ backgroundColor: "hsla(0, 0%, 96%)" }}
             >
               <TableHead className="h-12 pl-6 text-base font-medium text-gray-700">
-              Utility Name
+                Utility Name
               </TableHead>
               <TableHead className="h-12 text-base font-medium text-gray-700">
                 Admin
@@ -151,7 +155,7 @@ export default function UtilityCompaniesTable() {
                     </Badge>
                   )}
                 </TableCell> */}
-                      <TableCell className="py-4">
+                <TableCell className="py-4">
                   {company.status ? (
                     <Badge
                       variant="secondary"
@@ -192,6 +196,14 @@ export default function UtilityCompaniesTable() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="center">
+
+                      <DropdownMenuItem
+                        onClick={() => router.push('/incident-management')}
+                        className="align-items-center cursor-pointer">
+                        <CircleAlert size={14} className="mr-2 text-black" />
+                        View Incidents
+                      </DropdownMenuItem>
+
                       <DropdownMenuItem
                         className="align-items-center cursor-pointer"
                         onClick={() =>
@@ -201,10 +213,27 @@ export default function UtilityCompaniesTable() {
                         <Eye size={14} className="mt-1 mr-2 text-black" />
                         View Details
                       </DropdownMenuItem>
+
                       <DropdownMenuItem className="align-items-center cursor-pointer">
                         <Pencil size={14} className="mr-2 text-black" />
                         Edit
                       </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedOrganization({
+                            id: company.id,
+                            name: company.businessName,
+                          });
+                          setIsSelectModulesDialogOpen(true);
+                        }}
+                        className="flex items-center cursor-pointer"
+                      >
+                        <CircleCheckBig size={14} className="mr-2 text-black" />
+                        Select Modules
+                      </DropdownMenuItem>
+
+
                       <DropdownMenuItem
                         disabled={company.status === false}
                         onClick={() => {
@@ -246,6 +275,7 @@ export default function UtilityCompaniesTable() {
                         <CircleSlash size={14} className="mr-2 text-black" />
                         <span>Unsuspend</span>
                       </DropdownMenuItem>
+
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -303,12 +333,17 @@ export default function UtilityCompaniesTable() {
       </CardContent>
 
       {/* Dialogs */}
+      <SelectModulesDialog
+        isOpen={isSelectModulesDialogOpen}
+        onOpenChange={setIsSelectModulesDialogOpen}
+        organizationId={selectedOrganization?.id || ''}
+      />
       <SuspendUtilityDialog
         isOpen={isSuspendDialogOpen}
         onOpenChange={(open) => {
           setIsSuspendDialogOpen(open);
           if (!open) setSelectedOrganization(null);
-        } } 
+        }}
         organizationId={selectedOrganization?.id || ""}
         organizationName={selectedOrganization?.name}
       />

@@ -16,6 +16,8 @@ import {
   Wrench,
   Zap,
   FolderRoot,
+  CircleCheckBig,
+  CreditCard,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -691,7 +693,7 @@ export default function PerformanceOverview({
               </CardTitle>
             </CardHeader>
             <CardContent>
-            <h3 className="text-lg font-normal text-gray-900">
+              <h3 className="text-lg font-normal text-gray-900">
                 Company Information
               </h3>
               <div className="border border-gray-100 w-full px-0 "></div>
@@ -745,6 +747,30 @@ export default function PerformanceOverview({
                   </div>
                 </li>
               </ul>
+
+              <div>
+                <div className="flex gap-2 mt-4 items-center">
+                  <CircleCheckBig size={18} className="text-black" />
+                  <span className="text-lg font-medium">
+                    Assigned Modules
+                  </span>
+                </div>
+
+                <ul className="py-3 px-4 space-y-4">
+                  <li className="flex items-center gap-2">
+                  <CreditCard size={16} className="text-black"/>
+                  <span>
+                    Billing
+                  </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Zap size={16} className="text-black"/>
+                    <span>
+                      Vending
+                    </span>
+                  </li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -754,7 +780,7 @@ export default function PerformanceOverview({
           {/* Organizational Hierarchy */}
           <Card className="border border-gray-200 bg-white shadow-none">
             <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium">
+              <CardTitle className="flex items-center gap-2 text-lg font-medium">
                 Organizational Hierarchy
               </CardTitle>
               <p className=" text-gray-500">

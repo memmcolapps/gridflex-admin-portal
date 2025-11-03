@@ -36,6 +36,7 @@ import type {
   ResetPasswordPayload,
   ChangePasswordPayload,
   UpdateOrgPayload,
+  SearchParams,
 } from "@/types/org.interfaces";
 import { queryClient } from "@/lib/queryClient";
 import { changePasswordApi, generateOtpApi, getProfile, resetPasswordApi } from "@/services/auth.service";
@@ -70,11 +71,11 @@ export const useUpdateOrg = () => {
   })
 }
 
-export const useGetOrgs = () => {
+export const useGetOrgs = (params?: SearchParams) => {
   return useQuery({
-    queryKey: ["orgs"],
+    queryKey: ["orgs", params],
     queryFn: async () => {
-      const response = await getOrgs();
+      const response = await getOrgs(params);
       if (!response.success && "error" in response) {
         throw new Error(response.error);
       }
@@ -171,10 +172,10 @@ export const useGetDashboard = (year?: number, month?: number) => {
   });
 };
 
-export const useGetAdminResponse = () => {
+export const useGetAdminResponse = (params?: SearchParams) => {
   return useQuery({
-    queryKey: ["admin"], 
-    queryFn: () => getAdmin(),
+    queryKey: ["admin", params], 
+    queryFn: () => getAdmin(params),
   });
 };
 
@@ -234,10 +235,10 @@ export const useResolveIncidents = () => {
   });
 };
 
-export const useGetAuditLog = () => {
+export const useGetAuditLog = (params?: SearchParams) => {
   return useQuery({
-    queryKey: ['auditlog'],
-    queryFn: () => getAuditLog()
+    queryKey: ['auditlog', params],
+    queryFn: () => getAuditLog(params)
   })
 }
 

@@ -35,8 +35,9 @@ import { UnsuspendUtilityDialog } from "./utility-companies-dialogs/unsuspend-ut
 import { SelectModulesDialog } from "./utility-companies-dialogs/add-modules-dialog";
 import { EditUtilityCompanyDialog, type OrganizationData } from "./utility-companies-dialogs/edit-utility-company-dialog";
 import type { UnifiedFormData } from "@/types/unifiedForm";
+import type { SearchProps } from "@/types/org.interfaces";
 
-export default function UtilityCompaniesTable() {
+export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [isSelectModulesDialogOpen, setIsSelectModulesDialogOpen] = useState(false)
@@ -44,7 +45,12 @@ export default function UtilityCompaniesTable() {
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
   const [isUnsuspendDialogOpen, setIsUnsuspendDialogOpen] = useState(false);
   const router = useRouter();
-  const { data: utilityCompaniesData } = useGetOrgs();
+  
+  const apiParams = {
+    name: filterParams?.name
+  };
+
+  const { data: utilityCompaniesData, isLoading, error } = useGetOrgs(apiParams);
   const handleSubmit = (data: UnifiedFormData) => {
     console.log("Submitted data:", data);
     setIsEditOpen(false);
@@ -78,6 +84,26 @@ export default function UtilityCompaniesTable() {
     }
     return pages;
   };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-center text-gray-500">Loading organizations...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-center text-red-500">Failed to load organizations</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="shadow-sm">
@@ -120,194 +146,203 @@ export default function UtilityCompaniesTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {utilityCompaniesData?.organizations.map((company) => (
-              <TableRow key={company.id} className="hover:bg-gray-50">
-                <TableCell className="py-4 pl-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                      <Building2 size={18} className="text-gray-600" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">
-                        {company.businessName}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {company.operator?.email}
-                      </div>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell className="py-4">
-                  <div>
-                    <div className="text-sm text-gray-900">
-                      {company.operator?.firstname +
-                        " " +
-                        company.operator?.lastname}
-                    </div>
-                    <div className="text-xs text-gray-500">{""}</div>
-                  </div>
-                </TableCell>
-                {/* <TableCell className="py-4">
-                  {company.status === true ? (
-                    <Badge
-                      variant="secondary"
-                      className="bg-green-50 px-3 font-normal text-green-700 hover:bg-green-50"
-                    >
-                      Active
-                    </Badge>
-                  ) : (
-                    <Badge
-                      variant="secondary"
-                      className="bg-red-50 px-3 font-normal text-red-700 hover:bg-red-50"
-                    >
-                      Inactive
-                    </Badge>
-                  )}
-                </TableCell> */}
-                <TableCell className="py-4">
-                  {company.status ? (
-                    <Badge
-                      variant="secondary"
-                      className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
-                    >
-                      Active
-                    </Badge>
-                  ) : (
-                    <Badge
-                      variant="secondary"
-                      className="bg-red-50 rounded-sm px-2 py-1 font-semibold text-red-700 hover:bg-red-50"
-                    >
-                      Suspended
-                    </Badge>
-                  )}
-                </TableCell>
-                <TableCell className="text-sm text-gray-900">
-                  {company.totalCustomer}
-                </TableCell>
-                <TableCell className="text-sm text-gray-900">
-                  {company.totalVending}
-                </TableCell>
-                <TableCell className="text-sm text-gray-900">
-                  {company.totalBilling}
-                </TableCell>
-                <TableCell className="text-sm text-gray-900">
-                  {company.createdAt}
-                </TableCell>
-                <TableCell className="pr-6 text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 cursor-pointer rounded-lg border border-gray-200 bg-white p-0 shadow-sm hover:bg-gray-50"
-                      >
-                        <MoreVertical size={16} className="text-gray-600" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="center">
-
-                      <DropdownMenuItem
-                        onClick={() => router.push('/incident-management')}
-                        className="align-items-center cursor-pointer">
-                        <CircleAlert size={14} className="mr-2 text-black" />
-                        View Incidents
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        className="align-items-center cursor-pointer"
-                        onClick={() =>
-                          router.push(`/performance-overview/${company.id}`)
-                        }
-                      >
-                        <Eye size={14} className="mt-1 mr-2 text-black" />
-                        View Details
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setSelectedOrg ({
-                            id: company.id ?? '',
-                            businessName: company.businessName ?? "",
-                            postalCode: company.postalCode ?? "",
-                            address: company.address ?? "",
-                            country: company.country ?? "",
-                            state: company.state ?? "",
-                            city: company.city ?? "",
-                            userId: company.operator?.id ?? "",
-                            firstName: company.operator?.firstname ?? "",
-                            lastName: company.operator?.lastname ?? "",
-                            email: company.operator?.email ?? "",
-                            phoneNumber: company.nodes.nodeInfo?.phoneNo ?? "",
-                          })
-                          setIsEditOpen(true)
-                        }}
-                        className="align-items-center cursor-pointer">
-                        <Pencil size={14} className="mr-2 text-black" />
-                        Edit
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setSelectedOrganization({
-                            id: company.id,
-                            name: company.businessName,
-                          });
-                          setIsSelectModulesDialogOpen(true);
-                        }}
-                        className="flex items-center cursor-pointer"
-                      >
-                        <CircleCheckBig size={14} className="mr-2 text-black" />
-                        Select Modules
-                      </DropdownMenuItem>
-
-
-                      <DropdownMenuItem
-                        disabled={company.status === false}
-                        onClick={() => {
-                          if (company.status !== false) {
-                            setSelectedOrganization({
-                              id: company.id,
-                              name: `${company.businessName}`,
-                              status: company.status
-                            });
-                            setIsSuspendDialogOpen(true);
-                          }
-                        }}
-                        className={`
-                          align-items-center cursor-pointer
-                          ${company.status === false ? 'opacity-50 cursor-not-allowed' : ''}
-                          `}
-                      >
-                        <CircleSlash size={14} className="mr-2 text-black" />
-                        <span>Suspend</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        disabled={company.status === true}
-                        onClick={() => {
-                          if (company.status !== true) {
-                            setSelectedOrganization({
-                              id: company.id,
-                              name: `${company.businessName}`,
-                              status: company.status,
-                            });
-                            setIsUnsuspendDialogOpen(true);
-                          }
-                        }}
-                        className={`
-                        align-items-center cursor-pointer
-                        ${company.status === true ? "opacity-50 cursor-not-allowed" : ""}
-                        `}
-                      >
-                        <CircleSlash size={14} className="mr-2 text-black" />
-                        <span>Unsuspend</span>
-                      </DropdownMenuItem>
-
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+            {utilityCompaniesData?.organizations.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                  No organization found
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              utilityCompaniesData?.organizations.map((company) => (
+                <TableRow key={company.id} className="hover:bg-gray-50">
+                  <TableCell className="py-4 pl-6">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                        <Building2 size={18} className="text-gray-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {company.businessName}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {company.operator?.email}
+                        </div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-4">
+                    <div>
+                      <div className="text-sm text-gray-900">
+                        {company.operator?.firstname +
+                          " " +
+                          company.operator?.lastname}
+                      </div>
+                      <div className="text-xs text-gray-500">{""}</div>
+                    </div>
+                  </TableCell>
+                  {/* <TableCell className="py-4">
+                    {company.status === true ? (
+                      <Badge
+                        variant="secondary"
+                        className="bg-green-50 px-3 font-normal text-green-700 hover:bg-green-50"
+                      >
+                        Active
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                        className="bg-red-50 px-3 font-normal text-red-700 hover:bg-red-50"
+                      >
+                        Inactive
+                      </Badge>
+                    )}
+                  </TableCell> */}
+                  <TableCell className="py-4">
+                    {company.status ? (
+                      <Badge
+                        variant="secondary"
+                        className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
+                      >
+                        Active
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                        className="bg-red-50 rounded-sm px-2 py-1 font-semibold text-red-700 hover:bg-red-50"
+                      >
+                        Suspended
+                      </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-900">
+                    {company.totalCustomer}
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-900">
+                    {company.totalVending}
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-900">
+                    {company.totalBilling}
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-900">
+                    {company.createdAt}
+                  </TableCell>
+                  <TableCell className="pr-6 text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 cursor-pointer rounded-lg border border-gray-200 bg-white p-0 shadow-sm hover:bg-gray-50"
+                        >
+                          <MoreVertical size={16} className="text-gray-600" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="center">
+
+                        <DropdownMenuItem
+                          onClick={() => router.push('/incident-management')}
+                          className="align-items-center cursor-pointer">
+                          <CircleAlert size={14} className="mr-2 text-black" />
+                          View Incidents
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          className="align-items-center cursor-pointer"
+                          onClick={() =>
+                            router.push(`/performance-overview/${company.id}`)
+                          }
+                        >
+                          <Eye size={14} className="mt-1 mr-2 text-black" />
+                          View Details
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSelectedOrg({
+                              id: company.id ?? '',
+                              businessName: company.businessName ?? "",
+                              postalCode: company.postalCode ?? "",
+                              address: company.address ?? "",
+                              country: company.country ?? "",
+                              state: company.state ?? "",
+                              city: company.city ?? "",
+                              userId: company.operator?.id ?? "",
+                              firstName: company.operator?.firstname ?? "",
+                              lastName: company.operator?.lastname ?? "",
+                              email: company.operator?.email ?? "",
+                              phoneNumber: company.nodes.nodeInfo?.phoneNo ?? "",
+                            })
+                            setIsEditOpen(true)
+                          }}
+                          className="align-items-center cursor-pointer">
+                          <Pencil size={14} className="mr-2 text-black" />
+                          Edit
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSelectedOrganization({
+                              id: company.id,
+                              name: company.businessName,
+                            });
+                            setIsSelectModulesDialogOpen(true);
+                          }}
+                          className="flex items-center cursor-pointer"
+                        >
+                          <CircleCheckBig size={14} className="mr-2 text-black" />
+                          Select Modules
+                        </DropdownMenuItem>
+
+
+                        <DropdownMenuItem
+                          disabled={company.status === false}
+                          onClick={() => {
+                            if (company.status !== false) {
+                              setSelectedOrganization({
+                                id: company.id,
+                                name: `${company.businessName}`,
+                                status: company.status
+                              });
+                              setIsSuspendDialogOpen(true);
+                            }
+                          }}
+                          className={`
+                            align-items-center cursor-pointer
+                            ${company.status === false ? 'opacity-50 cursor-not-allowed' : ''}
+                            `}
+                        >
+                          <CircleSlash size={14} className="mr-2 text-black" />
+                          <span>Suspend</span>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          disabled={company.status === true}
+                          onClick={() => {
+                            if (company.status !== true) {
+                              setSelectedOrganization({
+                                id: company.id,
+                                name: `${company.businessName}`,
+                                status: company.status,
+                              });
+                              setIsUnsuspendDialogOpen(true);
+                            }
+                          }}
+                          className={`
+                          align-items-center cursor-pointer
+                          ${company.status === true ? "opacity-50 cursor-not-allowed" : ""}
+                          `}
+                        >
+                          <CircleSlash size={14} className="mr-2 text-black" />
+                          <span>Unsuspend</span>
+                        </DropdownMenuItem>
+
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              )
+              )
+            )}
           </TableBody>
         </Table>
 

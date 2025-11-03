@@ -22,6 +22,7 @@ import type {
   IncidentReport,
   Contact,
   UpdateOrgPayload,
+  SearchParams,
 } from "@/types/org.interfaces";
 
 const BASE_URL = env.NEXT_PUBLIC_API_BASE_URL;
@@ -110,7 +111,7 @@ export const updateOrgApi = async (
   }
 };
 
-export const getOrgs = async (): Promise<{
+export const getOrgs = async (params?: SearchParams): Promise<{
   success: boolean;
   data?: OrganizationResponse["responsedata"];
   error?: string;
@@ -120,6 +121,7 @@ export const getOrgs = async (): Promise<{
     const response = await axios.get<OrganizationResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/organization/all`,
       {
+        params,
         headers: {
           Authorization: `Bearer ${token}`,
           custom: CUSTOM_HEADER,
@@ -415,7 +417,7 @@ export const getAnalytics = async (year: number, month: number): Promise<{
   }
 };
 
-export const getAdmin = async (): Promise<{
+export const getAdmin = async (params?: SearchParams): Promise<{
   success: boolean;
   data?: Admins['responsedata']
   error?: string;
@@ -425,6 +427,7 @@ export const getAdmin = async (): Promise<{
     const response = await axios.get<Admins>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/all`,
       {
+        params,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -467,7 +470,7 @@ export const getRecentActivities = async (): Promise<{
   }
 };
 
-export const getAuditLog = async (): Promise<{
+export const getAuditLog = async (params?: SearchParams): Promise<{
   success: boolean;
   data?: AuditLog['responsedata'];
   error?: string;
@@ -477,6 +480,7 @@ export const getAuditLog = async (): Promise<{
     const response = await axios.get<AuditLog>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/audit-log/service/all`,
       {
+        params,
         headers: {
           Authorization: `Bearer ${token}`,
         },

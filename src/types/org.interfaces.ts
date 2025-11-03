@@ -20,7 +20,7 @@ export interface UpdateOrgPayload {
   country: string;
   state: string;
   city: string;
-  userId: string;      
+  userId: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -589,6 +589,22 @@ export interface AuditLog {
   responsedata: {
     data: User[];
   }
+}
+
+export interface SearchParams {
+  role?: string;
+  search?: string;
+  name?: string;
+  status?: boolean;
+}
+
+export interface SearchProps {
+  filterParams?: {
+    role?: string;
+    search?: string;
+    name?: string;
+    status?: boolean;
+  };
 }
 
 export type SuspendAdminPayload = {

@@ -33,11 +33,25 @@ const ALL_STATUS = [
 export default function AdminManagement() {
     const [activeTab, setActiveTab] = useState("summary");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedRole, setSelectedRole] = useState<string>("")
+    const [selecetdStatus, setSelectedStatus] = useState<string>("")
 
     const handleSubmit = (data: UnifiedFormData) => {
         console.log("Submitted data:", data);
         setIsDialogOpen(false);
     };
+
+    const statusMap: Record<string, boolean> = {
+        Active: true,
+        Suspended: false,
+      };
+
+    const filterParams = {
+        ...(selecetdStatus && selecetdStatus !== "all" && {status: statusMap[selecetdStatus]}),
+        ...(selectedRole && selectedRole !== "all" && {role: selectedRole}),
+        ...(searchQuery && {search: searchQuery})
+    }
 
     return (
         <div className="flex flex-col gap-6 py-4">
@@ -68,17 +82,20 @@ export default function AdminManagement() {
                         <div className="relative">
                             <Input
                                 type="search"
-                                placeholder="Search by name, Email..."
+                                placeholder="Search by Name, Email..."
                                 className="h-10 w-70 bg-white"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                             <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         </div>
 
-                        <Select>
+                        <Select value={selectedRole} onValueChange={setSelectedRole}>
                             <SelectTrigger className="w-full h-10">
                                 <SelectValue placeholder="All Roles" />
                             </SelectTrigger>
                             <SelectContent>
+                            <SelectItem value="all">All Roles</SelectItem>
                                 {ALL_ROLES.map((role, index) => (
                                     <SelectItem key={index} value={role.role}>
                                         {role.role}
@@ -86,11 +103,12 @@ export default function AdminManagement() {
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Select>
+                        <Select value={selecetdStatus} onValueChange={setSelectedStatus}>
                             <SelectTrigger className="w-full h-10">
                                 <SelectValue placeholder="All Status" />
                             </SelectTrigger>
                             <SelectContent>
+                            <SelectItem value="all">All Status</SelectItem>
                                 {ALL_STATUS.map((status, index) => (
                                     <SelectItem key={index} value={status.status}>
                                         {status.status}
@@ -101,7 +119,7 @@ export default function AdminManagement() {
                     </div>
 
                     <Button
-                        className="flex h-10 cursor-pointer items-center border border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"
+                        className="flex h-10 cursor-pointer items-center border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"
                         onClick={() => setIsDialogOpen(true)}
                     >
                         <Plus size={16} />
@@ -110,7 +128,7 @@ export default function AdminManagement() {
                 </div>
 
 
-            {activeTab === "summary" && <AdminSummaryTab />}
+            {activeTab === "summary" && <AdminSummaryTab filterParams={filterParams} />}
             </div>
 
             <AddNewAdminDialog

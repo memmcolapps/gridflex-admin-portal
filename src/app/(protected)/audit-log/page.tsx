@@ -19,13 +19,22 @@ const ALL_ROLES = [
         role: 'Support'
     }
 ]
+
 export default function AuditLog() {
     const [activeTab, setActiveTab] = useState("summary");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedRole, setSelectedRole] = useState<string>("");
 
     const handleSubmit = (data: UnifiedFormData) => {
         console.log("Submitted data:", data);
         setIsDialogOpen(false);
+    };
+
+
+    const filterParams = {
+        ...(selectedRole && selectedRole !== "all" && { role: selectedRole }),
+        ...(searchQuery && { search: searchQuery })
     };
 
     return (
@@ -57,13 +66,15 @@ export default function AuditLog() {
                         <div className="relative">
                             <Input
                                 type="search"
-                                placeholder="Search by name, Role..."
+                                placeholder="Search by Name, Email..."
                                 className="h-10 w-70 bg-white"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                             <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         </div>
 
-                        <Select>
+                        <Select value={selectedRole} onValueChange={setSelectedRole}>
                             <SelectTrigger className="w-full flex justify-center h-10 [&>svg]:hidden">
                                 <div className="flex items-center gap-2">
                                     <ListFilter size={14} strokeWidth={1.5} />
@@ -71,6 +82,7 @@ export default function AuditLog() {
                                 </div>
                             </SelectTrigger>
                             <SelectContent>
+                                <SelectItem value="all">All Roles</SelectItem>
                                 {ALL_ROLES.map((role, index) => (
                                     <SelectItem key={index} value={role.role}>
                                         {role.role}
@@ -81,8 +93,7 @@ export default function AuditLog() {
                     </div>
                 </div>
 
-
-                {activeTab === "summary" && <AuditSummaryTab />}
+                {activeTab === "summary" && <AuditSummaryTab filterParams={filterParams} />}
             </div>
 
             <AddNewAdminDialog

@@ -11,12 +11,16 @@ import type { UnifiedFormData } from "@/types/unifiedForm";
 export default function UtilityCompaniesPage() {
   const [activeTab, setActiveTab] = useState("summary");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("")
 
   const handleSubmit = (data: UnifiedFormData) => {
     console.log("Submitted data:", data);
     setIsDialogOpen(false);
   };
 
+  const filterParams = {
+    ...(searchQuery && {name: searchQuery})
+  }
   return (
     <div className="flex flex-col gap-6 py-4">
       <div>
@@ -47,12 +51,14 @@ export default function UtilityCompaniesPage() {
               type="search"
               placeholder="Search Companies..."
               className="h-11 w-70 bg-white"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
           </div>
 
           <Button
-            className="flex h-11 cursor-pointer items-center border border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"
+            className="flex h-11 cursor-pointer items-center border-1 border-black gap-2 bg-[var(--primary)] hover:bg-gray-800"
             onClick={() => setIsDialogOpen(true)}
           >
             <Plus size={16} />
@@ -60,7 +66,7 @@ export default function UtilityCompaniesPage() {
           </Button>
         </div>
 
-        {activeTab === "summary" && <SummaryTab />}
+        {activeTab === "summary" && <SummaryTab filterParams={filterParams} />}
       </div>
 
       <AddNewUtilityCompanyDialog

@@ -63,7 +63,7 @@ export default function ProtectedLayout({
               <SidebarNav />
             </div>
             {/* Main content area */}
-            <main className="flex-1 px-8 py-4">{children}</main>
+            <main className="flex-1 px-8 py-4 overflow-hidden">{children}</main>
           </div>
         </div>
       </div>

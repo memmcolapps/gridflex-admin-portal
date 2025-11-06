@@ -7,10 +7,10 @@ export default function DashboardSummaryCards() {
     const currentMonth = new Date().getMonth() + 1;
     const { data: analytics, isLoading, isError } = useGetDashboard(currentYear, currentMonth);
     const summary = analytics?.data;
-    const totalUtilityCompany = summary?.totalUtilityCompany;
-    const totalCustomers = summary?.totalCustomers;
-    const totalResolvedIncident = summary?.totalResolvedIncident;
-    const totalUnresolvedIncident = summary?.totalUnresolvedIncident;
+    const totalUtilityCompany = summary?.cardData?.totalUtilityCompany;
+    const totalCustomers = summary?.cardData?.totalCustomers;
+    const totalResolvedIncident = summary?.cardData?.totalResolvedIncident;
+    const totalUnresolvedIncident = summary?.cardData?.totalUnresolvedIncident;
     
     const summaryData = [
         {

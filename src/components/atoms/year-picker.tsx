@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/select"
 
 interface YearPickerProps {
-  value?: string
-  onChange?: (year: string) => void
+  value?: number
+  onChange?: (year: number) => void
   placeholder?: string
   className?: string
   minYear?: number
@@ -29,8 +29,14 @@ export function YearPicker({
     (_, i) => maxYear - i
   )
 
+  const handleValueChange = (year: string) => {
+    if (onChange) {
+      onChange(Number(year));
+    }
+  };
+
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value?.toString()} onValueChange={handleValueChange}>
       <SelectTrigger className={`bg-white ${className}`}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
@@ -46,7 +52,7 @@ export function YearPicker({
 }
 
 export default function YearPickerDemo() {
-  const [selectedYear, setSelectedYear] = React.useState<string>("")
+  const [selectedYear, setSelectedYear] = React.useState<number>(new Date().getFullYear())
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -60,6 +66,7 @@ export default function YearPickerDemo() {
             maxYear={2030}
           />
         </div>
+        <p className="text-center text-gray-600">Selected Year: {selectedYear}</p>
       </div>
     </div>
   )

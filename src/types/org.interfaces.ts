@@ -353,16 +353,20 @@ export interface AnalyticsResponse {
   responsedata: ResponseData;
 }
 
-export interface ResponseData {
+export interface CardData{
   totalResolvedIncident?: string;
+  totalUtilityCompany?: number;
   totalUnresolvedIncident?: string;
+  totalCustomers?: number;
+}
+
+export interface ResponseData {
+  cardData?: CardData; 
   monthlySummaries: MonthlySummary[];
   activeUtilityCompany?: number;
-  totalCustomers?: number;
   totalDailySummary: Summary;
   dailyReports: DailyReport[];
   averageRecoveryTime?: number;
-  totalUtilityCompany?: number;
   monthlyReports?: MonthlyReport[];
   totalMonthlySummary: Summary;
   incidentReport: number;

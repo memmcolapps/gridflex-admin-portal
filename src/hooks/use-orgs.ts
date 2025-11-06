@@ -179,10 +179,10 @@ export const useGetAdminResponse = (params?: SearchParams) => {
   });
 };
 
-export const useGetContactMessages = () => {
+export const useGetContactMessages = (params?: SearchParams) => {
   return useQuery({
-    queryKey: ["contactInfo"], 
-    queryFn: () => getContactMessages(),
+    queryKey: ["contactInfo", params], 
+    queryFn: () => getContactMessages(params),
   });
 };
 

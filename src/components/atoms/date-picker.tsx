@@ -18,26 +18,78 @@ function formatDate(date: Date | undefined) {
     return ""
   }
 
-  return date.toLocaleDateString("en-Uk", {
-    day: "2-digit",
-    month: "numeric",
-    year: "numeric",
-  })
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2,'0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return`${year}-${month}-${day}`
 }
 
 interface Props {
   placeHolder: string;
   className?: string;
+  value?: string;
+  onChange?: (date: string) => void; 
 }
 
-export function DatePicker({ placeHolder, className }: Props) {
+export function DatePicker({ placeHolder, className, value: controlledValue, onChange }: Props) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+  const [value, setValue] = React.useState(controlledValue || "")
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const [month, setMonth] = React.useState<Date | undefined>(new Date())
   
   const today = new Date()
   today.setHours(23, 59, 59, 999) 
+
+  React.useEffect(() => {
+    if (controlledValue !== undefined) {
+      setValue(controlledValue)
+      if (controlledValue) {
+        const parsed = parseDate(controlledValue)
+        if (parsed) {
+          setDate(parsed)
+          setMonth(parsed)
+        }
+      } else {
+        setDate(undefined)
+      }
+    }
+  }, [controlledValue])
+
+  const handleDateChange = (selectedDate: Date | undefined) => {
+    setDate(selectedDate)
+    const formatted = formatDate(selectedDate)
+    setValue(formatted)
+    setOpen(false)
+    
+    if (onChange) {
+      onChange(formatted)
+    }
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    setValue(newValue)
+    
+    const parsed = parseDate(newValue)
+    if (parsed && parsed <= today) {
+      setDate(parsed)
+      setMonth(parsed)
+      if (onChange) {
+        onChange(formatDate(parsed))
+      }
+    } else if (parsed && parsed > today) {
+      setDate(undefined)
+      if (onChange) {
+        onChange("")
+      }
+    } else {
+      setDate(undefined)
+      if (onChange) {
+        onChange("")
+      }
+    }
+  }
 
   return (
     <div className={`flex ${className} flex-col gap-3`}>
@@ -47,18 +99,7 @@ export function DatePicker({ placeHolder, className }: Props) {
           value={value}
           placeholder={placeHolder}
           className="bg-white h-10 border pl-9"
-          onChange={(e) => {
-            setValue(e.target.value)
-            const parsed = parseDate(e.target.value)
-            if (parsed && parsed <= today) {
-              setDate(parsed)
-              setMonth(parsed)
-            } else if (parsed && parsed > today) {
-              setDate(undefined)
-            } else {
-              setDate(undefined)
-            }
-          }}
+          onChange={handleInputChange}
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") {
               e.preventDefault()
@@ -85,11 +126,7 @@ export function DatePicker({ placeHolder, className }: Props) {
               captionLayout="dropdown"
               month={month}
               onMonthChange={setMonth}
-              onSelect={(date) => {
-                setDate(date)
-                setValue(formatDate(date))
-                setOpen(false)
-              }}
+              onSelect={handleDateChange}
               disabled={(date) => date > today}
             />
           </PopoverContent>

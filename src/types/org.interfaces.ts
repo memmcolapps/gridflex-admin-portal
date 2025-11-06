@@ -595,7 +595,10 @@ export interface SearchParams {
   role?: string;
   search?: string;
   name?: string;
-  status?: boolean;
+  status?: boolean | string;
+  searchTerm?: string;
+  dateEntered?: string;
+  organizationSize?: string;
 }
 
 export interface SearchProps {
@@ -603,7 +606,10 @@ export interface SearchProps {
     role?: string;
     search?: string;
     name?: string;
-    status?: boolean;
+    status?: boolean | string;
+    searchTerm?: string;
+    organizationSize?: string;
+    dateEntered?: string;
   };
 }
 

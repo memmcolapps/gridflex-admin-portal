@@ -752,7 +752,7 @@ export const getDashboardAnalytics = async (year?: number, month?: number): Prom
   }
 };
 
-export const getContactMessages = async (): Promise<{
+export const getContactMessages = async (params?: SearchParams): Promise<{
   success: boolean;
   data?: Contact['responsedata']
   error?: string;
@@ -762,6 +762,7 @@ export const getContactMessages = async (): Promise<{
     const response = await axios.get<Contact>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/message/get`,
       {
+        params,
         headers: {
           Authorization: `Bearer ${token}`,
         },

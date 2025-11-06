@@ -4,7 +4,7 @@ import DasboardIncidentReports from "./dashboard-table";
 
 export default function DashboardSummaryTab() {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col mt-6 gap-6">
       <DashboardSummaryCards />
       <DashboardAnalysisGraph/>
       <DasboardIncidentReports />

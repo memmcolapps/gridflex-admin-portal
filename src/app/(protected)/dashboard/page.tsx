@@ -3,7 +3,6 @@
 import { useState } from "react";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import { AddNewAdminDialog } from "@/components/admin-management/admin-management-dialogs/add-new-admin-dialog";
-import { DatePicker } from "@/components/atoms/date-picker";
 import DashboardSummaryTab from "@/components/dashboard/summary-tab";
 
 export default function DashboardPage() {
@@ -38,11 +37,6 @@ export default function DashboardPage() {
             Summary
           </button>
         </div>
-
-        <div className="mt-6 mb-6 flex items-center justify-between">            
-          <DatePicker placeHolder={"Today"} className={"w-30"}/>
-        </div>
-
 
         {activeTab === "summary" && <DashboardSummaryTab />}
       </div>

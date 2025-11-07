@@ -8,7 +8,7 @@ export default function SummaryCards() {
   const totalActive = orgs.filter((org) => org.status).length;
   const totalSuspended = orgs.filter((org) => !org.status).length;
   const totalUtilities = orgs.length;
-  const totalCustomers = data?.overallCustomers ?? 0;
+  const totalCustomers = data?.overallCustomer ?? 0;
 
   const summaryData = [
     {
@@ -27,7 +27,7 @@ export default function SummaryCards() {
     },
     {
       title: "Total Customers",
-      value: isLoading ? "..." : totalCustomers.toLocaleString(),
+      value: isLoading ? "..." : totalCustomers,
       icon: <Users size={20} />,
       iconBg: "bg-gray-100",
       iconColor: "text-gray-600",

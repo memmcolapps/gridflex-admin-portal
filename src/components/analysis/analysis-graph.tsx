@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useGetAnalytics } from "@/hooks/use-orgs";
+import { YearPicker } from "../atoms/year-picker";
 
 interface CustomPayload {
   color?: string;
@@ -95,6 +96,9 @@ export default function AnalysisGraph() {
             </CardDescription>
           </div>
           <div className="flex gap-4">
+            <div>
+              <YearPicker/>
+            </div>
             <div className="flex gap-2 items-center">
               Uptime
               <div className="w-5 h-5 bg-green-400 rounded-sm"></div>

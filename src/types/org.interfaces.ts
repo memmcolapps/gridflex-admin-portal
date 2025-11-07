@@ -43,7 +43,7 @@ export interface OrganizationResponse {
     organizations: Organization[];
     totalActiveOrganizations: number;
     totalOrganizations: number;
-    overallCustomers: number;
+    overallCustomer: number;
     overallVending: number;
   };
 }

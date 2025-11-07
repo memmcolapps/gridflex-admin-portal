@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   LineChart,
   Line,
@@ -32,9 +33,10 @@ interface CustomTooltipProps {
 export default function DashboardAnalysisGraph() {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
-  const { data, isLoading, isError, error } = useGetDashboard(currentYear, currentMonth);
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const { data, isLoading, isError, error } = useGetDashboard(selectedYear, currentMonth);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p className="text-center font-medium text-xl mt-4">Loading dashboard analytics...</p>;
   if (isError) return <p>Error: {(error as Error).message}</p>;
 
   if (!data?.success) {
@@ -55,7 +57,6 @@ export default function DashboardAnalysisGraph() {
     November: "Nov",
     December: "Dec",
   };
-
 
   const chartData =
     data.data?.monthlySummaries?.map((report) => ({
@@ -83,7 +84,6 @@ export default function DashboardAnalysisGraph() {
     return null;
   };
 
-
   return (
     <Card className="shadow-none w-full">
       <CardHeader>
@@ -96,7 +96,7 @@ export default function DashboardAnalysisGraph() {
           </div>
           <div className="flex gap-4">
             <div>
-              <YearPicker/>
+              <YearPicker value={selectedYear} onChange={setSelectedYear} />
             </div>
             <div className="flex gap-2 items-center">
               Uptime

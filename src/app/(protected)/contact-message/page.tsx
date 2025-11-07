@@ -11,13 +11,13 @@ import ContactSummaryTab from "@/components/contact-messages/summary-tab";
 
 const ALL_ROLES = [
     {
-        role: '1 - 50'
+        role: '1-50 (Employees)'
     },
     {
-        role: '51 - 100'
+        role: '51-100 (Employees)'
     },
     {
-        role: '101 - 200'
+        role: '101 and Above (Employees)'
     }
 ]
 
@@ -33,11 +33,23 @@ const ALL_STATUS = [
 export default function ContactMessage() {
     const [activeTab, setActiveTab] = useState("summary");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedSize, setSelectedSize] = useState<string>("")
+    const [selecetdStatus, setSelectedStatus] = useState<string>("")
+    const [selecetdDate, setSelectedDate] = useState<string>("")
+
 
     const handleSubmit = (data: UnifiedFormData) => {
         console.log("Submitted data:", data);
         setIsDialogOpen(false);
     };
+
+    const filterParams = {
+        ...(selecetdStatus && selecetdStatus !== "all" && {status: selecetdStatus}),
+        ...(selectedSize && selectedSize !== "all" && {organizationSize: selectedSize}),
+        ...(searchQuery && {searchTerm: searchQuery}),
+        ...(selecetdDate && {dateEntered: selecetdDate})
+    }
 
     return (
         <div className="flex flex-col gap-6 py-4">
@@ -70,15 +82,18 @@ export default function ContactMessage() {
                                 type="search"
                                 placeholder="Search by organization, Email..."
                                 className="h-10 w-70 bg-white"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                             <Search className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         </div>
 
-                        <Select>
-                            <SelectTrigger className="w-35 h-10">
+                        <Select value={selectedSize} onValueChange={setSelectedSize}>
+                            <SelectTrigger className="w-full h-10">
                                 <SelectValue placeholder="All Sizes" />
                             </SelectTrigger>
                             <SelectContent >
+                            <SelectItem value="all">All Sizes</SelectItem>
                                 {ALL_ROLES.map((role, index) => (
                                     <SelectItem key={index} value={role.role}>
                                         {role.role}
@@ -86,11 +101,12 @@ export default function ContactMessage() {
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Select>
+                        <Select value={selecetdStatus} onValueChange={setSelectedStatus}>
                             <SelectTrigger className="w-35 h-10">
                                 <SelectValue placeholder="All Status" />
                             </SelectTrigger>
                             <SelectContent>
+                            <SelectItem value="all">All Status</SelectItem>
                                 {ALL_STATUS.map((status, index) => (
                                     <SelectItem key={index} value={status.status}>
                                         {status.status}
@@ -99,15 +115,14 @@ export default function ContactMessage() {
                             </SelectContent>
                         </Select>
                         <div className="w-full">
-                            <DatePicker placeHolder={"Date Range"} className={"w-35"} />
-
+                            <DatePicker value={selecetdDate} onChange={setSelectedDate} placeHolder={"Date Range"} className={"w-35"} />
                         </div>
 
                     </div>
                 </div>
 
 
-                {activeTab === "summary" && <ContactSummaryTab />}
+                {activeTab === "summary" && <ContactSummaryTab filterParams={filterParams} />}
             </div>
 
             <AddNewAdminDialog

@@ -7,7 +7,7 @@ import DashboardSummaryTab from "@/components/dashboard/summary-tab";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("summary");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+ const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleSubmit = (data: UnifiedFormData) => {
     console.log("Submitted data:", data);

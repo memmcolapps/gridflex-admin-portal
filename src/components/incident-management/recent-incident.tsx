@@ -149,12 +149,12 @@ export default function RecentIncidents() {
                                 incident?.organization?.businessName
                               )
                             }
-                            className="flex h-10 cursor-pointer text-black items-center border border-1 border-gray-400 gap-2 bg-gray-50 hover:bg-gray-100"
+                            className="flex h-10 cursor-pointer text-black items-center border-1 border-gray-400 gap-2 bg-gray-50 hover:bg-gray-100"
                           >
                             Resolve
                           </Button>
                         ) : (
-                          <div className="flex h-10 text-gray-600 font-semibold items-center rounded-md border border-1 border-gray-400 px-4 gap-2 bg-transparent">
+                          <div className="flex h-10 text-gray-600 font-semibold items-center rounded-md border-1 border-gray-400 px-4 gap-2 bg-transparent">
                             Resolved
                           </div>
                         )}

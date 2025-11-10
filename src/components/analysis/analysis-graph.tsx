@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { useGetAnalytics } from "@/hooks/use-orgs";
 import { YearPicker } from "../atoms/year-picker";
+import { useState } from "react";
 
 interface CustomPayload {
   color?: string;
@@ -32,9 +33,10 @@ interface CustomTooltipProps {
 export default function AnalysisGraph() {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
-  const { data,isLoading, isError, error } = useGetAnalytics(currentYear, currentMonth);
+  const [selectedYear, setSelectedYear] = useState(currentYear)
+  const { data,isLoading, isError, error } = useGetAnalytics(selectedYear, currentMonth);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p className="text-center font-medium text-xl mt-4">Loading analytics...</p>;
   if (isError) return <p>Error: {(error as Error).message}</p>;
 
   if (!data?.success) {
@@ -97,7 +99,7 @@ export default function AnalysisGraph() {
           </div>
           <div className="flex gap-4">
             <div>
-              <YearPicker/>
+              <YearPicker value={selectedYear} onChange={setSelectedYear}/>
             </div>
             <div className="flex gap-2 items-center">
               Uptime

@@ -376,13 +376,19 @@ export const getOneOrg = async (
   }
 };
 
-export const getAnalytics = async (year: number, month: number): Promise<{
+export const getAnalytics = async (year?: number, month?: number, params?: SearchParams): Promise<{
   success: boolean;
   data?: AnalyticsResponse["responsedata"];
   error?: string;
 }> => {
   try {
     const token = localStorage.getItem("access_token");
+    
+    const queryParams: Record<string, unknown> = {};
+    if (year !== undefined) queryParams.year = year;
+    if (month !== undefined) queryParams.month = month;
+    if (params) Object.assign(queryParams, params);
+
     const response = await axios.get<AnalyticsResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/all`,
       {
@@ -390,10 +396,7 @@ export const getAnalytics = async (year: number, month: number): Promise<{
           Authorization: `Bearer ${token}`,
           custom: CUSTOM_HEADER,
         },
-        params: {
-          year,
-          month
-        }
+        params: queryParams
       },
     );
 

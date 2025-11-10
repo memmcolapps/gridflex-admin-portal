@@ -21,7 +21,7 @@ export function YearPicker({
   onChange,
   placeholder = "Select year",
   className = "",
-  minYear = 1900,
+  minYear = 1990,
   maxYear = new Date().getFullYear(),
 }: YearPickerProps) {
   const years = Array.from(

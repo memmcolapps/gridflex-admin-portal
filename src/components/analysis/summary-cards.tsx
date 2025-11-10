@@ -1,17 +1,23 @@
 import { AlertCircle, Building2, Clock, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { useGetAnalytics } from "@/hooks/use-orgs";
+import type { SearchProps } from "@/types/org.interfaces";
 
-export default function AnalysisSummaryCards() {
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
-  const { data: analytics, isLoading, isError } = useGetAnalytics(currentYear, currentMonth);
+export default function AnalysisSummaryCards({ filterParams }: SearchProps) {
+  const dateParam: number | undefined = filterParams?.date
+    ? new Date(filterParams.date).getTime()
+    : undefined;
+
+  const { data: mainAnalytics, isLoading: mainLoading, isError: mainError } = useGetAnalytics();
+  const { data: analytics, isLoading, isError } = useGetAnalytics(dateParam);
+
+  const mainSummary = mainAnalytics?.data
   const summary = analytics?.data;
   const systemUptime = summary?.dailySummaries?.[0]?.uptimePercent;
-  const activeUtilityCompany = summary?.activeUtilityCompany;
-  const incidentReported = summary?.incidentReport;
-  const averageRecovery = summary?.averageRecoveryTime;
-  
+  const activeUtilityCompany = mainSummary?.cardData?.activeUtilityCompany;
+  const incidentReported = summary?.cardData?.incidentReport;
+  const averageRecovery = mainSummary?.cardData?.averageRecoveryTime;
+
 
   const summaryData = [
     {
@@ -23,7 +29,7 @@ export default function AnalysisSummaryCards() {
     },
     {
       title: "Active Utility Company",
-      value: isLoading ? "..." : activeUtilityCompany ?? "N/A",
+      value: mainLoading ? "..." : activeUtilityCompany ?? "N/A",
       icon: <Building2 size={20} strokeWidth={1.5} />,
       iconBg: "bg-gray-100",
       iconColor: "text-gray-600",
@@ -37,7 +43,7 @@ export default function AnalysisSummaryCards() {
     },
     {
       title: "Average Recovery Time",
-      value: isLoading ? "..." : averageRecovery ?? "0 mins",
+      value: mainLoading ? "..." : averageRecovery ?? "0 mins",
       icon: <Clock size={20} strokeWidth={1.5} />,
       iconBg: "bg-gray-100",
       iconColor: "text-gray-600",
@@ -46,7 +52,7 @@ export default function AnalysisSummaryCards() {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {isError ? (
+      {isError || mainError ? (
         <div className="col-span-4 text-center text-red-500">
           Failed to load summary data.
         </div>

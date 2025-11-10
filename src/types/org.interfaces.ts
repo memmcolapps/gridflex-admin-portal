@@ -358,6 +358,9 @@ export interface CardData{
   totalUtilityCompany?: number;
   totalUnresolvedIncident?: string;
   totalCustomers?: number;
+  activeUtilityCompany?: string;
+  averageRecoveryTime?: string;
+  incidentReport?: string;
 }
 
 export interface ResponseData {
@@ -599,6 +602,7 @@ export interface SearchParams {
   role?: string;
   search?: string;
   name?: string;
+  date?: string;
   status?: boolean | string;
   searchTerm?: string;
   dateEntered?: string;
@@ -609,6 +613,7 @@ export interface SearchProps {
   filterParams?: {
     role?: string;
     search?: string;
+    date?: string;
     name?: string;
     status?: boolean | string;
     searchTerm?: string;

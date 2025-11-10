@@ -158,10 +158,10 @@ export const useUpdateSubstationTransfomerFeeder = () => {
   });
 };
 
-export const useGetAnalytics = (year: number, month: number) => {
+export const useGetAnalytics = (year?: number, month?: number, params?: SearchParams) => {
   return useQuery({
-    queryKey: ["analytics", year, month],
-    queryFn: () => getAnalytics(year,month),
+    queryKey: ["analytics", year, month, params],
+    queryFn: () => getAnalytics(year,month,params),
   });
 };
 

@@ -6,6 +6,14 @@ import { DatePicker } from "@/components/atoms/date-picker";
 
 export default function Analysis() {
     const [activeTab, setActiveTab] = useState("summary");
+    const [selecetdDate, setSelectedDate] = useState<string>("")
+
+    const filterParams = {
+        ...(selecetdDate && {
+         date: selecetdDate
+        })
+     }
+   
 
     return (
         <div className="flex flex-col gap-6 py-4">
@@ -18,7 +26,7 @@ export default function Analysis() {
                 </p>
             </div>
             <div>
-                <DatePicker placeHolder={"Today"} className={"w-30"}/>
+                <DatePicker placeHolder={"Today"} value={selecetdDate} onChange={setSelectedDate} className={"w-30"}/>
             </div>
 
             <div className="w-full">
@@ -34,7 +42,7 @@ export default function Analysis() {
                     </button>
                 </div>
 
-            {activeTab === "summary" && <AnalysisSummaryTab />}
+            {activeTab === "summary" && <AnalysisSummaryTab filterParams={filterParams} />}
             </div>
         </div>
     )

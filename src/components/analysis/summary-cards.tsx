@@ -13,8 +13,8 @@ export default function AnalysisSummaryCards({ filterParams }: SearchProps) {
 
   const mainSummary = mainAnalytics?.data
   const summary = analytics?.data;
-  const systemUptime = mainSummary?.dailySummaries?.[0]?.uptimePercent;
-  const activeUtilityCompany = summary?.cardData?.activeUtilityCompany;
+  const systemUptime = summary?.dailySummaries?.[0]?.uptimePercent;
+  const activeUtilityCompany = mainSummary?.cardData?.activeUtilityCompany;
   const incidentReported = summary?.cardData?.incidentReport;
   const averageRecovery = mainSummary?.cardData?.averageRecoveryTime;
 
@@ -22,14 +22,14 @@ export default function AnalysisSummaryCards({ filterParams }: SearchProps) {
   const summaryData = [
     {
       title: "System Uptime",
-      value: mainLoading ? "..." : systemUptime ? `${Number(systemUptime.toFixed(2))}%` : 'N/A',
+      value: isLoading ? "..." : systemUptime ? `${Number(systemUptime.toFixed(2))}%` : 'N/A',
       icon: <TrendingUp size={20} strokeWidth={1.5} />,
       iconBg: "bg-gray-100",
       iconColor: "text-gray-600",
     },
     {
       title: "Active Utility Company",
-      value: isLoading ? "..." : activeUtilityCompany ?? "N/A",
+      value: mainLoading ? "..." : activeUtilityCompany ?? "N/A",
       icon: <Building2 size={20} strokeWidth={1.5} />,
       iconBg: "bg-gray-100",
       iconColor: "text-gray-600",

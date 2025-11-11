@@ -40,6 +40,40 @@ interface Contact {
     createdAt: string
 }
 
+const SkeletonRow = () => (
+    <TableRow className="hover:bg-gray-50">
+        <TableCell className="py-4 pl-6">
+            <div className="flex items-center gap-3">
+                <div className="flex flex-col gap-2">
+                    <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+            </div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="flex flex-col gap-2">
+                <div className="h-3 w-26 bg-gray-100 rounded animate-pulse"></div>
+            </div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="h-3 w-26 bg-gray-100 rounded animate-pulse"></div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="h-3 w-26 bg-gray-100 rounded animate-pulse"></div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+        </TableCell>
+        <TableCell className="pr-6 text-right">
+            <div className="flex justify-end">
+                <div className="h-8 w-8 bg-gray-200 rounded-lg animate-pulse"></div>
+            </div>
+        </TableCell>
+    </TableRow>
+);
+
 export default function ContactMessagesTable({ filterParams }: SearchProps) {
     const [currentPage, setCurrentPage] = useState(1);
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -60,6 +94,8 @@ export default function ContactMessagesTable({ filterParams }: SearchProps) {
     const totalPages = Math.ceil(
         (contactInfo?.length || 0) / itemsPerPage,
     );
+
+    const skeletonItems = Array(itemsPerPage).fill(0);
 
     const getPageNumbers = () => {
         const pages = [];
@@ -101,16 +137,6 @@ export default function ContactMessagesTable({ filterParams }: SearchProps) {
                     console.error(err);
                 },
             }
-        );
-    }
-
-    if (isLoading) {
-        return (
-            <Card>
-                <CardContent className="p-6">
-                    <div className="text-center text-gray-500">Loading contact messages...</div>
-                </CardContent>
-            </Card>
         );
     }
 
@@ -162,91 +188,96 @@ export default function ContactMessagesTable({ filterParams }: SearchProps) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {contactInfo.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                                    No contact message found
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            contactInfo.map((data) => (
-                                <TableRow key={data.id} className="hover:bg-gray-50">
-                                    <TableCell className="py-6 pl-6">
-                                        <div>
-                                            <div className="text-sm font-medium text-gray-900">
-                                                {data.organizationName}
-                                            </div>
-                                            <div className="text-xs text-gray-500">{""}</div>
-                                        </div>
-                                    </TableCell>
-
-                                    <TableCell className="text-sm font-medium text-gray-900">
-                                        {data.organizationSize}
-                                    </TableCell>
-                                    <TableCell className="text-sm text-gray-900">
-                                        {data.email}
-                                    </TableCell>
-                                    <TableCell className="py-4 max-w-xs">
-                                        <div className="truncate text-sm text-gray-900">
-                                            {data.message}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-sm text-gray-900">
-                                        {data.createdAt}
-                                    </TableCell>
-                                    <TableCell>
-                                        {data.status === 'New' && (
-                                            <Badge
-                                                variant="secondary"
-                                                className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
-                                            >
-                                                New
-                                            </Badge>
-                                        )
-                                        }
-                                        {data.status === 'Read' && (
-                                            <Badge
-                                                variant="secondary"
-                                                className="bg-yellow-50 rounded-sm px-2 py-1 font-semibold text-yellow-700 hover:bg-yellow-50"
-                                            >
-                                                Read
-                                            </Badge>
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="pr-6 text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="h-8 w-8 cursor-pointer rounded-lg border border-gray-200 bg-white p-0 shadow-sm hover:bg-gray-50"
-                                                >
-                                                    <MoreVertical size={16} className="text-gray-600" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="center">
-                                                <DropdownMenuItem
-                                                    className="align-items-center cursor-pointer"
-                                                    onClick={() => handleViewDetails(data)}
-                                                >
-                                                    <Eye size={14} className="mt-1 mr-2 text-black" />
-                                                    View Details
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    className="align-items-center cursor-pointer"
-                                                    onClick={() => handleMarkAsRead(data.id)}
-                                                    disabled={data.status === 'Read'}
-                                                >
-                                                    <SquareCheckBig className="mr-2 text-black" />
-                                                    Mark as read
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+                        {isLoading ? (
+                            skeletonItems.map((_, index) => (
+                                <SkeletonRow key={index} />
+                            ))
+                        ) :
+                            contactInfo.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                                        No contact message found
                                     </TableCell>
                                 </TableRow>
-                            )
-                            )
-                        )}
+                            ) : (
+                                contactInfo.map((data) => (
+                                    <TableRow key={data.id} className="hover:bg-gray-50">
+                                        <TableCell className="py-6 pl-6">
+                                            <div>
+                                                <div className="text-sm font-medium text-gray-900">
+                                                    {data.organizationName}
+                                                </div>
+                                                <div className="text-xs text-gray-500">{""}</div>
+                                            </div>
+                                        </TableCell>
+
+                                        <TableCell className="text-sm font-medium text-gray-900">
+                                            {data.organizationSize}
+                                        </TableCell>
+                                        <TableCell className="text-sm text-gray-900">
+                                            {data.email}
+                                        </TableCell>
+                                        <TableCell className="py-4 max-w-xs">
+                                            <div className="truncate text-sm text-gray-900">
+                                                {data.message}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-sm text-gray-900">
+                                            {data.createdAt}
+                                        </TableCell>
+                                        <TableCell>
+                                            {data.status === 'New' && (
+                                                <Badge
+                                                    variant="secondary"
+                                                    className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
+                                                >
+                                                    New
+                                                </Badge>
+                                            )
+                                            }
+                                            {data.status === 'Read' && (
+                                                <Badge
+                                                    variant="secondary"
+                                                    className="bg-yellow-50 rounded-sm px-2 py-1 font-semibold text-yellow-700 hover:bg-yellow-50"
+                                                >
+                                                    Read
+                                                </Badge>
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="pr-6 text-right">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 cursor-pointer rounded-lg border border-gray-200 bg-white p-0 shadow-sm hover:bg-gray-50"
+                                                    >
+                                                        <MoreVertical size={16} className="text-gray-600" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="center">
+                                                    <DropdownMenuItem
+                                                        className="align-items-center cursor-pointer"
+                                                        onClick={() => handleViewDetails(data)}
+                                                    >
+                                                        <Eye size={14} className="mt-1 mr-2 text-black" />
+                                                        View Details
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        className="align-items-center cursor-pointer"
+                                                        onClick={() => handleMarkAsRead(data.id)}
+                                                        disabled={data.status === 'Read'}
+                                                    >
+                                                        <SquareCheckBig className="mr-2 text-black" />
+                                                        Mark as read
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                                )
+                            )}
                     </TableBody>
                 </Table>
 

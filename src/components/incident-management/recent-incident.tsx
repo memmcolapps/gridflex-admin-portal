@@ -8,15 +8,17 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 export default function RecentIncidents() {
-  const [currentPage, setCurrentPage] = useState(0); 
+  const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
 
-  const { data: incidents } = useIncidentReports(currentPage, itemsPerPage);
+  const { data: incidents, isLoading } = useIncidentReports(currentPage, itemsPerPage);
   const { mutate: resolveIncident } = useResolveIncidents();
 
   const incidentList = incidents?.data?.data || [];
   const totalData = incidents?.data?.totalData || 0;
   const totalPages = Math.ceil(totalData / itemsPerPage);
+
+  const skeletonItems = Array(5).fill(0);
 
   const handleResolve = (incidentId: string, userName: string) => {
     resolveIncident(
@@ -66,102 +68,111 @@ export default function RecentIncidents() {
             </CardHeader>
             <CardContent className="pt-4">
               <div className="flex flex-col gap-5">
-                {incidentList.map((incident) => (
-                  <div
-                    key={incident.id}
-                    className={`rounded-lg flex flex-col gap-1
+                {isLoading
+                  ? skeletonItems.map((_, index) => (
+                    <div key={index} className="rounded-lg flex flex-col gap-2 bg-gray-100 animate-pulse p-4">
+                      <div className="h-4 w-3/4 bg-gray-300 rounded"></div>
+                      <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
+                      <div className="h-3 w-1/3 bg-gray-200 rounded"></div>
+                      <div className="h-3 w-1/4 bg-gray-200 rounded mt-2"></div>
+                    </div>
+                  ))
+                  : incidentList.map((incident) => (
+                    <div
+                      key={incident.id}
+                      className={`rounded-lg flex flex-col gap-1
                       ${incident.status === true
-                        ? "bg-green-100"
-                        : incident.type === "auto"
-                        ? "bg-red-100"
-                        : incident.type === "reported"
-                        ? "bg-yellow-100"
-                        : ""}`}
-                  >
-                    <div className="flex justify-between items-center pr-4">
-                      <div>
-                        <ul>
-                          <div className="flex py-2 gap-2">
-                            <div className="pt-2 pl-2">
-                              <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
-                            </div>
-                            <li className="flex flex-col">
-                              {incident.type === "auto" ? (
-                                <>
-                                  <span className="text-gray-900">
-                                    {incident.message}
-                                  </span>
-                                  <span className="text-gray-600">User: Auto</span>
-                                  <span className="text-gray-600">
-                                    Utility Company: Memmcol
-                                  </span>
-                                </>
-                              ) : (
-                                <>
-                                  <span className="text-gray-900">
-                                    {incident.message}
-                                  </span>
-                                  {incident?.user && (
-                                    <span className="text-gray-600">
-                                      User: {incident?.user?.firstname}{" "}
-                                      {incident?.user?.lastname}
+                          ? "bg-green-100"
+                          : incident.type === "auto"
+                            ? "bg-red-100"
+                            : incident.type === "reported"
+                              ? "bg-yellow-100"
+                              : ""}`}
+                    >
+                      <div className="flex justify-between items-center pr-4">
+                        <div>
+                          <ul>
+                            <div className="flex py-2 gap-2">
+                              <div className="pt-2 pl-2">
+                                <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
+                              </div>
+                              <li className="flex flex-col">
+                                {incident.type === "auto" ? (
+                                  <>
+                                    <span className="text-gray-900">
+                                      {incident.message}
                                     </span>
-                                  )}
-                                  {incident?.organization && (
+                                    <span className="text-gray-600">User: Auto</span>
                                     <span className="text-gray-600">
-                                      Utility Company:{" "}
-                                      {incident.organization?.businessName}
+                                      Utility Company: Memmcol
                                     </span>
-                                  )}
-                                </>
-                              )}
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="text-gray-900">
+                                      {incident.message}
+                                    </span>
+                                    {incident?.user && (
+                                      <span className="text-gray-600">
+                                        User: {incident?.user?.firstname}{" "}
+                                        {incident?.user?.lastname}
+                                      </span>
+                                    )}
+                                    {incident?.organization && (
+                                      <span className="text-gray-600">
+                                        Utility Company:{" "}
+                                        {incident.organization?.businessName}
+                                      </span>
+                                    )}
+                                  </>
+                                )}
 
-                              <span className="text-gray-600 gap-1 flex items-center">
-                                {new Date(incident.createdAt).toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric",
-                                  }
-                                )}
-                                <div className="w-[4px] h-[4px] bg-[#6D6D6D] rounded-full"></div>
-                                <Clock size={16} color="#6D6D6D" />
-                                {new Date(incident.createdAt).toLocaleTimeString(
-                                  "en-US",
-                                  {
-                                    hour: "numeric",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                  }
-                                )}
-                              </span>
-                            </li>
-                          </div>
-                        </ul>
-                      </div>
-                      <div>
-                        {incident.status === false ? (
-                          <Button
-                            onClick={() =>
-                              handleResolve(
-                                incident.id,
-                                incident?.organization?.businessName
-                              )
-                            }
-                            className="flex h-10 cursor-pointer text-black items-center border-1 border-gray-400 gap-2 bg-gray-50 hover:bg-gray-100"
-                          >
-                            Resolve
-                          </Button>
-                        ) : (
-                          <div className="flex h-10 text-gray-600 font-semibold items-center rounded-md border-1 border-gray-400 px-4 gap-2 bg-transparent">
-                            Resolved
-                          </div>
-                        )}
+                                <span className="text-gray-600 gap-1 flex items-center">
+                                  {new Date(incident.createdAt).toLocaleDateString(
+                                    "en-US",
+                                    {
+                                      month: "short",
+                                      day: "numeric",
+                                      year: "numeric",
+                                    }
+                                  )}
+                                  <div className="w-[4px] h-[4px] bg-[#6D6D6D] rounded-full"></div>
+                                  <Clock size={16} color="#6D6D6D" />
+                                  {new Date(incident.createdAt).toLocaleTimeString(
+                                    "en-US",
+                                    {
+                                      hour: "numeric",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    }
+                                  )}
+                                </span>
+                              </li>
+                            </div>
+                          </ul>
+                        </div>
+                        <div>
+                          {incident.status === false ? (
+                            <Button
+                              onClick={() =>
+                                handleResolve(
+                                  incident.id,
+                                  incident?.organization?.businessName
+                                )
+                              }
+                              className="flex h-10 cursor-pointer text-black items-center border-1 border-gray-400 gap-2 bg-gray-50 hover:bg-gray-100"
+                            >
+                              Resolve
+                            </Button>
+                          ) : (
+                            <div className="flex h-10 text-gray-600 font-semibold items-center rounded-md border-1 border-gray-400 px-4 gap-2 bg-transparent">
+                              Resolved
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
 
               {incidentList.length > 0 && (
@@ -189,11 +200,10 @@ export default function RecentIncidents() {
                           variant={currentPage === (page as number - 1) ? "default" : "ghost"}
                           size="sm"
                           onClick={() => setCurrentPage((page as number) - 1)}
-                          className={`h-8 w-8 cursor-pointer p-0 ${
-                            currentPage === page as number - 1
+                          className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page as number - 1
                               ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
                               : "text-gray-500 hover:bg-gray-50"
-                          }`}
+                            }`}
                         >
                           {page}
                         </Button>

@@ -17,24 +17,61 @@ import {
 import { useGetAuditLog } from "@/hooks/use-orgs";
 import type { SearchProps } from "@/types/org.interfaces";
 
+const SkeletonRow = () => (
+    <TableRow className="hover:bg-gray-50">
+        <TableCell className="py-4 pl-6">
+            <div className="flex items-center gap-3">
+                <div className="flex flex-col gap-2">
+                    <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-2 w-40 bg-gray-100 rounded animate-pulse"></div>
+                </div>
+            </div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="flex flex-col gap-2">
+                <div className="h-3 w-26 bg-gray-100 rounded animate-pulse"></div>
+            </div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="h-3 w-100 bg-gray-100 rounded animate-pulse"></div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="h-3 w-26 bg-gray-100 rounded animate-pulse"></div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+        </TableCell>
+        <TableCell className="py-4">
+            <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+        </TableCell>
+        <TableCell className="pr-6 text-right">
+            <div className="flex justify-end">
+                <div className="h-8 w-8 bg-gray-200 rounded-lg animate-pulse"></div>
+            </div>
+        </TableCell>
+    </TableRow>
+);
+
 export default function AuditLogTable({ filterParams }: SearchProps) {
     const [currentPage, setCurrentPage] = useState(1);
-    
-    const apiParams = filterParams?.role === "all" 
+
+    const apiParams = filterParams?.role === "all"
         ? { search: filterParams?.search }
         : filterParams;
-    
+
     const { data: auditLog, isLoading, error } = useGetAuditLog(apiParams);
-    
+
     const auditData = auditLog?.data;
     const itemsPerPage = 10;
     const totalPages = Math.ceil(
-      (auditData?.data?.length || 0) / itemsPerPage,
+        (auditData?.data?.length || 0) / itemsPerPage,
     );
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentPageData = auditData?.data?.slice(startIndex, endIndex) || [];
+
+    const skeletonItems = Array(itemsPerPage).fill(0);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -42,12 +79,12 @@ export default function AuditLogTable({ filterParams }: SearchProps) {
 
     const getPageNumbers = () => {
         const pages = [];
-        const maxVisiblePages = 10; 
-        
+        const maxVisiblePages = 10;
+
         for (let i = 1; i <= Math.min(totalPages, maxVisiblePages); i++) {
             pages.push(i);
         }
-        
+
         if (totalPages > maxVisiblePages) {
             pages.push('...');
             for (let i = Math.max(maxVisiblePages + 1, totalPages - 2); i <= totalPages; i++) {
@@ -58,16 +95,6 @@ export default function AuditLogTable({ filterParams }: SearchProps) {
         }
         return pages;
     };
-
-    if (isLoading) {
-        return (
-            <Card>
-                <CardContent className="p-6">
-                    <div className="text-center text-gray-500">Loading audit logs...</div>
-                </CardContent>
-            </Card>
-        );
-    }
 
     if (error) {
         return (
@@ -117,64 +144,68 @@ export default function AuditLogTable({ filterParams }: SearchProps) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {currentPageData.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                                    No audit logs found
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            currentPageData.map((data) => (
-                                <TableRow key={data.id} className="hover:bg-gray-50">
-                                    <TableCell className="py-4 pl-6">
-                                        <div>
-                                            <div className="text-sm font-medium text-gray-900">
-                                                <div>
-                                                    <div>
-                                                        {data.username}
-                                                    </div>
-                                                    <div>
-                                                        {data.email}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="text-xs text-gray-500">{""}</div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-sm text-gray-900">
-                                        <Badge
-                                            variant="secondary"
-                                            className={`rounded-sm px-2 py-1 font-semibold ${
-                                                data.role === "SUPER_ADMIN"
-                                                    ? "bg-green-50 text-green-700"
-                                                    : data.role === "Developer"
-                                                        ? "bg-blue-100 text-blue-700"
-                                                        : "bg-gray-100 text-gray-900"
-                                            }`}
-                                        >
-                                            {data.role}
-                                        </Badge>
-                                    </TableCell>
-
-                                    <TableCell className="text-sm font-normal text-gray-900">
-                                        {data.activity}
-                                    </TableCell>
-
-                                    <TableCell className="py-4">
-                                        {data.userAgent}
-                                    </TableCell>
-                                    <TableCell>
-                                        {data.ipAddress}
-                                    </TableCell>
-                                    <TableCell>
-                                        {data.endpoint}
-                                    </TableCell>
-                                    <TableCell className="text-sm text-gray-900">
-                                        {data.timeStamp}
+                        {isLoading ? (
+                            skeletonItems.map((_, index) => (
+                                <SkeletonRow key={index} />
+                            ))
+                        ) :
+                            currentPageData.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                                        No audit logs found
                                     </TableCell>
                                 </TableRow>
-                            ))
-                        )}
+                            ) : (
+                                currentPageData.map((data) => (
+                                    <TableRow key={data.id} className="hover:bg-gray-50">
+                                        <TableCell className="py-4 pl-6">
+                                            <div>
+                                                <div className="text-sm font-medium text-gray-900">
+                                                    <div>
+                                                        <div>
+                                                            {data.username}
+                                                        </div>
+                                                        <div>
+                                                            {data.email}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-xs text-gray-500">{""}</div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-sm text-gray-900">
+                                            <Badge
+                                                variant="secondary"
+                                                className={`rounded-sm px-2 py-1 font-semibold ${data.role === "SUPER_ADMIN"
+                                                        ? "bg-green-50 text-green-700"
+                                                        : data.role === "Developer"
+                                                            ? "bg-blue-100 text-blue-700"
+                                                            : "bg-gray-100 text-gray-900"
+                                                    }`}
+                                            >
+                                                {data.role}
+                                            </Badge>
+                                        </TableCell>
+
+                                        <TableCell className="text-sm font-normal text-gray-900">
+                                            {data.activity}
+                                        </TableCell>
+
+                                        <TableCell className="py-4">
+                                            {data.userAgent}
+                                        </TableCell>
+                                        <TableCell>
+                                            {data.ipAddress}
+                                        </TableCell>
+                                        <TableCell>
+                                            {data.endpoint}
+                                        </TableCell>
+                                        <TableCell className="text-sm text-gray-900">
+                                            {data.timeStamp}
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
                     </TableBody>
                 </Table>
 
@@ -201,11 +232,10 @@ export default function AuditLogTable({ filterParams }: SearchProps) {
                                         variant={currentPage === page ? "default" : "ghost"}
                                         size="sm"
                                         onClick={() => setCurrentPage(page as number)}
-                                        className={`h-8 w-8 cursor-pointer p-0 ${
-                                            currentPage === page
+                                        className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
                                                 ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
                                                 : "text-gray-500 hover:bg-gray-50"
-                                        }`}
+                                            }`}
                                     >
                                         {page}
                                     </Button>
@@ -217,7 +247,7 @@ export default function AuditLogTable({ filterParams }: SearchProps) {
                             variant="outline"
                             size="lg"
                             onClick={() =>
-                              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                             }
                             disabled={currentPage === totalPages}
                             className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"

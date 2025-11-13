@@ -37,6 +37,46 @@ import { EditUtilityCompanyDialog, type OrganizationData } from "./utility-compa
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import type { SearchProps } from "@/types/org.interfaces";
 
+const SkeletonRow = () => (
+  <TableRow className="hover:bg-gray-50">
+    <TableCell className="py-4 pl-6">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 animate-pulse"></div>
+        <div className="flex flex-col gap-2">
+          <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-3 w-40 bg-gray-100 rounded animate-pulse"></div>
+        </div>
+      </div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="flex flex-col gap-2">
+        <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+        <div className="h-3 w-20 bg-gray-100 rounded animate-pulse"></div>
+      </div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="h-6 w-20 bg-gray-200 rounded-sm animate-pulse"></div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+    </TableCell>
+    <TableCell className="pr-6 text-right">
+      <div className="flex justify-end">
+        <div className="h-8 w-8 bg-gray-200 rounded-lg animate-pulse"></div>
+      </div>
+    </TableCell>
+  </TableRow>
+);
+
 export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -66,6 +106,8 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
 
   const [selectedOrg, setSelectedOrg] = useState<OrganizationData | null>(null)
 
+  const skeletonItems = Array(itemsPerPage).fill(0);
+
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 10;
@@ -84,16 +126,6 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
     }
     return pages;
   };
-
-  if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="text-center text-gray-500">Loading organizations...</div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   if (error) {
     return (
@@ -146,9 +178,13 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {utilityCompaniesData?.organizations.length === 0 ? (
+            {isLoading ? (
+              skeletonItems.map((_, index) => (
+                <SkeletonRow key={index} />
+              ))
+            ) : utilityCompaniesData?.organizations.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={8} className="text-center py-8 text-gray-500">
                   No organization found
                 </TableCell>
               </TableRow>
@@ -309,7 +345,7 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                           className={`
                             align-items-center cursor-pointer
                             ${company.status === false ? 'opacity-50 cursor-not-allowed' : ''}
-                            `}
+                          `}
                         >
                           <CircleSlash size={14} className="mr-2 text-black" />
                           <span>Suspend</span>
@@ -328,8 +364,8 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                             }
                           }}
                           className={`
-                          align-items-center cursor-pointer
-                          ${company.status === true ? "opacity-50 cursor-not-allowed" : ""}
+                            align-items-center cursor-pointer
+                            ${company.status === true ? "opacity-50 cursor-not-allowed" : ""}
                           `}
                         >
                           <CircleSlash size={14} className="mr-2 text-black" />
@@ -351,7 +387,7 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
             variant="outline"
             size="lg"
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
+            disabled={currentPage === 1 || isLoading}
             className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
           >
             <ArrowLeft color="#414651" strokeWidth={1.75} />
@@ -360,22 +396,22 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
 
           <div className="flex items-center gap-1">
             {getPageNumbers().map((page, index) => (
-              page === '...' ? (
-                <span key={index} className="px-2 text-gray-400">...</span>
-              ) : (
-                <Button
-                  key={page}
-                  variant={currentPage === page ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setCurrentPage(page as number)}
-                  className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
-                    ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
-                    : "text-gray-500 hover:bg-gray-50"
+                page === '...' ? (
+                  <span key={index} className="px-2 text-gray-400">...</span>
+                ) : (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setCurrentPage(page as number)}
+                    className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
+                      ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                      : "text-gray-500 hover:bg-gray-50"
                     }`}
-                >
-                  {page}
-                </Button>
-              )
+                  >
+                    {page}
+                  </Button>
+                )
             ))}
           </div>
 

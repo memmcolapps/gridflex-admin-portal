@@ -32,6 +32,37 @@ import { useGetAdminResponse } from "@/hooks/use-orgs";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import type { SearchProps } from "@/types/org.interfaces";
 
+const SkeletonRow = () => (
+  <TableRow className="hover:bg-gray-50">
+    <TableCell className="py-4 pl-6">
+      <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-2">
+          <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="flex flex-col gap-2">
+        <div className="h-3 w-26 bg-gray-100 rounded animate-pulse"></div>
+      </div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+    </TableCell>
+    <TableCell className="py-4">
+      <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+    </TableCell>
+    <TableCell className="pr-6 text-right">
+      <div className="flex justify-end">
+        <div className="h-8 w-8 bg-gray-200 rounded-lg animate-pulse"></div>
+      </div>
+    </TableCell>
+  </TableRow>
+);
+
 export default function AdminManagementTable({ filterParams }: SearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -47,6 +78,8 @@ export default function AdminManagementTable({ filterParams }: SearchProps) {
   } | null>(null);
 
   const [selectedUser, setSelectedUser] = useState<AdminData | null>(null);
+
+  const skeletonItems = Array(itemsPerPage).fill(0);
 
   const apiParams = filterParams?.role === "all"
     ? {
@@ -89,15 +122,6 @@ export default function AdminManagementTable({ filterParams }: SearchProps) {
     console.log("Admin updated:", data);
   }
 
-  if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="text-center text-gray-500">Loading admin infomation...</div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   if (error) {
     return (
@@ -144,7 +168,11 @@ export default function AdminManagementTable({ filterParams }: SearchProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {adminData.length === 0 ? (
+            {isLoading ? (
+              skeletonItems.map((_, index) => (
+                <SkeletonRow key={index} />
+              ))
+            ) : adminData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                   No admins found

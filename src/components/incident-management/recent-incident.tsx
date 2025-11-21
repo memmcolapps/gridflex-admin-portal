@@ -97,7 +97,17 @@ export default function RecentIncidents() {
                                 <div className="w-[5.5px] h-[5.5px] bg-[#161CCA] rounded-full"></div>
                               </div>
                               <li className="flex flex-col">
-                                {incident.type === "auto" && (
+                                {incident.type === "auto" ? (
+                                  <>
+                                    <span className="text-gray-900">
+                                      {incident.message}
+                                    </span>
+                                    <span className="text-gray-600">User: Auto</span>
+                                    <span className="text-gray-600">
+                                      Utility Company: {incident?.organization.businessName}
+                                    </span>
+                                  </>
+                                ) : (
                                   <>
                                     <span className="text-gray-900">
                                       {incident.message}

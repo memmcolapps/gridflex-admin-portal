@@ -1,3 +1,4 @@
+// components/dialogs/AddRegionDialog.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -16,24 +17,16 @@ type Props = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: UnifiedFormData) => void;
-  initialData: Partial<UnifiedFormData>;
+  initialData?: Partial<UnifiedFormData>;
 };
 
-export function EditServiceCenterDialog({
+export function EditRegionDialog({
   isOpen,
   onOpenChange,
   onSubmit,
-  initialData,
+  initialData = {},
 }: Props) {
-  const [formData, setFormData] = useState<UnifiedFormData>({
-    serviceCenterId: "",
-    serviceCenterName: "",
-    phoneNumber: "",
-    email: "",
-    contactPerson: "",
-    address: "",
-    ...initialData,
-  });
+  const [formData, setFormData] = useState<UnifiedFormData>(initialData);
 
   useEffect(() => {
     if (isOpen) {
@@ -55,52 +48,43 @@ export function EditServiceCenterDialog({
     onOpenChange(false);
   };
 
-  const isFormValid =
-    (formData.serviceCenterId ?? "").trim() !== "" &&
-    (formData.serviceCenterName ?? "").trim() !== "" &&
-    (formData.phoneNumber ?? "").trim() !== "" &&
-    (formData.email ?? "").trim() !== "" &&
-    (formData.contactPerson ?? "").trim() !== "" &&
-    (formData.address ?? "").trim() !== "";
-
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Service Center</DialogTitle>
+          <DialogTitle>Edit Region</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="serviceCenterId">
-                Service Center ID <span className="text-red-500">*</span>
+              <Label htmlFor="regionId">
+                Region ID <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="serviceCenterId"
-                name="serviceCenterId"
-                value={formData.serviceCenterId ?? ""}
+                id="regionId"
+                name="regionId"
+                value={formData.regionId ?? ""}
                 onChange={handleChange}
-                placeholder="Enter Service Center ID"
-                disabled
+                placeholder="Enter Region ID"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="serviceCenterName">
-                Service Center Name <span className="text-red-500">*</span>
+              <Label htmlFor="regionName">
+                Region Name<span className="text-red-500">*</span>
               </Label>
               <Input
-                id="serviceCenterName"
-                name="serviceCenterName"
-                value={formData.serviceCenterName ?? ""}
+                id="regionName"
+                name="regionName"
+                value={formData.regionName ?? ""}
                 onChange={handleChange}
-                placeholder="Enter Service Center Name"
+                placeholder="Enter Region name"
               />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="phoneNumber">
-                Phone Number <span className="text-red-500">*</span>
+                Phone Number<span className="text-red-500">*</span>
               </Label>
               <Input
                 id="phoneNumber"
@@ -112,7 +96,7 @@ export function EditServiceCenterDialog({
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">
-                Email <span className="text-red-500">*</span>
+                Email<span className="text-red-500">*</span>
               </Label>
               <Input
                 id="email"
@@ -125,7 +109,7 @@ export function EditServiceCenterDialog({
           </div>
           <div className="space-y-2">
             <Label htmlFor="contactPerson">
-              Contact Person <span className="text-red-500">*</span>
+              Contact Person<span className="text-red-500">*</span>
             </Label>
             <Input
               id="contactPerson"
@@ -152,16 +136,15 @@ export function EditServiceCenterDialog({
           <Button
             variant="outline"
             onClick={handleCancel}
-            className="cursor-pointer border-[#161CCA] text-[#161CCA] hover:text-[#161CCA]"
+            className="border-[#161CCA] text-[#161CCA]"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={!isFormValid}
-            className={`text-white ${isFormValid ? "cursor-pointer bg-[#161CCA] hover:bg-[#161CCA]" : "cursor-not-allowed bg-[#161CCA]/40"}`}
+            className="cursor-pointer bg-[#161CCA] hover:bg-[#161CCA]"
           >
-            Save Changes
+            Save
           </Button>
         </DialogFooter>
       </DialogContent>

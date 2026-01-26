@@ -306,9 +306,18 @@ export interface GetOneNode {
     name: string;
     nodeId: string;
     phoneNo: string;
-    regionId: string;
+    regionId?: string;
+    bhubId?: string;
+    serviceCenterId?: string;
     type: string;
     updatedAt: string;
+    assetId?: string;
+    serialNo?: string;
+    status?: boolean;
+    voltage?: string;
+    description?: string;
+    latitude?: string;
+    longitude?: string;
   };
   nodesTree: GetOneNode[];
 }

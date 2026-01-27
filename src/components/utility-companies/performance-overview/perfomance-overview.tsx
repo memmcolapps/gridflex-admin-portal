@@ -55,6 +55,7 @@ import { useAtom } from "jotai";
 import { selectedModulesAtom } from "@/atom/modulesAtom";
 import { icons } from "./icons";
 import { EditRegionDialog } from "../utility-companies-dialogs/edit-region-dialog";
+import { useUpdateOrg } from "@/hooks/use-orgs";
 
 const NODE_TYPES = {
   REGION: "region",
@@ -88,8 +89,29 @@ export default function PerformanceOverview({
   const [currentParentId, setCurrentParentId] = useState<string>("");
   const [currentEditNode, setCurrentEditNode] = useState<ApiNode | null>(null);
   const queryClient = useQueryClient();
-
-  const { data: performanceData } = useGetOneOrg(id);
+  const [regionDialogData, setRegionDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [businessHubDialogData, setBusinessHubDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [serviceCenterDialogData, setServiceCenterDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [substationDialogData, setSubstationDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [feederDialogData, setFeederDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [dssDialogData, setDssDialogData] = useState<Partial<UnifiedFormData>>(
+    {},
+  );
+  const [rootDialogData, setRootDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+f  const { data: performanceData } = useGetOneOrg(id);
+  const { mutate: updateOrg } = useUpdateOrg();
 
   const { mutate: createRegionBhubServiceCenter } =
     useCreateRegionBhubServiceCenter();
@@ -373,8 +395,39 @@ export default function PerformanceOverview({
   };
 
   const handleEditRoot = (data: UnifiedFormData) => {
-    console.log("Editing root:", data);
-    setIsEditRootOpen(false);
+    if (!performanceData) {
+      console.error("No performance data available");
+      return;
+    }
+
+    updateOrg(
+      {
+        id: performanceData.id,
+        businessName: data.rootName ?? performanceData.businessName,
+        postalCode: performanceData.postalCode,
+        address: data.address ?? performanceData.address,
+        country: performanceData.country,
+        state: performanceData.state,
+        city: performanceData.city,
+        userId: performanceData.userId,
+        firstName: performanceData.operator.firstname,
+        lastName: performanceData.operator.lastname,
+        email: data.email ?? performanceData.operator.email,
+        password: "",
+        phoneNumber: data.phoneNumber ?? "",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsEditRootOpen(false);
+          toast.success("Organization updated successfully");
+        },
+        onError: (error) => {
+          console.error("Error updating organization:", error);
+          toast.error("Error updating organization");
+        },
+      },
+    );
   };
 
   const handleEditRegion = (data: UnifiedFormData) => {
@@ -738,6 +791,10 @@ export default function PerformanceOverview({
               size="lg"
               className="cursor-pointer px-1 text-black hover:text-gray-700"
               onClick={() => {
+                console.log("=== EDIT BUTTON CLICKED ===");
+                console.log("Node ID:", nodeId);
+                console.log("Node Info:", node.nodeInfo);
+
                 const fullNodeData: ApiNode = {
                   id: nodeId,
                   orgId: node.orgId,
@@ -753,6 +810,8 @@ export default function PerformanceOverview({
                     createdAt: node.nodeInfo?.createdAt ?? "",
                     updatedAt: node.nodeInfo?.updatedAt ?? "",
                     regionId: node.nodeInfo?.regionId ?? "",
+                    bhubId: node.nodeInfo?.bhubId ?? "",
+                    serviceCenterId: node.nodeInfo?.serviceCenterId ?? "",
                     serialNo: node.nodeInfo?.serialNo,
                     status: node.nodeInfo?.status,
                     voltage: node.nodeInfo?.voltage,
@@ -762,22 +821,99 @@ export default function PerformanceOverview({
                   },
                 };
 
-                console.log("Opening edit dialog for node:", fullNodeData);
                 setCurrentEditNode(fullNodeData);
 
                 const nodeType = node.nodeInfo?.type;
 
                 if (nodeType === NODE_TYPES.REGION) {
+                  const data = {
+                    regionId: node.nodeInfo?.regionId ?? nodeId,
+                    regionName: node.nodeInfo?.name ?? nodeName,
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Region Dialog with data:", data);
+                  setRegionDialogData(data);
                   setIsEditRegionOpen(true);
                 } else if (nodeType === NODE_TYPES.BUSINESS_HUB) {
+                  const data = {
+                    businessHubId: node.nodeInfo?.bhubId ?? nodeId,
+                    businessHubName: node.nodeInfo?.name ?? nodeName,
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Business Hub Dialog with data:", data);
+                  setBusinessHubDialogData(data);
                   setIsEditBusinessHubOpen(true);
                 } else if (nodeType === NODE_TYPES.SERVICE_CENTER) {
+                  const data = {
+                    serviceCenterId: node.nodeInfo?.serviceCenterId ?? nodeId,
+                    serviceCenterName: node.nodeInfo?.name ?? nodeName,
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Service Center Dialog with data:", data);
+                  setServiceCenterDialogData(data);
                   setIsEditServiceCenterOpen(true);
                 } else if (nodeType === NODE_TYPES.SUBSTATION) {
+                  const data = {
+                    substationName: node.nodeInfo?.name ?? nodeName,
+                    serialNumber: node.nodeInfo?.serialNo ?? "",
+                    assetId: "",
+                    status: node.nodeInfo?.status ? "Active" : "Inactive",
+                    voltage: node.nodeInfo?.voltage ?? "330 KV",
+                    longitude: node.nodeInfo?.longitude ?? "",
+                    latitude: node.nodeInfo?.latitude ?? "",
+                    description: node.nodeInfo?.description ?? "",
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Substation Dialog with data:", data);
+                  setSubstationDialogData(data);
                   setIsEditSubstationOpen(true);
                 } else if (nodeType === NODE_TYPES.FEEDER_LINE) {
+                  const data = {
+                    feederName: node.nodeInfo?.name ?? nodeName,
+                    serialNumber: node.nodeInfo?.serialNo ?? "",
+                    assetId: "",
+                    status: node.nodeInfo?.status ? "Active" : "Inactive",
+                    voltage: node.nodeInfo?.voltage ?? "330 KV",
+                    longitude: node.nodeInfo?.longitude ?? "",
+                    latitude: node.nodeInfo?.latitude ?? "",
+                    description: node.nodeInfo?.description ?? "",
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Feeder Line Dialog with data:", data);
+                  setFeederDialogData(data);
                   setIsEditFeederLineOpen(true);
                 } else if (nodeType === "dss" || nodeType === "DSS") {
+                  const data = {
+                    substationName: node.nodeInfo?.name ?? nodeName,
+                    serialNumber: node.nodeInfo?.serialNo ?? "",
+                    assetId: "",
+                    status: node.nodeInfo?.status ? "Active" : "Inactive",
+                    voltage: node.nodeInfo?.voltage ?? "330 KV",
+                    longitude: node.nodeInfo?.longitude ?? "",
+                    latitude: node.nodeInfo?.latitude ?? "",
+                    description: node.nodeInfo?.description ?? "",
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening DSS Dialog with data:", data);
+                  setDssDialogData(data);
                   setIsEditDSSOpen(true);
                 } else {
                   setIsEditRootOpen(true);
@@ -901,7 +1037,22 @@ export default function PerformanceOverview({
           <Button
             variant="outline"
             className="cursor-pointer border-gray-200 bg-white text-black hover:bg-white"
-            onClick={() => setIsEditRootOpen(true)}
+            onClick={() => {
+              const data = {
+                rootId: performanceData?.id ?? "",
+                rootName: performanceData?.businessName ?? "",
+                contactPerson:
+                  (performanceData?.operator?.firstname ?? "") +
+                  " " +
+                  (performanceData?.operator?.lastname ?? ""),
+                email: performanceData?.operator?.email ?? "",
+                phoneNumber: "",
+                address: performanceData?.address ?? "",
+              };
+              console.log("Opening Root Dialog with data:", data);
+              setRootDialogData(data);
+              setIsEditRootOpen(true);
+            }}
           >
             <Edit size={16} className="text-black" />
             Edit Info
@@ -1056,155 +1207,43 @@ export default function PerformanceOverview({
           isOpen={isEditRootOpen}
           onOpenChange={setIsEditRootOpen}
           onSubmit={handleEditRoot}
-          initialData={{
-            rootId: "IBDEC001",
-            rootName: performanceData?.businessName,
-            contactPerson:
-              performanceData?.operator?.firstname +
-              " " +
-              performanceData?.operator?.lastname,
-            email: performanceData?.operator?.email,
-            phoneNumber: "",
-            address: performanceData?.address,
-          }}
+          initialData={rootDialogData}
         />
         <EditRegionDialog
           isOpen={isEditRegionOpen}
           onOpenChange={setIsEditRegionOpen}
           onSubmit={handleEditRegion}
-           initialData={(() => {
-            const data = currentEditNode
-              ? {
-                  regionId: currentEditNode.nodeInfo?.regionId ?? "",
-                  regionName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
-              : {};
-            console.log("EditBusinessHubDialog initialData:", data);
-            console.log("currentEditNode for BusinessHub:", currentEditNode);
-            return data;
-          })()}
+          initialData={regionDialogData}
         />
         <EditBusinessHubDialog
           isOpen={isEditBusinessHubOpen}
           onOpenChange={setIsEditBusinessHubOpen}
           onSubmit={handleEditBusinessHub}
-          initialData={(() => {
-            const data = currentEditNode
-              ? {
-                  businessHubId: currentEditNode.nodeInfo?.bhubId ?? "",
-                  businessHubName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
-              : {};
-            console.log("EditBusinessHubDialog initialData:", data);
-            console.log("currentEditNode for BusinessHub:", currentEditNode);
-            return data;
-          })()}
+          initialData={businessHubDialogData}
         />
         <EditServiceCenterDialog
           isOpen={isEditServiceCenterOpen}
           onOpenChange={setIsEditServiceCenterOpen}
           onSubmit={handleEditServiceCenter}
-          initialData={
-            currentEditNode
-              ? {
-                  serviceCenterId: currentEditNode.id,
-                  serviceCenterName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
-              : {}
-          }
+          initialData={serviceCenterDialogData}
         />
         <EditSubstationDialog
           isOpen={isEditSubstationOpen}
           onOpenChange={setIsEditSubstationOpen}
           onSubmit={handleEditSubstation}
-          initialData={
-            currentEditNode
-              ? {
-                  substationName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                  assetId: "", // Not available in NodeInfo, so default to empty
-                  status: currentEditNode.nodeInfo?.status
-                    ? "Active"
-                    : "Inactive",
-                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                  description: currentEditNode.nodeInfo?.description ?? "",
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
-              : {}
-          }
+          initialData={substationDialogData}
         />
         <EditFeederLineDialog
           isOpen={isEditFeederLineOpen}
           onOpenChange={setIsEditFeederLineOpen}
           onSubmit={handleEditFeederLine}
-          initialData={
-            currentEditNode
-              ? {
-                  feederName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                  assetId: "", // Not available in NodeInfo, so default to empty
-                  status: currentEditNode.nodeInfo?.status
-                    ? "Active"
-                    : "Inactive",
-                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                  description: currentEditNode.nodeInfo?.description ?? "",
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
-              : {}
-          }
+          initialData={feederDialogData}
         />
         <EditDistributionSubstationDialog
           isOpen={isEditDSSOpen}
           onOpenChange={setIsEditDSSOpen}
           onSubmit={handleEditDSS}
-          initialData={
-            currentEditNode
-              ? {
-                  substationName:
-                    currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                  serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                  assetId: "", // Not available in NodeInfo, so default to empty
-                  status: currentEditNode.nodeInfo?.status
-                    ? "Active"
-                    : "Inactive",
-                  voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                  longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                  latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                  description: currentEditNode.nodeInfo?.description ?? "",
-                  phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                  email: currentEditNode.nodeInfo?.email ?? "",
-                  contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                  address: currentEditNode.nodeInfo?.address ?? "",
-                }
-              : {}
-          }
+          initialData={dssDialogData}
         />
       </div>
     </div>

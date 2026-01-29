@@ -825,7 +825,19 @@ export default function PerformanceOverview({
 
                 const nodeType = node.nodeInfo?.type;
 
-                if (nodeType === NODE_TYPES.REGION) {
+                if (nodeType === "root") {
+                  const data = {
+                    rootId: performanceData?.id ?? "",
+                    rootName: node.nodeInfo?.name ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Root Dialog with data:", data);
+                  setRootDialogData(data);
+                  setIsEditRootOpen(true);
+                } else if (nodeType === NODE_TYPES.REGION) {
                   const data = {
                     regionId: node.nodeInfo?.regionId ?? nodeId,
                     regionName: node.nodeInfo?.name ?? nodeName,
@@ -897,7 +909,11 @@ export default function PerformanceOverview({
                   console.log("Opening Feeder Line Dialog with data:", data);
                   setFeederDialogData(data);
                   setIsEditFeederLineOpen(true);
-                } else if (nodeType === "dss" || nodeType === "DSS") {
+                } else if (
+                  nodeType === "dss" ||
+                  nodeType === "DSS" ||
+                  nodeType === NODE_TYPES.DSS
+                ) {
                   const data = {
                     substationName: node.nodeInfo?.name ?? nodeName,
                     serialNumber: node.nodeInfo?.serialNo ?? "",
@@ -1108,7 +1124,9 @@ export default function PerformanceOverview({
                 <li className="flex items-center gap-3">
                   <Phone size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
-                    <p className="text-base font-medium text-black">{performanceData?.phoneNo || ''}</p>
+                    <p className="text-base font-medium text-black">
+                      {performanceData?.phoneNo || ""}
+                    </p>
                     <p className="text-gray-400">Phone</p>
                   </div>
                 </li>
@@ -1163,6 +1181,7 @@ export default function PerformanceOverview({
                     id: performanceData?.nodes?.id || "root",
                     orgId: id,
                     name: performanceData?.businessName || "Root",
+                    nodeInfo: performanceData?.nodes?.nodeInfo, 
                     nodesTree: performanceData?.nodes?.nodesTree || [],
                   }}
                   level={0}

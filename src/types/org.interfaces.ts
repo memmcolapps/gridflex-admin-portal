@@ -269,6 +269,7 @@ export interface GetOneOrgResponseData {
   country: string;
   state: string;
   city: string;
+  phoneNo?: string;
   status: boolean;
   image: string;
   nodes: GetOneNode;

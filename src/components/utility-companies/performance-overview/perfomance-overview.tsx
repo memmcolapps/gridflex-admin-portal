@@ -453,12 +453,12 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddRegionOpen(false);
           setCurrentParentId("");
-          console.log("Region created successfully");
-          toast.success("Region created successfully");
+          console.log("Region updated successfully");
+          toast.success("Region updated successfully");
         },
         onError: (error) => {
-          console.error("Error creating region:", error);
-          toast.error("Error creating region");
+          console.error("Error updating region:", error);
+          toast.error("Error updating region");
         },
       },
     );
@@ -487,12 +487,12 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddBusinessHubOpen(false);
           setCurrentParentId("");
-          console.log("Business hub created successfully");
-          toast.success("Business hub created successfully");
+          console.log("Business hub updated successfully");
+          toast.success("Business hub updated successfully");
         },
         onError: (error) => {
-          console.error("Error creating business hub:", error);
-          toast.error("Error creating business hub");
+          console.error("Error updating business hub:", error);
+          toast.error("Error updating business hub");
         },
       },
     );
@@ -521,12 +521,12 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddServiceCenterOpen(false);
           setCurrentParentId("");
-          console.log("Service center created successfully");
-          toast.success("Service center created successfully");
+          console.log("Service center updated successfully");
+          toast.success("Service center updated successfully");
         },
         onError: (error) => {
-          console.error("Error creating service center:", error);
-          toast.error("Error creating service center");
+          console.error("Error updating service center:", error);
+          toast.error("Error updating service center");
         },
       },
     );
@@ -560,12 +560,12 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddSubstationOpen(false);
           setCurrentParentId("");
-          console.log("Substation created successfully");
-          toast.success("Substation created successfully");
+          console.log("Substation updated successfully");
+          toast.success("Substation updated successfully");
         },
         onError: (error) => {
-          console.error("Error creating substation:", error);
-          toast.error("Error creating substation");
+          console.error("Error updating substation:", error);
+          toast.error("Error updating substation");
         },
       },
     );
@@ -599,12 +599,12 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddFeederLineOpen(false);
           setCurrentParentId("");
-          console.log("Feeder line created successfully");
-          toast.success("Feeder line created successfully");
+          console.log("Feeder line updated successfully");
+          toast.success("Feeder line updated successfully");
         },
         onError: (error) => {
-          console.error("Error creating feeder line:", error);
-          toast.error("Error creating feeder line");
+          console.error("Error updating feeder line:", error);
+          toast.error("Error updating feeder line");
         },
       },
     );
@@ -638,12 +638,12 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddDSSOpen(false);
           setCurrentParentId("");
-          console.log("DSS created successfully");
-          toast.success("DSS created successfully");
+          console.log("DSS updated successfully");
+          toast.success("DSS updated successfully");
         },
         onError: (error) => {
-          console.error("Error creating DSS:", error);
-          toast.error("Error creating DSS");
+          console.error("Error updating DSS:", error);
+          toast.error("Error updating DSS");
         },
       },
     );
@@ -1108,7 +1108,7 @@ export default function PerformanceOverview({
                 <li className="flex items-center gap-3">
                   <Phone size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
-                    <p className="text-base font-medium text-black">{""}</p>
+                    <p className="text-base font-medium text-black">{performanceData?.phoneNo || ''}</p>
                     <p className="text-gray-400">Phone</p>
                   </div>
                 </li>

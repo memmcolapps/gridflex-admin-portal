@@ -222,21 +222,22 @@ export interface UpdateSubstationTransfomerFeederPayload {
 interface NodeInfo {
   id: string;
   nodeId: string;
-  regionId?: string; // Optional as it's missing in some objects
+  regionId?: string; 
   name: string;
   phoneNo: string;
   email: string;
   contactPerson: string;
   address: string;
-  bhubId?: string; // Optional field
-  serialNo?: string; // Optional field
-  status?: boolean; // Optional field
-  voltage?: string; // Optional field
-  description?: string; // Optional field
-  latitude?: string; // Optional field
-  longitude?: string; // Optional field
+  bhubId?: string; 
+  serialNo?: string; 
+  status?: boolean; 
+  voltage?: string; 
+  description?: string; 
+  latitude?: string; 
+  longitude?: string; 
   createdAt: string;
   updatedAt: string;
+  serviceCenterId?: string;
 }
 
 export interface Node {
@@ -268,6 +269,7 @@ export interface GetOneOrgResponseData {
   country: string;
   state: string;
   city: string;
+  phoneNo?: string;
   status: boolean;
   image: string;
   nodes: GetOneNode;
@@ -306,9 +308,18 @@ export interface GetOneNode {
     name: string;
     nodeId: string;
     phoneNo: string;
-    regionId: string;
+    regionId?: string;
+    bhubId?: string;
+    serviceCenterId?: string;
     type: string;
     updatedAt: string;
+    assetId?: string;
+    serialNo?: string;
+    status?: boolean;
+    voltage?: string;
+    description?: string;
+    latitude?: string;
+    longitude?: string;
   };
   nodesTree: GetOneNode[];
 }

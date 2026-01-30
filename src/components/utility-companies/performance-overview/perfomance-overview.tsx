@@ -47,11 +47,24 @@ import {
   useCreateRegionBhubServiceCenter,
   useCreateSubstationTransfomerFeeder,
   useGetOneOrg,
+  useUpdateRegionBhubServiceCenter,
+  useUpdateSubstationTransfomerFeeder,
 } from "@/hooks/use-orgs";
 import { toast } from "sonner";
 import { useAtom } from "jotai";
 import { selectedModulesAtom } from "@/atom/modulesAtom";
 import { icons } from "./icons";
+import { EditRegionDialog } from "../utility-companies-dialogs/edit-region-dialog";
+import { useUpdateOrg } from "@/hooks/use-orgs";
+
+const NODE_TYPES = {
+  REGION: "region",
+  BUSINESS_HUB: "business hub",
+  SERVICE_CENTER: "service center",
+  SUBSTATION: "substation",
+  FEEDER_LINE: "feeder line",
+  DSS: "dss",
+} as const;
 
 export default function PerformanceOverview({
   params,
@@ -67,6 +80,7 @@ export default function PerformanceOverview({
   const [isAddFeederLineOpen, setIsAddFeederLineOpen] = useState(false);
   const [isAddDSSOpen, setIsAddDSSOpen] = useState(false);
   const [isEditRootOpen, setIsEditRootOpen] = useState(false);
+  const [isEditRegionOpen, setIsEditRegionOpen] = useState(false);
   const [isEditBusinessHubOpen, setIsEditBusinessHubOpen] = useState(false);
   const [isEditServiceCenterOpen, setIsEditServiceCenterOpen] = useState(false);
   const [isEditSubstationOpen, setIsEditSubstationOpen] = useState(false);
@@ -75,8 +89,29 @@ export default function PerformanceOverview({
   const [currentParentId, setCurrentParentId] = useState<string>("");
   const [currentEditNode, setCurrentEditNode] = useState<ApiNode | null>(null);
   const queryClient = useQueryClient();
-
+  const [regionDialogData, setRegionDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [businessHubDialogData, setBusinessHubDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [serviceCenterDialogData, setServiceCenterDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [substationDialogData, setSubstationDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [feederDialogData, setFeederDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
+  const [dssDialogData, setDssDialogData] = useState<Partial<UnifiedFormData>>(
+    {},
+  );
+  const [rootDialogData, setRootDialogData] = useState<
+    Partial<UnifiedFormData>
+  >({});
   const { data: performanceData } = useGetOneOrg(id);
+  const { mutate: updateOrg } = useUpdateOrg();
 
   const { mutate: createRegionBhubServiceCenter } =
     useCreateRegionBhubServiceCenter();
@@ -85,6 +120,12 @@ export default function PerformanceOverview({
   const [expanded, setExpanded] = useState(
     new Set([performanceData?.businessName]),
   );
+
+  const { mutate: updateRegionBhubServiceCenter } =
+    useUpdateRegionBhubServiceCenter();
+
+  const { mutate: updateSubstationTransfomerFeeder } =
+    useUpdateSubstationTransfomerFeeder();
 
   const summary = [
     {
@@ -125,12 +166,8 @@ export default function PerformanceOverview({
     },
   ];
 
-  const updateNode = (nodeName: string, updatedData: UnifiedFormData) => {
-    console.log("Updating node:", nodeName, "with data:", updatedData);
-  };
-
   const [modulesByOrg] = useAtom(selectedModulesAtom);
-  const selectedModules = modulesByOrg[id] ?? [];  
+  const selectedModules = modulesByOrg[id] ?? [];
 
   const handleAddRegion = (data: UnifiedFormData) => {
     if (!currentParentId) {
@@ -358,48 +395,258 @@ export default function PerformanceOverview({
   };
 
   const handleEditRoot = (data: UnifiedFormData) => {
-    console.log("Editing root:", data);
-    setIsEditRootOpen(false);
+    if (!performanceData) {
+      console.error("No performance data available");
+      return;
+    }
+
+    updateOrg(
+      {
+        id: performanceData.id,
+        businessName: data.rootName ?? performanceData.businessName,
+        postalCode: performanceData.postalCode,
+        address: data.address ?? performanceData.address,
+        country: performanceData.country,
+        state: performanceData.state,
+        city: performanceData.city,
+        userId: performanceData.userId,
+        firstName: performanceData.operator.firstname,
+        lastName: performanceData.operator.lastname,
+        email: data.email ?? performanceData.operator.email,
+        password: "",
+        phoneNumber: data.phoneNumber ?? "",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsEditRootOpen(false);
+          toast.success("Organization updated successfully");
+        },
+        onError: (error) => {
+          console.error("Error updating organization:", error);
+          toast.error("Error updating organization");
+        },
+      },
+    );
+  };
+
+  const handleEditRegion = (data: UnifiedFormData) => {
+    if (!currentEditNode) {
+      console.error("No parent ID set for updating region");
+      return;
+    }
+
+    updateRegionBhubServiceCenter(
+      {
+        nodeId: currentEditNode?.id,
+        regionId: data.regionId ?? `REG-${Date.now()}`,
+        name: data.regionName ?? "Unnamed Region",
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        type: "region",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddRegionOpen(false);
+          setCurrentParentId("");
+          console.log("Region updated successfully");
+          toast.success("Region updated successfully");
+        },
+        onError: (error) => {
+          console.error("Error updating region:", error);
+          toast.error("Error updating region");
+        },
+      },
+    );
   };
 
   const handleEditBusinessHub = (data: UnifiedFormData) => {
-    if (currentEditNode) {
-      updateNode(currentEditNode.name, data);
+    if (!currentEditNode) {
+      console.error("No parent ID set for adding business hub");
+      return;
     }
-    setIsEditBusinessHubOpen(false);
-    setCurrentEditNode(null);
+
+    updateRegionBhubServiceCenter(
+      {
+        nodeId: currentEditNode?.id,
+        regionId: data.businessHubId ?? `BH-${Date.now()}`,
+        name: data.businessHubName ?? "Unnamed Business Hub",
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        type: "business hub",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddBusinessHubOpen(false);
+          setCurrentParentId("");
+          console.log("Business hub updated successfully");
+          toast.success("Business hub updated successfully");
+        },
+        onError: (error) => {
+          console.error("Error updating business hub:", error);
+          toast.error("Error updating business hub");
+        },
+      },
+    );
   };
 
   const handleEditServiceCenter = (data: UnifiedFormData) => {
-    if (currentEditNode) {
-      updateNode(currentEditNode.name, data);
+    if (!currentEditNode) {
+      console.error("No parent ID set for adding service center");
+      return;
     }
-    setIsEditServiceCenterOpen(false);
-    setCurrentEditNode(null);
+
+    updateRegionBhubServiceCenter(
+      {
+        nodeId: currentEditNode?.id,
+        regionId: data.serviceCenterId ?? `SC-${Date.now()}`,
+        name: data.serviceCenterName ?? "Unnamed Service Center",
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        type: "service center",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddServiceCenterOpen(false);
+          setCurrentParentId("");
+          console.log("Service center updated successfully");
+          toast.success("Service center updated successfully");
+        },
+        onError: (error) => {
+          console.error("Error updating service center:", error);
+          toast.error("Error updating service center");
+        },
+      },
+    );
   };
 
   const handleEditSubstation = (data: UnifiedFormData) => {
-    if (currentEditNode) {
-      updateNode(currentEditNode.name, data);
+    if (!currentEditNode) {
+      console.error("No parent ID set for adding substation");
+      return;
     }
-    setIsEditSubstationOpen(false);
-    setCurrentEditNode(null);
+
+    updateSubstationTransfomerFeeder(
+      {
+        nodeId: currentEditNode?.id,
+        name: data.substationName ?? "Unnamed Substation",
+        serialNo: data.serialNumber ?? `SUB-${Date.now()}`,
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        status: data.status === "Active" || data.status === "true",
+        voltage: data.voltage ?? "330 KV",
+        latitude: data.latitude ?? "",
+        longitude: data.longitude ?? "",
+        description: data.description ?? "",
+        type: "substation",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddSubstationOpen(false);
+          setCurrentParentId("");
+          console.log("Substation updated successfully");
+          toast.success("Substation updated successfully");
+        },
+        onError: (error) => {
+          console.error("Error updating substation:", error);
+          toast.error("Error updating substation");
+        },
+      },
+    );
   };
 
   const handleEditFeederLine = (data: UnifiedFormData) => {
-    if (currentEditNode) {
-      updateNode(currentEditNode.name, data);
+    if (!currentEditNode) {
+      console.error("No parent ID set for adding feeder line");
+      return;
     }
-    setIsEditFeederLineOpen(false);
-    setCurrentEditNode(null);
+
+    updateSubstationTransfomerFeeder(
+      {
+        nodeId: currentEditNode?.id,
+        name: data.feederName ?? "Unnamed Feeder Line",
+        serialNo: data.serialNumber ?? `FL-${Date.now()}`,
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        status: data.status === "Active" || data.status === "true",
+        voltage: data.voltage ?? "330 KV",
+        latitude: data.latitude ?? "",
+        longitude: data.longitude ?? "",
+        description: data.description ?? "",
+        type: "feeder line",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddFeederLineOpen(false);
+          setCurrentParentId("");
+          console.log("Feeder line updated successfully");
+          toast.success("Feeder line updated successfully");
+        },
+        onError: (error) => {
+          console.error("Error updating feeder line:", error);
+          toast.error("Error updating feeder line");
+        },
+      },
+    );
   };
 
   const handleEditDSS = (data: UnifiedFormData) => {
-    if (currentEditNode) {
-      updateNode(currentEditNode.name, data);
+    if (!currentEditNode) {
+      console.error("No parent ID set for adding DSS");
+      return;
     }
-    setIsEditDSSOpen(false);
-    setCurrentEditNode(null);
+
+    updateSubstationTransfomerFeeder(
+      {
+        nodeId: currentEditNode?.id,
+        name: data.substationName ?? "Unnamed Distribution Substation (DSS)",
+        serialNo: data.serialNumber ?? `DSS-${Date.now()}`,
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        status: data.status === "Active" || data.status === "true",
+        voltage: data.voltage ?? "330 KV",
+        latitude: data.latitude ?? "",
+        longitude: data.longitude ?? "",
+        description: data.description ?? "",
+        type: "dss",
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+          queryClient.invalidateQueries({ queryKey: ["org", id] });
+          setIsAddDSSOpen(false);
+          setCurrentParentId("");
+          console.log("DSS updated successfully");
+          toast.success("DSS updated successfully");
+        },
+        onError: (error) => {
+          console.error("Error updating DSS:", error);
+          toast.error("Error updating DSS");
+        },
+      },
+    );
   };
 
   function RenderNode({
@@ -544,27 +791,149 @@ export default function PerformanceOverview({
               size="lg"
               className="cursor-pointer px-1 text-black hover:text-gray-700"
               onClick={() => {
-                // For editing, we'll need to set a simplified node structure
-                // Since GetOneNode doesn't have nodeInfo, we'll handle this differently
-                setCurrentEditNode({
+                console.log("=== EDIT BUTTON CLICKED ===");
+                console.log("Node ID:", nodeId);
+                console.log("Node Info:", node.nodeInfo);
+
+                const fullNodeData: ApiNode = {
                   id: nodeId,
                   orgId: node.orgId,
                   name: nodeName,
                   nodeInfo: {
-                    id: nodeId,
-                    nodeId: nodeId,
-                    name: nodeName,
-                    phoneNo: "",
-                    email: "",
-                    contactPerson: "",
-                    address: "",
-                    createdAt: "",
-                    updatedAt: "",
+                    id: node.nodeInfo?.id ?? nodeId,
+                    nodeId: node.nodeInfo?.nodeId ?? nodeId,
+                    name: node.nodeInfo?.name ?? nodeName,
+                    phoneNo: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                    createdAt: node.nodeInfo?.createdAt ?? "",
+                    updatedAt: node.nodeInfo?.updatedAt ?? "",
+                    regionId: node.nodeInfo?.regionId ?? "",
+                    bhubId: node.nodeInfo?.bhubId ?? "",
+                    serviceCenterId: node.nodeInfo?.serviceCenterId ?? "",
+                    serialNo: node.nodeInfo?.serialNo,
+                    status: node.nodeInfo?.status,
+                    voltage: node.nodeInfo?.voltage,
+                    latitude: node.nodeInfo?.latitude,
+                    longitude: node.nodeInfo?.longitude,
+                    description: node.nodeInfo?.description,
                   },
-                });
+                };
 
-                // For now, we'll default to root edit since we don't have type info
-                setIsEditRootOpen(true);
+                setCurrentEditNode(fullNodeData);
+
+                const nodeType = node.nodeInfo?.type;
+
+                if (nodeType === "root") {
+                  const data = {
+                    rootId: performanceData?.id ?? "",
+                    rootName: node.nodeInfo?.name ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Root Dialog with data:", data);
+                  setRootDialogData(data);
+                  setIsEditRootOpen(true);
+                } else if (nodeType === NODE_TYPES.REGION) {
+                  const data = {
+                    regionId: node.nodeInfo?.regionId ?? nodeId,
+                    regionName: node.nodeInfo?.name ?? nodeName,
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Region Dialog with data:", data);
+                  setRegionDialogData(data);
+                  setIsEditRegionOpen(true);
+                } else if (nodeType === NODE_TYPES.BUSINESS_HUB) {
+                  const data = {
+                    businessHubId: node.nodeInfo?.bhubId ?? nodeId,
+                    businessHubName: node.nodeInfo?.name ?? nodeName,
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Business Hub Dialog with data:", data);
+                  setBusinessHubDialogData(data);
+                  setIsEditBusinessHubOpen(true);
+                } else if (nodeType === NODE_TYPES.SERVICE_CENTER) {
+                  const data = {
+                    serviceCenterId: node.nodeInfo?.serviceCenterId ?? nodeId,
+                    serviceCenterName: node.nodeInfo?.name ?? nodeName,
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Service Center Dialog with data:", data);
+                  setServiceCenterDialogData(data);
+                  setIsEditServiceCenterOpen(true);
+                } else if (nodeType === NODE_TYPES.SUBSTATION) {
+                  const data = {
+                    substationName: node.nodeInfo?.name ?? nodeName,
+                    serialNumber: node.nodeInfo?.serialNo ?? "",
+                    assetId: "",
+                    status: node.nodeInfo?.status ? "Active" : "Inactive",
+                    voltage: node.nodeInfo?.voltage ?? "330 KV",
+                    longitude: node.nodeInfo?.longitude ?? "",
+                    latitude: node.nodeInfo?.latitude ?? "",
+                    description: node.nodeInfo?.description ?? "",
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Substation Dialog with data:", data);
+                  setSubstationDialogData(data);
+                  setIsEditSubstationOpen(true);
+                } else if (nodeType === NODE_TYPES.FEEDER_LINE) {
+                  const data = {
+                    feederName: node.nodeInfo?.name ?? nodeName,
+                    serialNumber: node.nodeInfo?.serialNo ?? "",
+                    assetId: "",
+                    status: node.nodeInfo?.status ? "Active" : "Inactive",
+                    voltage: node.nodeInfo?.voltage ?? "330 KV",
+                    longitude: node.nodeInfo?.longitude ?? "",
+                    latitude: node.nodeInfo?.latitude ?? "",
+                    description: node.nodeInfo?.description ?? "",
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening Feeder Line Dialog with data:", data);
+                  setFeederDialogData(data);
+                  setIsEditFeederLineOpen(true);
+                } else if (
+                  nodeType === "dss" ||
+                  nodeType === "DSS" ||
+                  nodeType === NODE_TYPES.DSS
+                ) {
+                  const data = {
+                    substationName: node.nodeInfo?.name ?? nodeName,
+                    serialNumber: node.nodeInfo?.serialNo ?? "",
+                    assetId: "",
+                    status: node.nodeInfo?.status ? "Active" : "Inactive",
+                    voltage: node.nodeInfo?.voltage ?? "330 KV",
+                    longitude: node.nodeInfo?.longitude ?? "",
+                    latitude: node.nodeInfo?.latitude ?? "",
+                    description: node.nodeInfo?.description ?? "",
+                    phoneNumber: node.nodeInfo?.phoneNo ?? "",
+                    email: node.nodeInfo?.email ?? "",
+                    contactPerson: node.nodeInfo?.contactPerson ?? "",
+                    address: node.nodeInfo?.address ?? "",
+                  };
+                  console.log("Opening DSS Dialog with data:", data);
+                  setDssDialogData(data);
+                  setIsEditDSSOpen(true);
+                } else {
+                  setIsEditRootOpen(true);
+                }
               }}
             >
               <Edit size={28} className="h-24 w-24" />
@@ -596,17 +965,21 @@ export default function PerformanceOverview({
       <div className="border-b border-gray-200">
         <button
           onClick={() => setActiveTab("summary")}
-          className={`relative pb-3 text-sm font-medium transition-colors ${activeTab === "summary"
-            ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
-            : "text-gray-600 hover:text-gray-900"
-            } `}
+          className={`relative pb-3 text-sm font-medium transition-colors ${
+            activeTab === "summary"
+              ? "text-black after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-[1px] after:bg-black after:content-['']"
+              : "text-gray-600 hover:text-gray-900"
+          } `}
         >
           Summary
         </button>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {summary.map((item, idx) => (
-          <Card key={idx} className="border border-gray-200 bg-white shadow-none">
+          <Card
+            key={idx}
+            className="border border-gray-200 bg-white shadow-none"
+          >
             <CardContent className="pt-2">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -624,7 +997,7 @@ export default function PerformanceOverview({
                   </div>
                 </div>
                 <div
-                  className={`rounded-lg bg-gray-50 p-3 border border-gray-200 mt-2 ${item.iconBg}`}
+                  className={`mt-2 rounded-lg border border-gray-200 bg-gray-50 p-3 ${item.iconBg}`}
                 >
                   {item.icon}
                 </div>
@@ -650,14 +1023,14 @@ export default function PerformanceOverview({
                     {performanceData?.status === true ? (
                       <Badge
                         variant="secondary"
-                        className="bg-green-50 rounded-sm px-2 py-1 font-normal text-green-700 hover:bg-green-50"
+                        className="rounded-sm bg-green-50 px-2 py-1 font-normal text-green-700 hover:bg-green-50"
                       >
                         Active
                       </Badge>
                     ) : (
                       <Badge
                         variant="secondary"
-                        className="bg-red-50 rounded-sm px-2 py-1 font-normal text-red-700 hover:bg-red-50"
+                        className="rounded-sm bg-red-50 px-2 py-1 font-normal text-red-700 hover:bg-red-50"
                       >
                         Suspended
                       </Badge>
@@ -673,14 +1046,29 @@ export default function PerformanceOverview({
                 </Badge>
               </div>
               <p className="text-sm text-gray-900">
-                Registered  {performanceData?.createdAt}
+                Registered {performanceData?.createdAt}
               </p>
             </div>
           </div>
           <Button
             variant="outline"
             className="cursor-pointer border-gray-200 bg-white text-black hover:bg-white"
-            onClick={() => setIsEditRootOpen(true)}
+            onClick={() => {
+              const data = {
+                rootId: performanceData?.id ?? "",
+                rootName: performanceData?.businessName ?? "",
+                contactPerson:
+                  (performanceData?.operator?.firstname ?? "") +
+                  " " +
+                  (performanceData?.operator?.lastname ?? ""),
+                email: performanceData?.operator?.email ?? "",
+                phoneNumber: "",
+                address: performanceData?.address ?? "",
+              };
+              console.log("Opening Root Dialog with data:", data);
+              setRootDialogData(data);
+              setIsEditRootOpen(true);
+            }}
           >
             <Edit size={16} className="text-black" />
             Edit Info
@@ -701,7 +1089,7 @@ export default function PerformanceOverview({
               <h3 className="text-lg font-normal text-gray-900">
                 Company Information
               </h3>
-              <div className="border border-gray-100 w-full px-0 "></div>
+              <div className="w-full border border-gray-100 px-0"></div>
 
               <ul className="space-y-1">
                 <li className="flex items-center gap-3">
@@ -710,7 +1098,7 @@ export default function PerformanceOverview({
                     <p className="text-base font-medium text-black">
                       {performanceData?.businessName}
                     </p>
-                    <p className=" text-gray-400">Company</p>
+                    <p className="text-gray-400">Company</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
@@ -721,9 +1109,7 @@ export default function PerformanceOverview({
                         " " +
                         performanceData?.operator?.lastname}
                     </p>
-                    <p className=" text-gray-400">
-                      Contact Person
-                    </p>
+                    <p className="text-gray-400">Contact Person</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
@@ -732,14 +1118,16 @@ export default function PerformanceOverview({
                     <p className="text-base font-medium text-black">
                       {performanceData?.operator?.email}
                     </p>
-                    <p className=" text-gray-400">Email</p>
+                    <p className="text-gray-400">Email</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
-                    <p className="text-base font-medium text-black">{""}</p>
-                    <p className=" text-gray-400">Phone</p>
+                    <p className="text-base font-medium text-black">
+                      {performanceData?.phoneNo || ""}
+                    </p>
+                    <p className="text-gray-400">Phone</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
@@ -748,19 +1136,21 @@ export default function PerformanceOverview({
                     <p className="text-base font-medium text-black">
                       {performanceData?.address}
                     </p>
-                    <p className=" text-gray-400">Address</p>
+                    <p className="text-gray-400">Address</p>
                   </div>
                 </li>
               </ul>
 
               {selectedModules.length > 0 && (
                 <div>
-                  <div className="flex gap-2 mt-4 items-center">
+                  <div className="mt-4 flex items-center gap-2">
                     <CircleCheckBig size={18} className="text-black" />
-                    <span className="text-lg font-medium">Assigned Modules</span>
+                    <span className="text-lg font-medium">
+                      Assigned Modules
+                    </span>
                   </div>
 
-                  <ul className="py-3 px-4 space-y-4">
+                  <ul className="space-y-4 px-4 py-3">
                     {selectedModules.map((module) => (
                       <li key={module} className="flex items-center gap-2">
                         {icons[module]}
@@ -770,9 +1160,6 @@ export default function PerformanceOverview({
                   </ul>
                 </div>
               )}
-
-
-
             </CardContent>
           </Card>
         </div>
@@ -785,9 +1172,7 @@ export default function PerformanceOverview({
               <CardTitle className="flex items-center gap-2 text-lg font-medium">
                 Organizational Hierarchy
               </CardTitle>
-              <p className=" text-gray-500">
-                Build the organization structure
-              </p>
+              <p className="text-gray-500">Build the organization structure</p>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -796,6 +1181,7 @@ export default function PerformanceOverview({
                     id: performanceData?.nodes?.id || "root",
                     orgId: id,
                     name: performanceData?.businessName || "Root",
+                    nodeInfo: performanceData?.nodes?.nodeInfo, 
                     nodesTree: performanceData?.nodes?.nodesTree || [],
                   }}
                   level={0}
@@ -840,131 +1226,43 @@ export default function PerformanceOverview({
           isOpen={isEditRootOpen}
           onOpenChange={setIsEditRootOpen}
           onSubmit={handleEditRoot}
-          initialData={{
-            rootId: "IBDEC001",
-            rootName: performanceData?.businessName,
-            contactPerson:
-              performanceData?.operator?.firstname +
-              " " +
-              performanceData?.operator?.lastname,
-            email: performanceData?.operator?.email,
-            phoneNumber: "",
-            address: performanceData?.address,
-          }}
+          initialData={rootDialogData}
+        />
+        <EditRegionDialog
+          isOpen={isEditRegionOpen}
+          onOpenChange={setIsEditRegionOpen}
+          onSubmit={handleEditRegion}
+          initialData={regionDialogData}
         />
         <EditBusinessHubDialog
           isOpen={isEditBusinessHubOpen}
           onOpenChange={setIsEditBusinessHubOpen}
           onSubmit={handleEditBusinessHub}
-          initialData={
-            currentEditNode
-              ? {
-                businessHubId: currentEditNode.nodeInfo?.bhubId ?? "",
-                businessHubName:
-                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                email: currentEditNode.nodeInfo?.email ?? "",
-                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                address: currentEditNode.nodeInfo?.address ?? "",
-              }
-              : {}
-          }
+          initialData={businessHubDialogData}
         />
         <EditServiceCenterDialog
           isOpen={isEditServiceCenterOpen}
           onOpenChange={setIsEditServiceCenterOpen}
           onSubmit={handleEditServiceCenter}
-          initialData={
-            currentEditNode
-              ? {
-                serviceCenterId: currentEditNode.id,
-                serviceCenterName:
-                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                email: currentEditNode.nodeInfo?.email ?? "",
-                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                address: currentEditNode.nodeInfo?.address ?? "",
-              }
-              : {}
-          }
+          initialData={serviceCenterDialogData}
         />
         <EditSubstationDialog
           isOpen={isEditSubstationOpen}
           onOpenChange={setIsEditSubstationOpen}
           onSubmit={handleEditSubstation}
-          initialData={
-            currentEditNode
-              ? {
-                substationName:
-                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                assetId: "", // Not available in NodeInfo, so default to empty
-                status: currentEditNode.nodeInfo?.status
-                  ? "Active"
-                  : "Inactive",
-                voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                description: currentEditNode.nodeInfo?.description ?? "",
-                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                email: currentEditNode.nodeInfo?.email ?? "",
-                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                address: currentEditNode.nodeInfo?.address ?? "",
-              }
-              : {}
-          }
+          initialData={substationDialogData}
         />
         <EditFeederLineDialog
           isOpen={isEditFeederLineOpen}
           onOpenChange={setIsEditFeederLineOpen}
           onSubmit={handleEditFeederLine}
-          initialData={
-            currentEditNode
-              ? {
-                feederName:
-                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                assetId: "", // Not available in NodeInfo, so default to empty
-                status: currentEditNode.nodeInfo?.status
-                  ? "Active"
-                  : "Inactive",
-                voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                description: currentEditNode.nodeInfo?.description ?? "",
-                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                email: currentEditNode.nodeInfo?.email ?? "",
-                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                address: currentEditNode.nodeInfo?.address ?? "",
-              }
-              : {}
-          }
+          initialData={feederDialogData}
         />
         <EditDistributionSubstationDialog
           isOpen={isEditDSSOpen}
           onOpenChange={setIsEditDSSOpen}
           onSubmit={handleEditDSS}
-          initialData={
-            currentEditNode
-              ? {
-                substationName:
-                  currentEditNode.nodeInfo?.name ?? currentEditNode.name,
-                serialNumber: currentEditNode.nodeInfo?.serialNo ?? "",
-                assetId: "", // Not available in NodeInfo, so default to empty
-                status: currentEditNode.nodeInfo?.status
-                  ? "Active"
-                  : "Inactive",
-                voltage: currentEditNode.nodeInfo?.voltage ?? "330 KV",
-                longitude: currentEditNode.nodeInfo?.longitude ?? "",
-                latitude: currentEditNode.nodeInfo?.latitude ?? "",
-                description: currentEditNode.nodeInfo?.description ?? "",
-                phoneNumber: currentEditNode.nodeInfo?.phoneNo ?? "",
-                email: currentEditNode.nodeInfo?.email ?? "",
-                contactPerson: currentEditNode.nodeInfo?.contactPerson ?? "",
-                address: currentEditNode.nodeInfo?.address ?? "",
-              }
-              : {}
-          }
+          initialData={dssDialogData}
         />
       </div>
     </div>

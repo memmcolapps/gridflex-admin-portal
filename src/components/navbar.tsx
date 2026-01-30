@@ -43,7 +43,7 @@ const routeMeta: Record<string, { label: string; icon: LucideIcon }> = {
 
 export function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useRouter(); 
   const { user, logout } = useAuth();
   const [isProfileViewActive, setIsProfileViewActive] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);

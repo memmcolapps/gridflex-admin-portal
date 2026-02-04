@@ -29,6 +29,7 @@ import { useState } from "react";
 import ProfileDropdown from "./profiledropdown";
 import { EditProfileDialog } from "./profile/edit-profile-dialog";
 import type { UnifiedFormData } from "@/types/unifiedForm";
+import { useGetOneOrg } from "@/hooks/use-orgs";
 
 const routeMeta: Record<string, { label: string; icon: LucideIcon }> = {
   dashboard: { label: "Dashboard", icon: LayoutDashboard },
@@ -43,13 +44,21 @@ const routeMeta: Record<string, { label: string; icon: LucideIcon }> = {
 
 export function Navbar() {
   const pathname = usePathname();
-  const router = useRouter(); 
+  const router = useRouter();
   const { user, logout } = useAuth();
   const [isProfileViewActive, setIsProfileViewActive] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const pathSegments = pathname.split("/").filter(Boolean);
+
+  const uuidSegment = pathSegments.find((segment) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      segment,
+    ),
+  );
+
+  const { data: performanceData } = useGetOneOrg(uuidSegment ?? "");
 
   const handleLogout = () => {
     logout();
@@ -63,11 +72,27 @@ export function Navbar() {
     const segmentKey = segment.toLowerCase();
     const routeData = routeMeta[segmentKey];
 
-    const { icon: IconComponent, label } = routeData ?? {
+    const isUUID =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        segment,
+      );
+
+    const displayLabel =
+      isUUID && performanceData?.businessName
+        ? performanceData.businessName
+        : (routeData?.label ?? segment.replace(/-/g, " "));
+
+    const { icon: IconComponent } = routeData ?? {
       label: segment.replace(/-/g, " "),
-      icon: Building2, 
+      icon: Building2,
     };
 
+    let linkHref = href;
+    if (segmentKey === "performance-overview" && !isLast) {
+      linkHref = "/utility-companies";
+    } else if (isUUID && !isLast) {
+      linkHref = `/utility-companies/${segment}`;
+    }
 
     return (
       <div key={href} className="flex items-center gap-2">
@@ -78,13 +103,15 @@ export function Navbar() {
             className={cn(isLast ? "text-gray-800" : "text-gray-600")}
           />
           {isLast ? (
-            <span className="text-sm text-gray-800 capitalize">{label}</span>
+            <span className="text-sm text-gray-800 capitalize">
+              {displayLabel}
+            </span>
           ) : (
             <Link
-              href={href}
+              href={linkHref}
               className="text-sm font-medium text-gray-700 capitalize hover:underline"
             >
-              {label}
+              {displayLabel}
             </Link>
           )}
         </div>
@@ -92,9 +119,10 @@ export function Navbar() {
     );
   });
 
- const UserAvatar = () => {
+  const UserAvatar = () => {
     const { user } = useAuth();
-    const initials = `${user?.firstname?.charAt(0) ?? ""}${user?.lastname?.charAt(0) ?? ""}`.toUpperCase();
+    const initials =
+      `${user?.firstname?.charAt(0) ?? ""}${user?.lastname?.charAt(0) ?? ""}`.toUpperCase();
     return (
       <Avatar className="h-7 w-7 sm:h-10 sm:w-10">
         <AvatarImage src="" alt="User" />
@@ -128,7 +156,6 @@ export function Navbar() {
 
         {/* Breadcrumbs */}
         <div className="flex items-center gap-2">{breadcrumbs}</div>
-       
       </div>
 
       {/* User Menu */}
@@ -139,15 +166,15 @@ export function Navbar() {
       >
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="flex items-center gap-2">
-          <UserAvatar/>
-          <ChevronDown />
+            <UserAvatar />
+            <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
           align="end"
           side="bottom"
-          className="w-fit bg-white mt-4 text-gray-700 p-0"
+          className="mt-4 w-fit bg-white p-0 text-gray-700"
           collisionPadding={10}
           avoidCollisions
         >
@@ -166,13 +193,12 @@ export function Navbar() {
                 onSelect={(e) => {
                   e.preventDefault();
                   setIsProfileViewActive(true);
-                  setIsDropdownOpen(false)
+                  setIsDropdownOpen(false);
                 }}
               >
                 <User size={12} className="mr-2" />
                 Profile
               </DropdownMenuItem>
-
 
               <DropdownMenuItem
                 className="cursor-pointer text-red-600 hover:bg-gray-100"
@@ -193,7 +219,7 @@ export function Navbar() {
       <EditProfileDialog
         isOpen={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
-        selectedContact={user ?? null} 
+        selectedContact={user ?? null}
         onSubmit={handleProfilepdate}
       />
     </header>

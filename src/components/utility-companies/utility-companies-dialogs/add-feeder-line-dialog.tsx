@@ -52,6 +52,7 @@ export function AddFeederLineDialog({
   const isFormValid = useMemo(() => {
     return (
       formData.feederName?.trim() &&
+      formData.serialNumber?.trim() &&
       formData.assetId?.trim() &&
       formData.status?.trim() &&
       formData.voltage?.trim()
@@ -85,8 +86,9 @@ export function AddFeederLineDialog({
               <Input
                 id="serialNumber"
                 name="serialNumber"
-                value={formData.serialNumber ?? "System Generated"}
-                disabled
+                value={formData.serialNumber ?? ""}
+                onChange={handleChange}
+                placeholder="Enter Serial Number"
               />
             </div>
           </div>

@@ -62,6 +62,7 @@ export function EditDistributionSubstationDialog({
 
   const isFormValid =
     formData.substationName?.trim() &&
+    formData.serialNumber?.trim() &&
     formData.assetId?.trim() &&
     formData.status?.trim() &&
     formData.voltage?.trim();
@@ -89,13 +90,14 @@ export function EditDistributionSubstationDialog({
             </div>
             <div className="space-y-2">
               <Label htmlFor="serialNumber">
-                Serial Number<span className="text-red-500">*</span>
+                Serial Number <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="serialNumber"
                 name="serialNumber"
                 value={formData.serialNumber ?? ""}
                 onChange={handleChange}
+                placeholder="Enter Serial Number"
               />
             </div>
           </div>

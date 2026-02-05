@@ -61,6 +61,7 @@ export function EditFeederLineDialog({
 
   const isFormValid =
     formData.feederName?.trim() &&
+    formData.serialNumber?.trim() &&
     formData.assetId?.trim() &&
     formData.status?.trim() &&
     formData.voltage?.trim();
@@ -94,6 +95,7 @@ export function EditFeederLineDialog({
                 name="serialNumber"
                 value={formData.serialNumber ?? ""}
                 onChange={handleChange}
+                placeholder="Enter Serial Number"
               />
             </div>
           </div>

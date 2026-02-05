@@ -6,7 +6,7 @@ import { EyeIcon, EyeOffIcon, Loader } from "lucide-react";
 import Link from "next/link";
 
 interface AdminAuthFormProps {
-  onSubmit: (email: string, password: string) => void;
+  onSubmit: (email: string, password: string) => Promise<void>;
   initialEmail?: string;
   initialPassword?: string;
 }
@@ -31,7 +31,7 @@ export function AdminAuthForm({
 
     setIsSubmitting(true);
     try {
-      onSubmit(email, password);
+      await onSubmit(email, password);
     } catch {
       // Error handling is done in the parent component
     } finally {

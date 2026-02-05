@@ -28,7 +28,6 @@ export interface UpdateOrgPayload {
   phoneNumber: string;
 }
 
-
 export interface CreateOrgResponse {
   responsecode: string;
   responsedesc: string;
@@ -168,10 +167,10 @@ export interface CreateRegionBhubServiceCenterPayload {
   parentId: string;
   regionId: string;
   name: string;
-  phoneNo: string;
-  email: string;
-  contactPerson: string;
-  address: string;
+  phoneNo?: string;
+  email?: string;
+  contactPerson?: string;
+  address?: string;
   type: "business hub" | "region" | "service center";
 }
 
@@ -179,10 +178,10 @@ export interface UpdateRegionBhubServiceCenterPayload {
   nodeId: string;
   regionId: string;
   name: string;
-  phoneNo: string;
-  email: string;
-  contactPerson: string;
-  address: string;
+  phoneNo?: string;
+  email?: string;
+  contactPerson?: string;
+  address?: string;
   type: "business hub" | "region" | "service center";
 }
 
@@ -191,50 +190,52 @@ export interface CreateSubstationTransfomerFeederPayload {
   parentId: string;
   name: string;
   serialNo: string;
-  phoneNo: string;
-  email: string;
-  contactPerson: string;
-  address: string;
+  phoneNo?: string;
+  email?: string;
+  contactPerson?: string;
+  address?: string;
   status: boolean;
   voltage: string;
-  latitude: string;
-  longitude: string;
-  description: string;
+  latitude?: string;
+  longitude?: string;
+  description?: string;
   type: "feeder line" | "substation" | "dss";
+  assetId?: string;
 }
 
 export interface UpdateSubstationTransfomerFeederPayload {
   nodeId: string;
   name: string;
   serialNo: string;
-  phoneNo: string;
-  email: string;
-  contactPerson: string;
-  address: string;
+  phoneNo?: string;
+  email?: string;
+  contactPerson?: string;
+  address?: string;
   status: boolean;
   voltage: string;
-  latitude: string;
-  longitude: string;
-  description: string;
+  latitude?: string;
+  longitude?: string;
+  description?: string;
   type: "feeder line" | "substation" | "dss";
+  assetId?: string;
 }
 
 interface NodeInfo {
   id: string;
   nodeId: string;
-  regionId?: string; 
+  regionId?: string;
   name: string;
   phoneNo: string;
   email: string;
   contactPerson: string;
   address: string;
-  bhubId?: string; 
-  serialNo?: string; 
-  status?: boolean; 
-  voltage?: string; 
-  description?: string; 
-  latitude?: string; 
-  longitude?: string; 
+  bhubId?: string;
+  serialNo?: string;
+  status?: boolean;
+  voltage?: string;
+  description?: string;
+  latitude?: string;
+  longitude?: string;
   createdAt: string;
   updatedAt: string;
   serviceCenterId?: string;
@@ -338,9 +339,9 @@ export interface DashboardResponse {
         ipAddress: string;
         userAgent: string;
         createdAt: string;
-      }
-    }
-  }
+      };
+    };
+  };
 }
 
 export interface Creator {
@@ -364,7 +365,7 @@ export interface AnalyticsResponse {
   responsedata: ResponseData;
 }
 
-export interface CardData{
+export interface CardData {
   totalResolvedIncident?: string;
   totalUtilityCompany?: number;
   totalUnresolvedIncident?: string;
@@ -375,7 +376,7 @@ export interface CardData{
 }
 
 export interface ResponseData {
-  cardData?: CardData; 
+  cardData?: CardData;
   monthlySummaries: MonthlySummary[];
   activeUtilityCompany?: number;
   totalDailySummary: Summary;
@@ -396,14 +397,14 @@ export interface DashIncidentReport {
     businessName: string;
     createdAt: string;
     updatedAt: string;
-  }
+  };
   status: boolean;
   user: {
     firstname: string;
     lastname: string;
     createdAt: string;
     updatedAt: string;
-  }
+  };
 }
 
 export interface MonthlySummary {
@@ -477,7 +478,6 @@ export interface ChangePasswordPayload {
   password: string;
 }
 
-
 export interface AdminPayload {
   id?: string;
   firstname?: string;
@@ -537,9 +537,8 @@ export interface Admins {
     totalActiveAdmins: string;
     totalPortalUsers: string;
     totalSuspendedAdmins: string;
-  }
+  };
 }
-
 
 export interface RecentActivities {
   responsecode: string;
@@ -552,20 +551,20 @@ export interface RecentActivities {
     userAgent: string;
     ipAddress: string;
     createdAt: string;
-  }[]
+  }[];
 }
 
 export interface Org {
   businessName: string;
   createdAt: string;
-  updatedAt: string
+  updatedAt: string;
 }
 
 export interface Client {
   firstname: string;
   lastname: string;
   createdAt: string;
-  updatedAt: string
+  updatedAt: string;
 }
 
 export interface IncidentReport {
@@ -587,10 +586,9 @@ export interface Incident {
   user: Client;
 }
 
-
 export interface User {
   id: string;
-  endpoint?: string
+  endpoint?: string;
   type: string;
   username: string;
   email: string;
@@ -606,7 +604,7 @@ export interface AuditLog {
   responsedesc: string;
   responsedata: {
     data: User[];
-  }
+  };
 }
 
 export interface SearchParams {
@@ -656,7 +654,6 @@ export interface Contacts {
   message: string;
   createdAt: string;
   status: string;
-
 }
 
 export interface Contact {
@@ -668,5 +665,5 @@ export interface Contact {
     messages: Contacts[];
     page: number;
     totalCount: number;
-  }
+  };
 }

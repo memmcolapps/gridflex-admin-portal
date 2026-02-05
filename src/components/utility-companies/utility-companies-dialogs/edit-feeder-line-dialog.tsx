@@ -54,10 +54,16 @@ export function EditFeederLineDialog({
     onOpenChange(false);
   };
 
-   const handleCancel = () => {
+  const handleCancel = () => {
     setFormData(initialData);
     onOpenChange(false);
   };
+
+  const isFormValid =
+    formData.feederName?.trim() &&
+    formData.assetId?.trim() &&
+    formData.status?.trim() &&
+    formData.voltage?.trim();
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -93,9 +99,7 @@ export function EditFeederLineDialog({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">
-                Phone Number <span className="text-red-500">*</span>
-              </Label>
+              <Label htmlFor="phoneNumber">Phone Number</Label>
               <Input
                 id="phoneNumber"
                 name="phoneNumber"
@@ -105,9 +109,7 @@ export function EditFeederLineDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">
-                Email <span className="text-red-500">*</span>
-              </Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 name="email"
@@ -118,9 +120,7 @@ export function EditFeederLineDialog({
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="contactPerson">
-              Contact Person <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="contactPerson">Contact Person</Label>
             <Input
               id="contactPerson"
               name="contactPerson"
@@ -130,9 +130,7 @@ export function EditFeederLineDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address">
-              Address <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="address">Address</Label>
             <Input
               id="address"
               name="address"
@@ -187,10 +185,30 @@ export function EditFeederLineDialog({
               </Select>
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="longitude">Longitude</Label>
+              <Input
+                id="longitude"
+                name="longitude"
+                value={formData.longitude ?? ""}
+                onChange={handleChange}
+                placeholder="Enter Longitude"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="latitude">Latitude</Label>
+              <Input
+                id="latitude"
+                name="latitude"
+                value={formData.latitude ?? ""}
+                onChange={handleChange}
+                placeholder="Enter Latitude"
+              />
+            </div>
+          </div>
           <div className="space-y-2">
-            <Label htmlFor="description">
-              Description <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="description">Description</Label>
             <Input
               id="description"
               name="description"
@@ -208,7 +226,11 @@ export function EditFeederLineDialog({
           >
             Cancel
           </Button>
-          <Button onClick={handleSubmit} className="bg-[#161CCA]">
+          <Button
+            onClick={handleSubmit}
+            disabled={!isFormValid}
+            className={`text-white ${isFormValid ? "cursor-pointer bg-[#161CCA] hover:bg-[#161CCA]" : "cursor-not-allowed bg-[#161CCA]/40"}`}
+          >
             Save Changes
           </Button>
         </DialogFooter>

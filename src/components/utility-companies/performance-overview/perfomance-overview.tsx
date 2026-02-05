@@ -295,6 +295,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "substation",
       },
       {
@@ -335,6 +336,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "feeder line",
       },
       {
@@ -375,6 +377,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "dss",
       },
       {
@@ -552,6 +555,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "substation",
       },
       {
@@ -591,6 +595,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "feeder line",
       },
       {
@@ -630,6 +635,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "dss",
       },
       {
@@ -1181,7 +1187,7 @@ export default function PerformanceOverview({
                     id: performanceData?.nodes?.id || "root",
                     orgId: id,
                     name: performanceData?.businessName || "Root",
-                    nodeInfo: performanceData?.nodes?.nodeInfo, 
+                    nodeInfo: performanceData?.nodes?.nodeInfo,
                     nodesTree: performanceData?.nodes?.nodesTree || [],
                   }}
                   level={0}

@@ -833,7 +833,7 @@ export default function PerformanceOverview({
 
                 if (nodeType === "root") {
                   const data = {
-                    rootId: performanceData?.id ?? "",
+                    rootId: node.nodeInfo?.regionId ?? "",
                     rootName: node.nodeInfo?.name ?? "",
                     contactPerson: node.nodeInfo?.contactPerson ?? "",
                     email: node.nodeInfo?.email ?? "",
@@ -845,7 +845,7 @@ export default function PerformanceOverview({
                   setIsEditRootOpen(true);
                 } else if (nodeType === NODE_TYPES.REGION) {
                   const data = {
-                    regionId: node.nodeInfo?.regionId ?? nodeId,
+                    regionId: node.nodeInfo?.regionId ?? "",
                     regionName: node.nodeInfo?.name ?? nodeName,
                     phoneNumber: node.nodeInfo?.phoneNo ?? "",
                     email: node.nodeInfo?.email ?? "",
@@ -857,7 +857,7 @@ export default function PerformanceOverview({
                   setIsEditRegionOpen(true);
                 } else if (nodeType === NODE_TYPES.BUSINESS_HUB) {
                   const data = {
-                    businessHubId: node.nodeInfo?.bhubId ?? nodeId,
+                    businessHubId: node.nodeInfo?.regionId ?? "",
                     businessHubName: node.nodeInfo?.name ?? nodeName,
                     phoneNumber: node.nodeInfo?.phoneNo ?? "",
                     email: node.nodeInfo?.email ?? "",
@@ -869,7 +869,7 @@ export default function PerformanceOverview({
                   setIsEditBusinessHubOpen(true);
                 } else if (nodeType === NODE_TYPES.SERVICE_CENTER) {
                   const data = {
-                    serviceCenterId: node.nodeInfo?.serviceCenterId ?? nodeId,
+                    serviceCenterId: node.nodeInfo?.regionId ?? "",
                     serviceCenterName: node.nodeInfo?.name ?? nodeName,
                     phoneNumber: node.nodeInfo?.phoneNo ?? "",
                     email: node.nodeInfo?.email ?? "",

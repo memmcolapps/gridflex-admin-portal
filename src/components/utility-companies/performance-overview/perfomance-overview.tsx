@@ -883,7 +883,7 @@ export default function PerformanceOverview({
                   const data = {
                     substationName: node.nodeInfo?.name ?? nodeName,
                     serialNumber: node.nodeInfo?.serialNo ?? "",
-                    assetId: "",
+                    assetId: node.nodeInfo?.assetId ?? "",
                     status: node.nodeInfo?.status ? "Active" : "Inactive",
                     voltage: node.nodeInfo?.voltage ?? "330 KV",
                     longitude: node.nodeInfo?.longitude ?? "",
@@ -901,7 +901,7 @@ export default function PerformanceOverview({
                   const data = {
                     feederName: node.nodeInfo?.name ?? nodeName,
                     serialNumber: node.nodeInfo?.serialNo ?? "",
-                    assetId: "",
+                    assetId: node.nodeInfo?.assetId ?? "",
                     status: node.nodeInfo?.status ? "Active" : "Inactive",
                     voltage: node.nodeInfo?.voltage ?? "330 KV",
                     longitude: node.nodeInfo?.longitude ?? "",
@@ -923,7 +923,7 @@ export default function PerformanceOverview({
                   const data = {
                     substationName: node.nodeInfo?.name ?? nodeName,
                     serialNumber: node.nodeInfo?.serialNo ?? "",
-                    assetId: "",
+                    assetId: node.nodeInfo?.assetId ?? "",
                     status: node.nodeInfo?.status ? "Active" : "Inactive",
                     voltage: node.nodeInfo?.voltage ?? "330 KV",
                     longitude: node.nodeInfo?.longitude ?? "",

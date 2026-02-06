@@ -239,6 +239,7 @@ interface NodeInfo {
   createdAt: string;
   updatedAt: string;
   serviceCenterId?: string;
+  assetId?: string;
 }
 
 export interface Node {

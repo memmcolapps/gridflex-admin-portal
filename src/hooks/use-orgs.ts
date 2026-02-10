@@ -8,6 +8,7 @@ import {
   getAllNodes,
   getAnalytics,
   getAuditLog,
+  getCompanyIncidentReports,
   getContactMessages,
   getDashboardAnalytics,
   getIncidentReports,
@@ -220,6 +221,20 @@ export const useIncidentReports = (
 };
 
 
+export const useCompanyIncidentReports = (
+  id: string,
+  page: number,
+  size: number,
+  status?: boolean
+) => {
+  return useQuery({
+    queryKey: ['companyIncidentReport', id, page, size, status],
+    queryFn: () => getCompanyIncidentReports(id, page, size, status),
+    enabled: !!id, 
+  });
+};
+
+
 export const useResolveIncidents = () => {
   return useMutation({
     mutationFn: async ({ id, status }: resolveIncidentPayload) => {
@@ -231,6 +246,7 @@ export const useResolveIncidents = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['incidentReport']})
+      queryClient.invalidateQueries({ queryKey: ['companyIncidentReport'] });
     }
   });
 };

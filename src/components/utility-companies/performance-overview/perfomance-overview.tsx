@@ -198,7 +198,7 @@ export default function PerformanceOverview({
         },
         onError: (error) => {
           console.error("Error creating region:", error);
-          toast.error("Error creating region");
+          toast.error(error.message || "Error creating region");
         },
       },
     );
@@ -441,6 +441,7 @@ export default function PerformanceOverview({
 
     updateRegionBhubServiceCenter(
       {
+        orgId: id,
         nodeId: currentEditNode?.id,
         regionId: data.regionId ?? `REG-${Date.now()}`,
         name: data.regionName ?? "Unnamed Region",
@@ -476,6 +477,7 @@ export default function PerformanceOverview({
     updateRegionBhubServiceCenter(
       {
         nodeId: currentEditNode?.id,
+        orgId: id,
         regionId: data.businessHubId ?? `BH-${Date.now()}`,
         name: data.businessHubName ?? "Unnamed Business Hub",
         phoneNo: data.phoneNumber ?? "",
@@ -510,6 +512,7 @@ export default function PerformanceOverview({
     updateRegionBhubServiceCenter(
       {
         nodeId: currentEditNode?.id,
+        orgId: id,
         regionId: data.serviceCenterId ?? `SC-${Date.now()}`,
         name: data.serviceCenterName ?? "Unnamed Service Center",
         phoneNo: data.phoneNumber ?? "",
@@ -544,6 +547,7 @@ export default function PerformanceOverview({
     updateSubstationTransfomerFeeder(
       {
         nodeId: currentEditNode?.id,
+        orgId: id,
         name: data.substationName ?? "Unnamed Substation",
         serialNo: data.serialNumber ?? "",
         phoneNo: data.phoneNumber ?? "",
@@ -584,6 +588,7 @@ export default function PerformanceOverview({
     updateSubstationTransfomerFeeder(
       {
         nodeId: currentEditNode?.id,
+        orgId: id,
         name: data.feederName ?? "Unnamed Feeder Line",
         serialNo: data.serialNumber ?? "",
         phoneNo: data.phoneNumber ?? "",
@@ -624,6 +629,7 @@ export default function PerformanceOverview({
     updateSubstationTransfomerFeeder(
       {
         nodeId: currentEditNode?.id,
+        orgId: id,
         name: data.substationName ?? "Unnamed Distribution Substation (DSS)",
         serialNo: data.serialNumber ?? "",
         phoneNo: data.phoneNumber ?? "",

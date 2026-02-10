@@ -204,21 +204,18 @@ export const updateRegionBhubServiceCenter = async (
     );
 
     if (response.data.responsecode !== "000") {
-      return {
-        success: false,
-        error: response.data.responsedesc,
-      };
+      throw new Error(response.data.responsedesc);
     }
 
     return {
       success: true,
     };
   } catch (error: unknown) {
+    if(error instanceof Error) {
+      throw error;
+    }
     const errorResult = handleApiError(error, "updateRegionBhubServiceCenter");
-    return {
-      success: false,
-      error: errorResult.error,
-    };
+    throw new Error(errorResult.error);
   }
 };
 
@@ -679,6 +676,43 @@ export const getIncidentReports = async (
     };
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "incidentReport");
+    return { success: false, error: errorResult.error };
+  }
+};
+
+
+export const getCompanyIncidentReports = async (
+  id: string,
+  page: number,
+  size: number,
+  status?: boolean
+): Promise<{
+  success: boolean;
+  data?: IncidentReport['responsedata'];
+  error?: string;
+}> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.get<IncidentReport>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report/company/${id}`,
+      {
+        params: { page, size, ...(status !== undefined && { status }) },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data.responsecode !== "000") {
+      return { success: false, error: response.data.responsedesc };
+    }
+
+    return {
+      success: true,
+      data: response.data.responsedata,
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "companyIncidentReport");
     return { success: false, error: errorResult.error };
   }
 };

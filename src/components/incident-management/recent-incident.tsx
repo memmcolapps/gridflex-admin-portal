@@ -10,10 +10,12 @@ import { useState } from "react";
 export default function RecentIncidents() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const showOnlyUnresolved = false;
 
   const { data: incidents, isLoading } = useIncidentReports(
     currentPage,
     itemsPerPage,
+    showOnlyUnresolved
   );
   const { mutate: resolveIncident } = useResolveIncidents();
 
@@ -38,33 +40,27 @@ export default function RecentIncidents() {
 
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
-    const delta = 2; // Pages to show on each side of current page
+    const delta = 2; 
 
     if (totalPages <= 1) return [1];
 
-    // Always include first page
     pages.push(1);
 
-    // Calculate start and end of the range around current page
     const rangeStart = Math.max(2, currentPage - delta);
     const rangeEnd = Math.min(totalPages - 1, currentPage + delta);
 
-    // Add ellipsis after first page if needed
     if (rangeStart > 2) {
       pages.push("...");
     }
 
-    // Add pages in range
     for (let i = rangeStart; i <= rangeEnd; i++) {
       pages.push(i);
     }
 
-    // Add ellipsis before last page if needed
     if (rangeEnd < totalPages - 1) {
       pages.push("...");
     }
 
-    // Always include last page
     if (totalPages > 1) {
       pages.push(totalPages);
     }

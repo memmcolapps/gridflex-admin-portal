@@ -285,7 +285,7 @@ export default function PerformanceOverview({
         orgId: id,
         parentId: currentParentId,
         name: data.substationName ?? "Unnamed Substation",
-        serialNo: data.serialNumber ?? `SUB-${Date.now()}`,
+        serialNo: data.serialNumber ?? "",
         phoneNo: data.phoneNumber ?? "",
         email: data.email ?? "",
         contactPerson: data.contactPerson ?? "",
@@ -295,6 +295,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "substation",
       },
       {
@@ -325,7 +326,7 @@ export default function PerformanceOverview({
         orgId: id,
         parentId: currentParentId,
         name: data.feederName ?? "Unnamed Feeder Line",
-        serialNo: data.serialNumber ?? `FL-${Date.now()}`,
+        serialNo: data.serialNumber ?? "",
         phoneNo: data.phoneNumber ?? "",
         email: data.email ?? "",
         contactPerson: data.contactPerson ?? "",
@@ -335,6 +336,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "feeder line",
       },
       {
@@ -365,7 +367,7 @@ export default function PerformanceOverview({
         orgId: id,
         parentId: currentParentId,
         name: data.substationName ?? "Unnamed Distribution Substation (DSS)",
-        serialNo: data.serialNumber ?? `DSS-${Date.now()}`,
+        serialNo: data.serialNumber ?? "",
         phoneNo: data.phoneNumber ?? "",
         email: data.email ?? "",
         contactPerson: data.contactPerson ?? "",
@@ -375,6 +377,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "dss",
       },
       {
@@ -546,7 +549,7 @@ export default function PerformanceOverview({
         nodeId: currentEditNode?.id,
         orgId: id,
         name: data.substationName ?? "Unnamed Substation",
-        serialNo: data.serialNumber ?? `SUB-${Date.now()}`,
+        serialNo: data.serialNumber ?? "",
         phoneNo: data.phoneNumber ?? "",
         email: data.email ?? "",
         contactPerson: data.contactPerson ?? "",
@@ -556,6 +559,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "substation",
       },
       {
@@ -586,7 +590,7 @@ export default function PerformanceOverview({
         nodeId: currentEditNode?.id,
         orgId: id,
         name: data.feederName ?? "Unnamed Feeder Line",
-        serialNo: data.serialNumber ?? `FL-${Date.now()}`,
+        serialNo: data.serialNumber ?? "",
         phoneNo: data.phoneNumber ?? "",
         email: data.email ?? "",
         contactPerson: data.contactPerson ?? "",
@@ -596,6 +600,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "feeder line",
       },
       {
@@ -626,7 +631,7 @@ export default function PerformanceOverview({
         nodeId: currentEditNode?.id,
         orgId: id,
         name: data.substationName ?? "Unnamed Distribution Substation (DSS)",
-        serialNo: data.serialNumber ?? `DSS-${Date.now()}`,
+        serialNo: data.serialNumber ?? "",
         phoneNo: data.phoneNumber ?? "",
         email: data.email ?? "",
         contactPerson: data.contactPerson ?? "",
@@ -636,6 +641,7 @@ export default function PerformanceOverview({
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         description: data.description ?? "",
+        assetId: data.assetId ?? "",
         type: "dss",
       },
       {
@@ -833,7 +839,7 @@ export default function PerformanceOverview({
 
                 if (nodeType === "root") {
                   const data = {
-                    rootId: performanceData?.id ?? "",
+                    rootId: node.nodeInfo?.regionId ?? "",
                     rootName: node.nodeInfo?.name ?? "",
                     contactPerson: node.nodeInfo?.contactPerson ?? "",
                     email: node.nodeInfo?.email ?? "",
@@ -845,7 +851,7 @@ export default function PerformanceOverview({
                   setIsEditRootOpen(true);
                 } else if (nodeType === NODE_TYPES.REGION) {
                   const data = {
-                    regionId: node.nodeInfo?.regionId ?? nodeId,
+                    regionId: node.nodeInfo?.regionId ?? "",
                     regionName: node.nodeInfo?.name ?? nodeName,
                     phoneNumber: node.nodeInfo?.phoneNo ?? "",
                     email: node.nodeInfo?.email ?? "",
@@ -857,7 +863,7 @@ export default function PerformanceOverview({
                   setIsEditRegionOpen(true);
                 } else if (nodeType === NODE_TYPES.BUSINESS_HUB) {
                   const data = {
-                    businessHubId: node.nodeInfo?.bhubId ?? nodeId,
+                    businessHubId: node.nodeInfo?.regionId ?? "",
                     businessHubName: node.nodeInfo?.name ?? nodeName,
                     phoneNumber: node.nodeInfo?.phoneNo ?? "",
                     email: node.nodeInfo?.email ?? "",
@@ -869,7 +875,7 @@ export default function PerformanceOverview({
                   setIsEditBusinessHubOpen(true);
                 } else if (nodeType === NODE_TYPES.SERVICE_CENTER) {
                   const data = {
-                    serviceCenterId: node.nodeInfo?.serviceCenterId ?? nodeId,
+                    serviceCenterId: node.nodeInfo?.regionId ?? "",
                     serviceCenterName: node.nodeInfo?.name ?? nodeName,
                     phoneNumber: node.nodeInfo?.phoneNo ?? "",
                     email: node.nodeInfo?.email ?? "",
@@ -883,7 +889,7 @@ export default function PerformanceOverview({
                   const data = {
                     substationName: node.nodeInfo?.name ?? nodeName,
                     serialNumber: node.nodeInfo?.serialNo ?? "",
-                    assetId: "",
+                    assetId: node.nodeInfo?.assetId ?? "",
                     status: node.nodeInfo?.status ? "Active" : "Inactive",
                     voltage: node.nodeInfo?.voltage ?? "330 KV",
                     longitude: node.nodeInfo?.longitude ?? "",
@@ -901,7 +907,7 @@ export default function PerformanceOverview({
                   const data = {
                     feederName: node.nodeInfo?.name ?? nodeName,
                     serialNumber: node.nodeInfo?.serialNo ?? "",
-                    assetId: "",
+                    assetId: node.nodeInfo?.assetId ?? "",
                     status: node.nodeInfo?.status ? "Active" : "Inactive",
                     voltage: node.nodeInfo?.voltage ?? "330 KV",
                     longitude: node.nodeInfo?.longitude ?? "",
@@ -923,7 +929,7 @@ export default function PerformanceOverview({
                   const data = {
                     substationName: node.nodeInfo?.name ?? nodeName,
                     serialNumber: node.nodeInfo?.serialNo ?? "",
-                    assetId: "",
+                    assetId: node.nodeInfo?.assetId ?? "",
                     status: node.nodeInfo?.status ? "Active" : "Inactive",
                     voltage: node.nodeInfo?.voltage ?? "330 KV",
                     longitude: node.nodeInfo?.longitude ?? "",
@@ -1187,7 +1193,7 @@ export default function PerformanceOverview({
                     id: performanceData?.nodes?.id || "root",
                     orgId: id,
                     name: performanceData?.businessName || "Root",
-                    nodeInfo: performanceData?.nodes?.nodeInfo, 
+                    nodeInfo: performanceData?.nodes?.nodeInfo,
                     nodesTree: performanceData?.nodes?.nodesTree || [],
                   }}
                   level={0}

@@ -43,10 +43,14 @@ export function EditBusinessHubDialog({
     onOpenChange(false);
   };
 
-   const handleCancel = () => {
+  const handleCancel = () => {
     setFormData(initialData);
     onOpenChange(false);
   };
+
+  const isFormValid =
+    (formData.businessHubId ?? "").trim() !== "" &&
+    (formData.businessHubName ?? "").trim() !== "";
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -66,6 +70,7 @@ export function EditBusinessHubDialog({
                 value={formData.businessHubId ?? ""}
                 onChange={handleChange}
                 placeholder="Enter Business Hub ID"
+                disabled
               />
             </div>
             <div className="space-y-2">
@@ -83,9 +88,7 @@ export function EditBusinessHubDialog({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">
-                Phone Number <span className="text-red-500">*</span>
-              </Label>
+              <Label htmlFor="phoneNumber">Phone Number</Label>
               <Input
                 id="phoneNumber"
                 name="phoneNumber"
@@ -95,9 +98,7 @@ export function EditBusinessHubDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">
-                Email<span className="text-red-500">*</span>
-              </Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 name="email"
@@ -108,9 +109,7 @@ export function EditBusinessHubDialog({
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="contactPerson">
-              Contact Person <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="contactPerson">Contact Person</Label>
             <Input
               id="contactPerson"
               name="contactPerson"
@@ -120,9 +119,7 @@ export function EditBusinessHubDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address">
-              Address <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="address">Address</Label>
             <Input
               id="address"
               name="address"
@@ -140,10 +137,13 @@ export function EditBusinessHubDialog({
           >
             Cancel
           </Button>
-          <Button onClick={handleSubmit} className="bg-[#161CCA]">
+          <Button
+            onClick={handleSubmit}
+            disabled={!isFormValid}
+            className={`text-white ${isFormValid ? "cursor-pointer bg-[#161CCA] hover:bg-[#161CCA]" : "cursor-not-allowed bg-[#161CCA]/40"}`}
+          >
             Save Changes
-          </Button>{" "}
-          {/* Matching image, though likely "Save" intended */}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

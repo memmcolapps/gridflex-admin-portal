@@ -46,11 +46,7 @@ export function AddServiceCenterDialog({
 
   const isFormValid =
     (formData.serviceCenterId ?? "").trim() !== "" &&
-    (formData.serviceCenterName ?? "").trim() !== "" &&
-    (formData.phoneNumber ?? "").trim() !== "" &&
-    (formData.email ?? "").trim() !== "" &&
-    (formData.contactPerson ?? "").trim() !== "" &&
-    (formData.address ?? "").trim() !== "";
+    (formData.serviceCenterName ?? "").trim() !== "";
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -87,52 +83,44 @@ export function AddServiceCenterDialog({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">
-                Phone Number <span className="text-red-500">*</span>
-              </Label>
+              <Label htmlFor="phoneNumber">Contact Person Phone Number</Label>
               <Input
                 id="phoneNumber"
                 name="phoneNumber"
                 value={formData.phoneNumber ?? ""}
                 onChange={handleChange}
-                placeholder="Enter Phone Number"
+                placeholder="Enter Contact Person Phone Number"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">
-                Email <span className="text-red-500">*</span>
-              </Label>
+              <Label htmlFor="email">Contact Person Email</Label>
               <Input
                 id="email"
                 name="email"
                 value={formData.email ?? ""}
                 onChange={handleChange}
-                placeholder="Enter Email"
+                placeholder="Enter Contact Person Email"
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="contactPerson">
-              Contact Person <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="contactPerson">Contact Person Name</Label>
             <Input
               id="contactPerson"
               name="contactPerson"
               value={formData.contactPerson ?? ""}
               onChange={handleChange}
-              placeholder="Enter Contact Person"
+              placeholder="Enter Contact Person Name"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address">
-              Address <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="address">Contact Person Address</Label>
             <Input
               id="address"
               name="address"
               value={formData.address ?? ""}
               onChange={handleChange}
-              placeholder="Enter Address"
+              placeholder="Enter Contact Person Address"
             />
           </div>
         </div>
@@ -140,14 +128,14 @@ export function AddServiceCenterDialog({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="text-[#161CCA] border-[#161CCA] hover:text-[#161CCA] cursor-pointer"
+            className="cursor-pointer border-[#161CCA] text-[#161CCA] hover:text-[#161CCA]"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={!isFormValid}
-            className={`text-white ${isFormValid ? "bg-[#161CCA] hover:bg-[#161CCA] cursor-pointer" : "bg-[#161CCA]/40 cursor-not-allowed"}`}
+            className={`text-white ${isFormValid ? "cursor-pointer bg-[#161CCA] hover:bg-[#161CCA]" : "cursor-not-allowed bg-[#161CCA]/40"}`}
           >
             Add Service Center
           </Button>

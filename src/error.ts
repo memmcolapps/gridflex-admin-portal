@@ -1,5 +1,12 @@
 import axios, { type AxiosError } from "axios";
 
+interface BackendErrorResponse {
+  responsecode: string;
+  responsedesc: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  responsedata?: any;
+}
+
 interface SimpleApiErrorResult {
   success: false;
   error: string; // The crucial change: error property is now guaranteed to be a string
@@ -15,14 +22,16 @@ export const handleApiError = (
   console.log("RAW ERROR OBJECT IN HANDLEAPIERROR:", error); // Keep this for full debugging
 
   if (axios.isAxiosError(error)) {
-    const axiosError = error as AxiosError<{
-      error: string;
-      success?: boolean;
-    }>;
+    const axiosError = error as AxiosError<BackendErrorResponse>;
 
     statusCode = axiosError.response?.status;
-    const serverMessage = axiosError.response?.data?.error;
+
+    const serverMessage =
+      axiosError.response?.data?.responsedesc ??
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (axiosError.response?.data as any)?.error;
     // const successStatus = axiosError.response?.data?.success;
+
 
     console.error(`Axios error during ${context}:`, {
       status: statusCode,
@@ -47,7 +56,7 @@ export const handleApiError = (
           "Access denied. You don't have permission to perform this action.";
         break;
       case 404:
-        errorMessage = "Service not found. Please try again later.";
+        errorMessage = serverMessage ?? "Service not found. Please try again later.";
         break;
       case 429:
         errorMessage = "Too many requests. Please wait a moment and try again.";

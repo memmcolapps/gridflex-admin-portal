@@ -176,6 +176,7 @@ export interface CreateRegionBhubServiceCenterPayload {
 }
 
 export interface UpdateRegionBhubServiceCenterPayload {
+  orgId: string;
   nodeId: string;
   regionId: string;
   name: string;
@@ -204,6 +205,7 @@ export interface CreateSubstationTransfomerFeederPayload {
 }
 
 export interface UpdateSubstationTransfomerFeederPayload {
+  orgId: string;
   nodeId: string;
   name: string;
   serialNo: string;

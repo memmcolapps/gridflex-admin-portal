@@ -33,7 +33,10 @@ import { useGetOrgs } from "@/hooks/use-orgs";
 import { SuspendUtilityDialog } from "./utility-companies-dialogs/suspend-utility-dialog";
 import { UnsuspendUtilityDialog } from "./utility-companies-dialogs/unsuspend-utility-dialog";
 import { SelectModulesDialog } from "./utility-companies-dialogs/add-modules-dialog";
-import { EditUtilityCompanyDialog, type OrganizationData } from "./utility-companies-dialogs/edit-utility-company-dialog";
+import {
+  EditUtilityCompanyDialog,
+  type OrganizationData,
+} from "./utility-companies-dialogs/edit-utility-company-dialog";
 import type { UnifiedFormData } from "@/types/unifiedForm";
 import type { SearchProps } from "@/types/org.interfaces";
 
@@ -41,37 +44,37 @@ const SkeletonRow = () => (
   <TableRow className="hover:bg-gray-50">
     <TableCell className="py-4 pl-6">
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 animate-pulse"></div>
+        <div className="flex h-10 w-10 animate-pulse items-center justify-center rounded-lg bg-gray-200"></div>
         <div className="flex flex-col gap-2">
-          <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
-          <div className="h-3 w-40 bg-gray-100 rounded animate-pulse"></div>
+          <div className="h-4 w-32 animate-pulse rounded bg-gray-200"></div>
+          <div className="h-3 w-40 animate-pulse rounded bg-gray-100"></div>
         </div>
       </div>
     </TableCell>
     <TableCell className="py-4">
       <div className="flex flex-col gap-2">
-        <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
-        <div className="h-3 w-20 bg-gray-100 rounded animate-pulse"></div>
+        <div className="h-4 w-24 animate-pulse rounded bg-gray-200"></div>
+        <div className="h-3 w-20 animate-pulse rounded bg-gray-100"></div>
       </div>
     </TableCell>
     <TableCell className="py-4">
-      <div className="h-6 w-20 bg-gray-200 rounded-sm animate-pulse"></div>
+      <div className="h-6 w-20 animate-pulse rounded-sm bg-gray-200"></div>
     </TableCell>
     <TableCell className="py-4">
-      <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-4 w-12 animate-pulse rounded bg-gray-200"></div>
     </TableCell>
     <TableCell className="py-4">
-      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-4 w-16 animate-pulse rounded bg-gray-200"></div>
     </TableCell>
     <TableCell className="py-4">
-      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-4 w-16 animate-pulse rounded bg-gray-200"></div>
     </TableCell>
     <TableCell className="py-4">
-      <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-4 w-24 animate-pulse rounded bg-gray-200"></div>
     </TableCell>
     <TableCell className="pr-6 text-right">
       <div className="flex justify-end">
-        <div className="h-8 w-8 bg-gray-200 rounded-lg animate-pulse"></div>
+        <div className="h-8 w-8 animate-pulse rounded-lg bg-gray-200"></div>
       </div>
     </TableCell>
   </TableRow>
@@ -80,17 +83,22 @@ const SkeletonRow = () => (
 export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [isSelectModulesDialogOpen, setIsSelectModulesDialogOpen] = useState(false)
-  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [isSelectModulesDialogOpen, setIsSelectModulesDialogOpen] =
+    useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
   const [isUnsuspendDialogOpen, setIsUnsuspendDialogOpen] = useState(false);
   const router = useRouter();
-  
+
   const apiParams = {
-    name: filterParams?.name
+    name: filterParams?.name,
   };
 
-  const { data: utilityCompaniesData, isLoading, error } = useGetOrgs(apiParams);
+  const {
+    data: utilityCompaniesData,
+    isLoading,
+    error,
+  } = useGetOrgs(apiParams);
   const handleSubmit = (data: UnifiedFormData) => {
     console.log("Submitted data:", data);
     setIsEditOpen(false);
@@ -104,7 +112,7 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
     status?: boolean;
   } | null>(null);
 
-  const [selectedOrg, setSelectedOrg] = useState<OrganizationData | null>(null)
+  const [selectedOrg, setSelectedOrg] = useState<OrganizationData | null>(null);
 
   const skeletonItems = Array(itemsPerPage).fill(0);
 
@@ -117,8 +125,12 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
     }
 
     if (totalPages > maxVisiblePages) {
-      pages.push('...');
-      for (let i = Math.max(maxVisiblePages + 1, totalPages - 2); i <= totalPages; i++) {
+      pages.push("...");
+      for (
+        let i = Math.max(maxVisiblePages + 1, totalPages - 2);
+        i <= totalPages;
+        i++
+      ) {
         if (!pages.includes(i)) {
           pages.push(i);
         }
@@ -131,7 +143,9 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center text-red-500">Failed to load organizations</div>
+          <div className="text-center text-red-500">
+            Failed to load organizations
+          </div>
         </CardContent>
       </Card>
     );
@@ -179,12 +193,13 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              skeletonItems.map((_, index) => (
-                <SkeletonRow key={index} />
-              ))
+              skeletonItems.map((_, index) => <SkeletonRow key={index} />)
             ) : utilityCompaniesData?.organizations.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-gray-500">
+                <TableCell
+                  colSpan={8}
+                  className="py-8 text-center text-gray-500"
+                >
                   No organization found
                 </TableCell>
               </TableRow>
@@ -237,14 +252,14 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                     {company.status ? (
                       <Badge
                         variant="secondary"
-                        className="bg-green-50 rounded-sm px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
+                        className="rounded-sm bg-green-50 px-2 py-1 font-semibold text-green-700 hover:bg-green-50"
                       >
                         Active
                       </Badge>
                     ) : (
                       <Badge
                         variant="secondary"
-                        className="bg-red-50 rounded-sm px-2 py-1 font-semibold text-red-700 hover:bg-red-50"
+                        className="rounded-sm bg-red-50 px-2 py-1 font-semibold text-red-700 hover:bg-red-50"
                       >
                         Suspended
                       </Badge>
@@ -274,14 +289,6 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="center">
-
-                        <DropdownMenuItem
-                          onClick={() => router.push('/incident-management')}
-                          className="align-items-center cursor-pointer">
-                          <CircleAlert size={14} className="mr-2 text-black" />
-                          View Incidents
-                        </DropdownMenuItem>
-
                         <DropdownMenuItem
                           className="align-items-center cursor-pointer"
                           onClick={() =>
@@ -293,9 +300,21 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                         </DropdownMenuItem>
 
                         <DropdownMenuItem
+                          onClick={() =>
+                            router.push(
+                              `/utility-companies/incident-report/${company.id}`,
+                            )
+                          }
+                          className="align-items-center cursor-pointer"
+                        >
+                          <CircleAlert size={14} className="mr-2 text-black" />
+                          View Incidents
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
                           onClick={() => {
                             setSelectedOrg({
-                              id: company.id ?? '',
+                              id: company.id ?? "",
                               businessName: company.businessName ?? "",
                               postalCode: company.postalCode ?? "",
                               address: company.address ?? "",
@@ -306,11 +325,13 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                               firstName: company.operator?.firstname ?? "",
                               lastName: company.operator?.lastname ?? "",
                               email: company.operator?.email ?? "",
-                              phoneNumber: company.nodes.nodeInfo?.phoneNo ?? "",
-                            })
-                            setIsEditOpen(true)
+                              phoneNumber:
+                                company.nodes.nodeInfo?.phoneNo ?? "",
+                            });
+                            setIsEditOpen(true);
                           }}
-                          className="align-items-center cursor-pointer">
+                          className="align-items-center cursor-pointer"
+                        >
                           <Pencil size={14} className="mr-2 text-black" />
                           Edit
                         </DropdownMenuItem>
@@ -323,12 +344,14 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                             });
                             setIsSelectModulesDialogOpen(true);
                           }}
-                          className="flex items-center cursor-pointer"
+                          className="flex cursor-pointer items-center"
                         >
-                          <CircleCheckBig size={14} className="mr-2 text-black" />
+                          <CircleCheckBig
+                            size={14}
+                            className="mr-2 text-black"
+                          />
                           Select Modules
                         </DropdownMenuItem>
-
 
                         <DropdownMenuItem
                           disabled={company.status === false}
@@ -337,15 +360,12 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                               setSelectedOrganization({
                                 id: company.id,
                                 name: `${company.businessName}`,
-                                status: company.status
+                                status: company.status,
                               });
                               setIsSuspendDialogOpen(true);
                             }
                           }}
-                          className={`
-                            align-items-center cursor-pointer
-                            ${company.status === false ? 'opacity-50 cursor-not-allowed' : ''}
-                          `}
+                          className={`align-items-center cursor-pointer ${company.status === false ? "cursor-not-allowed opacity-50" : ""} `}
                         >
                           <CircleSlash size={14} className="mr-2 text-black" />
                           <span>Suspend</span>
@@ -363,21 +383,16 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                               setIsUnsuspendDialogOpen(true);
                             }
                           }}
-                          className={`
-                            align-items-center cursor-pointer
-                            ${company.status === true ? "opacity-50 cursor-not-allowed" : ""}
-                          `}
+                          className={`align-items-center cursor-pointer ${company.status === true ? "cursor-not-allowed opacity-50" : ""} `}
                         >
                           <CircleSlash size={14} className="mr-2 text-black" />
                           <span>Unsuspend</span>
                         </DropdownMenuItem>
-
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
                 </TableRow>
-              )
-              )
+              ))
             )}
           </TableBody>
         </Table>
@@ -388,31 +403,34 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
             size="lg"
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1 || isLoading}
-            className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
+            className="flex cursor-pointer items-center gap-1 border-1 border-gray-300 bg-white px-3 py-2 text-gray-900"
           >
             <ArrowLeft color="#414651" strokeWidth={1.75} />
             Previous
           </Button>
 
           <div className="flex items-center gap-1">
-            {getPageNumbers().map((page, index) => (
-                page === '...' ? (
-                  <span key={index} className="px-2 text-gray-400">...</span>
-                ) : (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setCurrentPage(page as number)}
-                    className={`h-8 w-8 cursor-pointer p-0 ${currentPage === page
+            {getPageNumbers().map((page, index) =>
+              page === "..." ? (
+                <span key={index} className="px-2 text-gray-400">
+                  ...
+                </span>
+              ) : (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setCurrentPage(page as number)}
+                  className={`h-8 w-8 cursor-pointer p-0 ${
+                    currentPage === page
                       ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
                       : "text-gray-500 hover:bg-gray-50"
-                    }`}
-                  >
-                    {page}
-                  </Button>
-                )
-            ))}
+                  }`}
+                >
+                  {page}
+                </Button>
+              ),
+            )}
           </div>
 
           <Button
@@ -422,7 +440,7 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
             disabled={currentPage === totalPages}
-            className="flex border-1 border-gray-300 cursor-pointer items-center px-3 py-2 gap-1 bg-white text-gray-900"
+            className="flex cursor-pointer items-center gap-1 border-1 border-gray-300 bg-white px-3 py-2 text-gray-900"
           >
             Next
             <ArrowRight color="#414651" strokeWidth={1.75} />
@@ -434,8 +452,8 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
       <SelectModulesDialog
         isOpen={isSelectModulesDialogOpen}
         onOpenChange={setIsSelectModulesDialogOpen}
-        organizationId={selectedOrganization?.id || ''}
-        organizationName={selectedOrganization?.name || ''}
+        organizationId={selectedOrganization?.id || ""}
+        organizationName={selectedOrganization?.name || ""}
       />
       <EditUtilityCompanyDialog
         isOpen={isEditOpen}

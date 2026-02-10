@@ -302,7 +302,7 @@ export default function UtilityCompaniesTable({ filterParams }: SearchProps) {
                         <DropdownMenuItem
                           onClick={() =>
                             router.push(
-                              `/utility-companies/incident-report/${company.id}`,
+                              `/utility-companies/${company.id}`,
                             )
                           }
                           className="align-items-center cursor-pointer"

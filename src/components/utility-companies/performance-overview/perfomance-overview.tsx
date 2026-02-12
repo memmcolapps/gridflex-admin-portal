@@ -56,6 +56,10 @@ import { selectedModulesAtom } from "@/atom/modulesAtom";
 import { icons } from "./icons";
 import { EditRegionDialog } from "../utility-companies-dialogs/edit-region-dialog";
 import { useUpdateOrg } from "@/hooks/use-orgs";
+import {
+  EditUtilityCompanyDialog,
+  type OrganizationData,
+} from "../utility-companies-dialogs/edit-utility-company-dialog";
 
 const NODE_TYPES = {
   REGION: "region",
@@ -110,6 +114,10 @@ export default function PerformanceOverview({
   const [rootDialogData, setRootDialogData] = useState<
     Partial<UnifiedFormData>
   >({});
+
+  const [isEditUtilityOpen, setIsEditUtilityOpen] = useState(false);
+  const [selectedOrg, setSelectedOrg] = useState<OrganizationData | null>(null);
+
   const { data: performanceData } = useGetOneOrg(id);
   const { mutate: updateOrg } = useUpdateOrg();
 
@@ -169,6 +177,13 @@ export default function PerformanceOverview({
   const [modulesByOrg] = useAtom(selectedModulesAtom);
   const selectedModules = modulesByOrg[id] ?? [];
 
+  const handleEditUtilitySubmit = (data: UnifiedFormData) => {
+    queryClient.invalidateQueries({ queryKey: ["org", id] });
+    queryClient.invalidateQueries({ queryKey: ["nodes", id] });
+    setIsEditUtilityOpen(false);
+  };
+
+  
   const handleAddRegion = (data: UnifiedFormData) => {
     if (!currentParentId) {
       console.error("No parent ID set for adding region");
@@ -398,36 +413,32 @@ export default function PerformanceOverview({
   };
 
   const handleEditRoot = (data: UnifiedFormData) => {
-    if (!performanceData) {
+    if (!currentEditNode) {
       console.error("No performance data available");
       return;
     }
 
-    updateOrg(
+    updateRegionBhubServiceCenter(
       {
-        id: performanceData.id,
-        businessName: data.rootName ?? performanceData.businessName,
-        postalCode: performanceData.postalCode,
-        address: data.address ?? performanceData.address,
-        country: performanceData.country,
-        state: performanceData.state,
-        city: performanceData.city,
-        userId: performanceData.userId,
-        firstName: performanceData.operator.firstname,
-        lastName: performanceData.operator.lastname,
-        email: data.email ?? performanceData.operator.email,
-        password: "",
-        phoneNumber: data.phoneNumber ?? "",
+        orgId: id,
+        nodeId: currentEditNode?.nodeInfo.nodeId,
+        regionId: data.rootId ?? currentEditNode?.nodeInfo.regionId ?? "",
+        name: data.rootName ?? "",
+        phoneNo: data.phoneNumber ?? "",
+        email: data.email ?? "",
+        contactPerson: data.contactPerson ?? "",
+        address: data.address ?? "",
+        type: "root",
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsEditRootOpen(false);
-          toast.success("Organization updated successfully");
+          toast.success("Root updated successfully");
         },
         onError: (error) => {
-          console.error("Error updating organization:", error);
-          toast.error("Error updating organization");
+          console.error("Error updating root:", error);
+          toast.error("Error updating root");
         },
       },
     );
@@ -1066,20 +1077,21 @@ export default function PerformanceOverview({
             variant="outline"
             className="cursor-pointer border-gray-200 bg-white text-black hover:bg-white"
             onClick={() => {
-              const data = {
-                rootId: performanceData?.id ?? "",
-                rootName: performanceData?.businessName ?? "",
-                contactPerson:
-                  (performanceData?.operator?.firstname ?? "") +
-                  " " +
-                  (performanceData?.operator?.lastname ?? ""),
-                email: performanceData?.operator?.email ?? "",
-                phoneNumber: "",
+              setSelectedOrg({
+                id: performanceData?.id ?? "",
+                businessName: performanceData?.businessName ?? "",
+                postalCode: performanceData?.postalCode ?? "",
                 address: performanceData?.address ?? "",
-              };
-              console.log("Opening Root Dialog with data:", data);
-              setRootDialogData(data);
-              setIsEditRootOpen(true);
+                country: performanceData?.country ?? "",
+                state: performanceData?.state ?? "",
+                city: performanceData?.city ?? "",
+                userId: performanceData?.operator?.id ?? "",
+                firstName: performanceData?.operator?.firstname ?? "",
+                lastName: performanceData?.operator?.lastname ?? "",
+                email: performanceData?.operator?.email ?? "",
+                phoneNumber: performanceData?.nodes?.nodeInfo?.phoneNo ?? "",
+              });
+              setIsEditUtilityOpen(true);
             }}
           >
             <Edit size={16} className="text-black" />
@@ -1190,9 +1202,9 @@ export default function PerformanceOverview({
               <div className="space-y-2">
                 <RenderNode
                   node={{
-                    id: performanceData?.nodes?.id || "root",
-                    orgId: id,
-                    name: performanceData?.businessName || "Root",
+                    id: performanceData?.id || "root",
+                    orgId: performanceData?.nodes?.orgId || id,
+                    name: performanceData?.nodes.nodeInfo?.name || "Root",
                     nodeInfo: performanceData?.nodes?.nodeInfo,
                     nodesTree: performanceData?.nodes?.nodesTree || [],
                   }}
@@ -1204,6 +1216,14 @@ export default function PerformanceOverview({
         </div>
 
         {/* Dialogs */}
+        <EditUtilityCompanyDialog
+          isOpen={isEditUtilityOpen}
+          onOpenChange={setIsEditUtilityOpen}
+          onSubmit={handleEditUtilitySubmit}
+          organizationId={selectedOrg?.id || ""}
+          selectedOrganization={selectedOrg}
+        />
+
         <AddRegionDialog
           isOpen={isAddRegionOpen}
           onOpenChange={setIsAddRegionOpen}

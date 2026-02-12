@@ -21,28 +21,25 @@ export default function CompanyIncidentTable({
   const params = useParams();
   const companyId = params.id as string;
 
-  const [unresolvedPage, setUnresolvedPage] = useState(1);
-  const [resolvedPage, setResolvedPage] = useState(1);
+  const [unresolvedPage, setUnresolvedPage] = useState(0);
+  const [resolvedPage, setResolvedPage] = useState(0);
   const itemsPerPage = 10;
 
   const currentPage = activeTab === "unresolved" ? unresolvedPage : resolvedPage;
-  const setCurrentPage = activeTab === "unresolved" ? setUnresolvedPage : setResolvedPage;
-
-  const getStatus = () => {
-    return activeTab === "resolved" ? true : false;
-  };
+  const setCurrentPage =
+    activeTab === "unresolved" ? setUnresolvedPage : setResolvedPage;
 
   const { data: incidents, isLoading } = useCompanyIncidentReports(
     companyId,
     currentPage,
     itemsPerPage,
-    getStatus(),
+    activeTab === "resolved",
   );
   const { mutate: resolveIncident } = useResolveIncidents();
 
   const incidentList = incidents?.data?.data || [];
   const totalData = incidents?.data?.totalData || 0;
-  const totalPages = Math.ceil(totalData / itemsPerPage) - 1;
+  const totalPages = Math.ceil(totalData / itemsPerPage); 
 
   const skeletonItems = Array(5).fill(0);
 
@@ -52,7 +49,7 @@ export default function CompanyIncidentTable({
       {
         onSuccess: () => {
           toast.success(`${userName} resolved successfully`);
-          setUnresolvedPage(1);
+          setUnresolvedPage(0); 
         },
         onError: (err) => {
           toast.error(`Failed to resolve ${userName}`);
@@ -62,32 +59,28 @@ export default function CompanyIncidentTable({
     );
   };
 
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
+  const getPageNumbers = (): (number | "...")[] => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i);
+    }
+
+    const pages: (number | "...")[] = [];
     const delta = 2;
 
-    if (totalPages <= 1) return [1];
+    pages.push(0);
 
-    pages.push(1);
+    const rangeStart = Math.max(1, currentPage - delta);
+    const rangeEnd = Math.min(totalPages - 2, currentPage + delta);
 
-    const rangeStart = Math.max(2, currentPage - delta);
-    const rangeEnd = Math.min(totalPages - 1, currentPage + delta);
-
-    if (rangeStart > 2) {
-      pages.push("...");
-    }
+    if (rangeStart > 1) pages.push("...");
 
     for (let i = rangeStart; i <= rangeEnd; i++) {
       pages.push(i);
     }
 
-    if (rangeEnd < totalPages - 1) {
-      pages.push("...");
-    }
+    if (rangeEnd < totalPages - 2) pages.push("...");
 
-    if (totalPages > 1) {
-      pages.push(totalPages);
-    }
+    pages.push(totalPages - 1);
 
     return pages;
   };
@@ -227,8 +220,8 @@ export default function CompanyIncidentTable({
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+                disabled={currentPage === 0} // ✅ disabled at 0
                 className="flex cursor-pointer items-center gap-1 border-1 border-gray-300 bg-white px-3 py-2 text-gray-900"
               >
                 <ArrowLeft color="#414651" strokeWidth={1.75} />
@@ -238,7 +231,7 @@ export default function CompanyIncidentTable({
               <div className="flex items-center gap-1">
                 {getPageNumbers().map((page, index) =>
                   page === "..." ? (
-                    <span key={index} className="px-2 text-gray-400">
+                    <span key={`ellipsis-${index}`} className="px-2 text-gray-400">
                       ...
                     </span>
                   ) : (
@@ -246,14 +239,14 @@ export default function CompanyIncidentTable({
                       key={page}
                       variant={currentPage === page ? "default" : "ghost"}
                       size="sm"
-                      onClick={() => setCurrentPage(page as number)}
+                      onClick={() => setCurrentPage(page)}
                       className={`h-8 w-8 cursor-pointer p-0 ${
                         currentPage === page
                           ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
                           : "text-gray-500 hover:bg-gray-50"
                       }`}
                     >
-                      {page}
+                      {page + 1} 
                     </Button>
                   ),
                 )}
@@ -262,10 +255,8 @@ export default function CompanyIncidentTable({
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                disabled={currentPage === totalPages - 1} 
                 className="flex cursor-pointer items-center gap-1 border-1 border-gray-300 bg-white px-3 py-2 text-gray-900"
               >
                 Next

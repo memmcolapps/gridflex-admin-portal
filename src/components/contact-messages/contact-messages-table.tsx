@@ -130,10 +130,10 @@ export default function ContactMessagesTable({ filterParams }: SearchProps) {
             { id: contactId },
             {
                 onSuccess: () => {
-                    toast.success(`${selectedContact?.organizationName} suspended successfully`);
+                    toast.success(`${selectedContact?.organizationName} read successfully`);
                 },
                 onError: (err) => {
-                    toast.error(`Failed to suspend ${selectedContact?.organizationName}`);
+                    toast.error(`Failed to read ${selectedContact?.organizationName}`);
                     console.error(err);
                 },
             }

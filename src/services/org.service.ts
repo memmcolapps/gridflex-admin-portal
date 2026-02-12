@@ -111,7 +111,9 @@ export const updateOrgApi = async (
   }
 };
 
-export const getOrgs = async (params?: SearchParams): Promise<{
+export const getOrgs = async (
+  params?: SearchParams,
+): Promise<{
   success: boolean;
   data?: OrganizationResponse["responsedata"];
   error?: string;
@@ -211,7 +213,7 @@ export const updateRegionBhubServiceCenter = async (
       success: true,
     };
   } catch (error: unknown) {
-    if(error instanceof Error) {
+    if (error instanceof Error) {
       throw error;
     }
     const errorResult = handleApiError(error, "updateRegionBhubServiceCenter");
@@ -373,14 +375,18 @@ export const getOneOrg = async (
   }
 };
 
-export const getAnalytics = async (year?: number, month?: number, params?: SearchParams): Promise<{
+export const getAnalytics = async (
+  year?: number,
+  month?: number,
+  params?: SearchParams,
+): Promise<{
   success: boolean;
   data?: AnalyticsResponse["responsedata"];
   error?: string;
 }> => {
   try {
     const token = localStorage.getItem("access_token");
-    
+
     const queryParams: Record<string, unknown> = {};
     if (year !== undefined) queryParams.year = year;
     if (month !== undefined) queryParams.month = month;
@@ -393,7 +399,7 @@ export const getAnalytics = async (year?: number, month?: number, params?: Searc
           Authorization: `Bearer ${token}`,
           custom: CUSTOM_HEADER,
         },
-        params: queryParams
+        params: queryParams,
       },
     );
 
@@ -417,9 +423,11 @@ export const getAnalytics = async (year?: number, month?: number, params?: Searc
   }
 };
 
-export const getAdmin = async (params?: SearchParams): Promise<{
+export const getAdmin = async (
+  params?: SearchParams,
+): Promise<{
   success: boolean;
-  data?: Admins['responsedata']
+  data?: Admins["responsedata"];
   error?: string;
 }> => {
   try {
@@ -431,7 +439,7 @@ export const getAdmin = async (params?: SearchParams): Promise<{
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {
@@ -446,7 +454,7 @@ export const getAdmin = async (params?: SearchParams): Promise<{
 
 export const getRecentActivities = async (): Promise<{
   success: boolean;
-  data?: RecentActivities['responsedata'];
+  data?: RecentActivities["responsedata"];
   error?: string;
 }> => {
   try {
@@ -457,7 +465,7 @@ export const getRecentActivities = async (): Promise<{
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {
@@ -470,9 +478,11 @@ export const getRecentActivities = async (): Promise<{
   }
 };
 
-export const getAuditLog = async (params?: SearchParams): Promise<{
+export const getAuditLog = async (
+  params?: SearchParams,
+): Promise<{
   success: boolean;
-  data?: AuditLog['responsedata'];
+  data?: AuditLog["responsedata"];
   error?: string;
 }> => {
   try {
@@ -484,7 +494,7 @@ export const getAuditLog = async (params?: SearchParams): Promise<{
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {
@@ -501,7 +511,6 @@ export const createAdminApi = async (
   payload: AdminPayload,
 ): Promise<{ success: boolean } | { success: boolean; error: string }> => {
   try {
-
     const token = localStorage.getItem("access_token");
     const response = await axios.post<CreateAdminResponse>(
       `${BASE_URL}/portal/onboard/v1/api/gfPortal/auth/service/create`,
@@ -544,7 +553,7 @@ export const createAdminApi = async (
 
 export const suspendAdminApi = async (
   id: string,
-  status: boolean
+  status: boolean,
 ): Promise<{ success: boolean } | { success: boolean; error: string }> => {
   try {
     const token = localStorage.getItem("access_token");
@@ -557,7 +566,7 @@ export const suspendAdminApi = async (
           Authorization: `Bearer ${token}`,
           custom: CUSTOM_HEADER,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {
@@ -573,7 +582,7 @@ export const suspendAdminApi = async (
 
 export const suspendUtility = async (
   id: string,
-  status: boolean
+  status: boolean,
 ): Promise<{ success: boolean } | { success: boolean; error: string }> => {
   try {
     const token = localStorage.getItem("access_token");
@@ -586,7 +595,7 @@ export const suspendUtility = async (
           Authorization: `Bearer ${token}`,
           custom: CUSTOM_HEADER,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {
@@ -648,22 +657,22 @@ export const updateAdminApi = async (
 export const getIncidentReports = async (
   page: number,
   size: number,
-  status?: boolean
+  status?: boolean,
 ): Promise<{
   success: boolean;
-  data?: IncidentReport['responsedata'];
+  data?: IncidentReport["responsedata"];
   error?: string;
 }> => {
   try {
     const token = localStorage.getItem("access_token");
     const response = await axios.get<IncidentReport>(
-      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report`,
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/analytic/service/incident/report/unresolved/latest`,
       {
         params: { page, size, status },
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {
@@ -680,15 +689,14 @@ export const getIncidentReports = async (
   }
 };
 
-
 export const getCompanyIncidentReports = async (
   id: string,
   page: number,
   size: number,
-  status?: boolean
+  status?: boolean,
 ): Promise<{
   success: boolean;
-  data?: IncidentReport['responsedata'];
+  data?: IncidentReport["responsedata"];
   error?: string;
 }> => {
   try {
@@ -700,7 +708,7 @@ export const getCompanyIncidentReports = async (
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {
@@ -717,11 +725,9 @@ export const getCompanyIncidentReports = async (
   }
 };
 
-
-
 export const resolveIncident = async (
   id: string,
-  status: boolean
+  status: boolean,
 ): Promise<{ success: boolean } | { success: boolean; error: string }> => {
   try {
     const token = localStorage.getItem("access_token");
@@ -734,7 +740,7 @@ export const resolveIncident = async (
           Authorization: `Bearer ${token}`,
           custom: CUSTOM_HEADER,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {
@@ -748,7 +754,10 @@ export const resolveIncident = async (
   }
 };
 
-export const getDashboardAnalytics = async (year?: number, month?: number): Promise<{
+export const getDashboardAnalytics = async (
+  year?: number,
+  month?: number,
+): Promise<{
   success: boolean;
   data?: AnalyticsResponse["responsedata"];
   error?: string;
@@ -764,8 +773,8 @@ export const getDashboardAnalytics = async (year?: number, month?: number): Prom
         },
         params: {
           year,
-          month
-        }
+          month,
+        },
       },
     );
 
@@ -789,9 +798,11 @@ export const getDashboardAnalytics = async (year?: number, month?: number): Prom
   }
 };
 
-export const getContactMessages = async (params?: SearchParams): Promise<{
+export const getContactMessages = async (
+  params?: SearchParams,
+): Promise<{
   success: boolean;
-  data?: Contact['responsedata']
+  data?: Contact["responsedata"];
   error?: string;
 }> => {
   try {
@@ -803,7 +814,7 @@ export const getContactMessages = async (params?: SearchParams): Promise<{
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {
@@ -830,7 +841,7 @@ export const markContactApi = async (
           Authorization: `Bearer ${token}`,
           custom: CUSTOM_HEADER,
         },
-      }
+      },
     );
 
     if (response.data.responsecode !== "000") {

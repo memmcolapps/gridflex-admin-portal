@@ -183,7 +183,7 @@ export interface UpdateRegionBhubServiceCenterPayload {
   email?: string;
   contactPerson?: string;
   address?: string;
-  type: "business hub" | "region" | "service center";
+  type: "business hub" | "region" | "service center" | "root";
 }
 
 export interface CreateSubstationTransfomerFeederPayload {

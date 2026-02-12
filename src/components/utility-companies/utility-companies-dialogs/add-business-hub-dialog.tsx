@@ -117,6 +117,7 @@ export function AddBusinessHubDialog({
             />
           </div>
         </div>
+
         <DialogFooter>
           <Button
             variant="outline"

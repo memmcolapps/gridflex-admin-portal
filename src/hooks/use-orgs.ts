@@ -247,6 +247,7 @@ export const useResolveIncidents = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['incidentReport']})
       queryClient.invalidateQueries({ queryKey: ['companyIncidentReport'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard']})
     }
   });
 };

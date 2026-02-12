@@ -194,7 +194,7 @@ export default function PerformanceOverview({
       {
         orgId: id,
         parentId: currentParentId,
-        regionId: data.regionId ?? `REG-${Date.now()}`,
+        regionId: data.regionId ?? '',
         name: data.regionName ?? "Unnamed Region",
         phoneNo: data.phoneNumber ?? "",
         email: data.email ?? "",
@@ -207,7 +207,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddRegionOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Region created successfully");
           toast.success("Region created successfully");
         },
@@ -242,7 +242,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddBusinessHubOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Business hub created successfully");
           toast.success("Business hub created successfully");
         },
@@ -277,7 +277,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddServiceCenterOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Service center created successfully");
           toast.success("Service center created successfully");
         },
@@ -318,7 +318,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddSubstationOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Substation created successfully");
           toast.success("Substation created successfully");
         },
@@ -359,7 +359,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddFeederLineOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Feeder line created successfully");
           toast.success("Feeder line created successfully");
         },
@@ -400,7 +400,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddDSSOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("DSS created successfully");
           toast.success("DSS created successfully");
         },
@@ -467,7 +467,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddRegionOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Region updated successfully");
           toast.success("Region updated successfully");
         },
@@ -502,7 +502,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddBusinessHubOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Business hub updated successfully");
           toast.success("Business hub updated successfully");
         },
@@ -537,7 +537,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddServiceCenterOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Service center updated successfully");
           toast.success("Service center updated successfully");
         },
@@ -578,7 +578,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddSubstationOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Substation updated successfully");
           toast.success("Substation updated successfully");
         },
@@ -619,7 +619,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddFeederLineOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("Feeder line updated successfully");
           toast.success("Feeder line updated successfully");
         },
@@ -660,7 +660,7 @@ export default function PerformanceOverview({
           queryClient.invalidateQueries({ queryKey: ["nodes", id] });
           queryClient.invalidateQueries({ queryKey: ["org", id] });
           setIsAddDSSOpen(false);
-          setCurrentParentId("");
+          setCurrentParentId('');
           console.log("DSS updated successfully");
           toast.success("DSS updated successfully");
         },
@@ -745,7 +745,7 @@ export default function PerformanceOverview({
                 side="bottom"
                 align="center"
                 sideOffset={4}
-                avoidCollisions={false}
+                avoidCollisions={true}
               >
                 <DropdownMenuItem
                   onClick={() => {
@@ -1149,7 +1149,7 @@ export default function PerformanceOverview({
                   <Phone size={18} className="text-gray-500" />
                   <div className="mt-2 space-y-0">
                     <p className="text-base font-medium text-black">
-                      {performanceData?.phoneNo || ""}
+                      {performanceData?.operator?.phoneNumber || ""}
                     </p>
                     <p className="text-gray-400">Phone</p>
                   </div>
@@ -1202,7 +1202,7 @@ export default function PerformanceOverview({
               <div className="space-y-2">
                 <RenderNode
                   node={{
-                    id: performanceData?.id || "root",
+                    id: performanceData?.nodes.id || "root",
                     orgId: performanceData?.nodes?.orgId || id,
                     name: performanceData?.nodes.nodeInfo?.name || "Root",
                     nodeInfo: performanceData?.nodes?.nodeInfo,

@@ -292,6 +292,7 @@ interface GetOneOrgOperator {
   nodeId: string;
   firstname: string;
   lastname: string;
+  phoneNumber: string;
   email: string;
   status: boolean;
   active: boolean;

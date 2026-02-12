@@ -160,19 +160,21 @@ export const EditUtilityCompanyDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Edit Utility Company</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4">
+
+        <div className="flex flex-col gap-4">
           <Label className="text-base">Company Information</Label>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="organizationName">
                 Organization Name <span className="text-red-500">*</span>
               </Label>
               <Input
-                className="h-11 w-[200px]"
+                className="h-11 w-full" 
                 id="organizationName"
                 name="organizationName"
                 value={formData.organizationName ?? ""}
@@ -186,9 +188,9 @@ export const EditUtilityCompanyDialog = ({
               </Label>
               <Select
                 onValueChange={handleSelectChange("country")}
-                defaultValue={formData.country}
+                value={formData.country ?? ""}
               >
-                <SelectTrigger className="h-11 w-[200px]">
+                <SelectTrigger className="h-11 w-full">
                   <SelectValue placeholder="Select country" />
                 </SelectTrigger>
                 <SelectContent>
@@ -197,17 +199,18 @@ export const EditUtilityCompanyDialog = ({
               </Select>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="stateProvince">
                 State/Province <span className="text-red-500">*</span>
               </Label>
               <Select
                 onValueChange={handleSelectChange("stateProvince")}
-                value={formData.stateProvince}
+                value={formData.stateProvince ?? ""}
                 disabled={isLoadingStates || states?.length === 0}
               >
-                <SelectTrigger className="h-11 w-[200px]">
+                <SelectTrigger className="h-11 w-full">
                   <SelectValue
                     placeholder={
                       isLoadingStates ? "Loading states..." : "Select state"
@@ -229,14 +232,14 @@ export const EditUtilityCompanyDialog = ({
               </Label>
               <Select
                 onValueChange={handleSelectChange("city")}
-                value={formData.city}
+                value={formData.city ?? ""}
                 disabled={
                   isLoadingCities ||
                   !formData.stateProvince ||
                   cities?.length === 0
                 }
               >
-                <SelectTrigger className="h-11 w-[200px]">
+                <SelectTrigger className="h-11 w-full">
                   <SelectValue
                     placeholder={
                       isLoadingCities ? "Loading cities..." : "Select city"
@@ -253,12 +256,13 @@ export const EditUtilityCompanyDialog = ({
               </Select>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="postalCode">Postal Code</Label>
               <Input
                 id="postalCode"
-                className="h-11 w-[200px]"
+                className="h-11 w-full"
                 name="postalCode"
                 value={formData.postalCode ?? ""}
                 onChange={handleChange}
@@ -271,7 +275,7 @@ export const EditUtilityCompanyDialog = ({
               </Label>
               <Input
                 id="streetAddress"
-                className="h-11 w-[200px]"
+                className="h-11 w-full"
                 name="streetAddress"
                 value={formData.streetAddress ?? ""}
                 onChange={handleChange}
@@ -279,25 +283,28 @@ export const EditUtilityCompanyDialog = ({
               />
             </div>
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="companyLogo">+ Add company logo</Label>
             <Input
-              className="h-11"
+              className="h-11 w-full"
               id="companyLogo"
               type="file"
               onChange={handleFileChange}
             />
           </div>
-          <Label className="mt-4">Admin Details</Label>
-          <div className="mt-2 grid grid-cols-2 gap-4">
+
+          <Label className="mt-2">Admin Details</Label>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="firstName">
+              <Label htmlFor="firstname">
                 First Name <span className="text-red-500">*</span>
               </Label>
               <Input
                 disabled
                 id="firstname"
-                className="h-11 w-[200px]"
+                className="h-11 w-full"
                 name="firstname"
                 value={formData.firstname ?? ""}
                 onChange={handleChange}
@@ -305,13 +312,13 @@ export const EditUtilityCompanyDialog = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">
+              <Label htmlFor="lastname">
                 Last Name <span className="text-red-500">*</span>
               </Label>
               <Input
                 disabled
                 id="lastname"
-                className="h-11 w-[200px]"
+                className="h-11 w-full"
                 name="lastname"
                 value={formData.lastname ?? ""}
                 onChange={handleChange}
@@ -319,7 +326,8 @@ export const EditUtilityCompanyDialog = ({
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="email">
                 Email <span className="text-red-500">*</span>
@@ -328,7 +336,7 @@ export const EditUtilityCompanyDialog = ({
                 disabled
                 id="email"
                 name="email"
-                className="h-11 w-[200px]"
+                className="h-11 w-full"
                 value={formData.email ?? ""}
                 onChange={handleChange}
                 placeholder="Enter Email"
@@ -342,44 +350,43 @@ export const EditUtilityCompanyDialog = ({
                 disabled
                 id="phoneNumber"
                 name="phoneNumber"
-                className="h-10 w-[200px]"
+                className="h-11 w-full"
                 value={formData.phoneNumber ?? ""}
                 onChange={handleChange}
                 placeholder="Enter Phone Number"
               />
             </div>
           </div>
-          <div>
-            <div className="space-y-4">
-              <Label htmlFor="defaultPassword">
-                Default Password <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                disabled
-                id="defaultPassword"
-                name="defaultPassword"
-                className="h-11 w-full"
-                value={formData.defaultPassword ?? ""}
-                onChange={handleChange}
-                placeholder="Enter default password"
-              />
-            </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="defaultPassword">Default Password</Label>
+            <Input
+              disabled
+              id="defaultPassword"
+              name="defaultPassword"
+              className="h-11 w-full"
+              value={formData.defaultPassword ?? ""}
+              onChange={handleChange}
+              placeholder="Enter default password"
+            />
           </div>
+
           {isError && (
-            <div className="mt-2 text-sm text-red-500">{String(error)}</div>
+            <p className="text-sm text-red-500">{String(error)}</p>
           )}
           {isSuccess && (
-            <div className="mt-2 text-sm text-green-600">
+            <p className="text-sm text-green-600">
               Organization updated successfully!
-            </div>
+            </p>
           )}
         </div>
-        <DialogFooter>
+
+        <DialogFooter className="mt-4">
           <div className="flex w-full justify-between gap-2">
             <Button
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="rounded-sm border-1 border-[var(--primary)] bg-white px-6 py-5 text-[#161CCA] hover:text-[#161CCA]"
+              className="rounded-sm border border-[#161CCA] bg-white px-6 py-5 text-[#161CCA] hover:text-[#161CCA]"
             >
               Cancel
             </Button>

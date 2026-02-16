@@ -125,15 +125,15 @@ export default function ContactMessagesTable({ filterParams }: SearchProps) {
         setIsViewDialogOpen(true);
     };
 
-    const handleMarkAsRead = (contactId: string) => {
+    const handleMarkAsRead = (contact: Contact) => {
         markContact(
-            { id: contactId },
+            { id: contact.id },
             {
                 onSuccess: () => {
-                    toast.success(`${selectedContact?.organizationName} read successfully`);
+                    toast.success(`${contact?.organizationName} read successfully`);
                 },
                 onError: (err) => {
-                    toast.error(`Failed to read ${selectedContact?.organizationName}`);
+                    toast.error(`Failed to read ${contact?.organizationName}`);
                     console.error(err);
                 },
             }
@@ -265,7 +265,7 @@ export default function ContactMessagesTable({ filterParams }: SearchProps) {
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         className="align-items-center cursor-pointer"
-                                                        onClick={() => handleMarkAsRead(data.id)}
+                                                        onClick={() => handleMarkAsRead(data)}
                                                         disabled={data.status === 'Read'}
                                                     >
                                                         <SquareCheckBig className="mr-2 text-black" />

@@ -8,11 +8,12 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Check, Settings, CreditCard, Zap } from "lucide-react";
+import { Check, Settings, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { selectedModulesAtom } from "@/atom/modulesAtom";
+import { useActivateOrgModules } from "@/hooks/use-orgs";
 
 type Props = {
     isOpen: boolean;
@@ -29,13 +30,14 @@ export const SelectModulesDialog = ({
 }: Props) => {
     const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
     const [modulesByOrg, setModulesByOrg] = useAtom(selectedModulesAtom);
+    const { mutate: activateModules, isPending } = useActivateOrgModules(); 
 
     useEffect(() => {
-        if(!isOpen){
+        if (!isOpen) {
             const saved = modulesByOrg[organizationId] || [];
-            setSelectedUnits(saved)
+            setSelectedUnits(saved);
         }
-    },[isOpen, modulesByOrg, organizationId])
+    }, [isOpen, modulesByOrg, organizationId]);
 
     const handleSelect = (label: string) => {
         setSelectedUnits((prev) =>
@@ -46,17 +48,30 @@ export const SelectModulesDialog = ({
     };
 
     const handleSave = () => {
-        setModulesByOrg((prev) => ({
-          ...prev,
-          [organizationId]: selectedUnits,
-        }));
-        toast.success(`${organizationName} updated successfully`);
-        onOpenChange(false);
-      };
-      
+        const selectedModules = {
+            HES: selectedUnits.includes("HES"),
+            VENDING: selectedUnits.includes("Vending"),
+        };
+
+        activateModules(
+            { orgId: organizationId, module:selectedModules },
+            {
+                onSuccess: () => {
+                    setModulesByOrg((prev) => ({
+                        ...prev,
+                        [organizationId]: selectedUnits,
+                    }));
+                    toast.success(`${organizationName} updated successfully`);
+                    onOpenChange(false);
+                },
+                onError: (error) => {
+                    toast.error(error.message || "Failed to update modules");
+                },
+            }
+        );
+    };
 
     const moduleOptions = [
-        { label: "Billing", icon: <CreditCard className="text-gray-500" size={16} /> },
         { label: "Vending", icon: <Zap className="text-gray-500" size={16} /> },
         { label: "HES", icon: <Settings className="text-gray-500" size={16} /> },
     ];
@@ -70,7 +85,7 @@ export const SelectModulesDialog = ({
                     </DialogTitle>
                     <DialogDescription className="text-sm text-black">
                         Select which modules should be visible to this organization.
-                        Hidden modules won’t appear in their sidebar.
+                        Hidden modules won&lsquo;t appear in their sidebar.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -114,9 +129,9 @@ export const SelectModulesDialog = ({
                         <Button
                             className="bg-[var(--primary)] font-semibold px-6 py-6 rounded-sm text-white hover:bg-blue-500"
                             onClick={handleSave}
-                            disabled={selectedUnits.length === 0}
+                            disabled={selectedUnits.length === 0 || isPending}
                         >
-                            {"Save Changes"}
+                            {isPending ? "Saving..." : "Save Changes"} 
                         </Button>
                     </div>
                 </DialogFooter>

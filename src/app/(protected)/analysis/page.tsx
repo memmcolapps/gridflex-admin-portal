@@ -13,8 +13,8 @@ export default function Analysis() {
          date: selecetdDate
         })
      }
+     
    
-
     return (
         <div className="flex flex-col gap-6 py-4">
             <div>

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  activateOrgModules,
   createAdminApi,
   createOrgApi,
   createRegionBhubServiceCenter,
@@ -38,6 +39,7 @@ import type {
   ChangePasswordPayload,
   UpdateOrgPayload,
   SearchParams,
+  ModuleActivationPayload,
 } from "@/types/org.interfaces";
 import { queryClient } from "@/lib/queryClient";
 import { changePasswordApi, generateOtpApi, getProfile, resetPasswordApi } from "@/services/auth.service";
@@ -103,6 +105,18 @@ export const useGetOneOrg = (orgId: string) => {
     queryKey: ["org", orgId],
     queryFn: async () => {
       const response = await getOneOrg(orgId);
+      if (!response.success && "error" in response) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
+  });
+};
+
+export const useActivateOrgModules = () => {
+  return useMutation({
+    mutationFn: async ({ orgId, module }: ModuleActivationPayload) => {
+      const response = await activateOrgModules(orgId, module);
       if (!response.success && "error" in response) {
         throw new Error(response.error);
       }

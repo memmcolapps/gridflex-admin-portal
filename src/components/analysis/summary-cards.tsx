@@ -4,12 +4,13 @@ import { useGetAnalytics } from "@/hooks/use-orgs";
 import type { SearchProps } from "@/types/org.interfaces";
 
 export default function AnalysisSummaryCards({ filterParams }: SearchProps) {
-  const dateParam: number | undefined = filterParams?.date
-    ? new Date(filterParams.date).getTime()
-    : undefined;
+ const year = filterParams?.date ? new Date(filterParams.date).getFullYear() : undefined;
+const month = filterParams?.date ? new Date(filterParams.date).getMonth() + 1 : undefined;
+
+console.log('filtered data', filterParams, year, month)
 
   const { data: mainAnalytics, isError: mainError } = useGetAnalytics();
-  const { data: analytics, isLoading, isError } = useGetAnalytics(dateParam);
+  const { data: analytics, isLoading, isError } = useGetAnalytics(year, month);
 
   const mainSummary = mainAnalytics?.data
   const summary = analytics?.data;

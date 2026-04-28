@@ -671,3 +671,17 @@ export interface Contact {
     totalCount: number;
   };
 }
+
+export interface ModuleActivationResponse {
+  responsecode: string;
+  responsedesc: string;
+  responsedata: ModuleActivationPayload;
+}
+
+export interface ModuleActivationPayload {
+  orgId: string;
+  module: {
+    HES: boolean;
+    VENDING: boolean;
+  };
+}

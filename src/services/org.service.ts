@@ -23,6 +23,8 @@ import type {
   Contact,
   UpdateOrgPayload,
   SearchParams,
+  ModuleActivationResponse,
+  ModuleActivationPayload,
 } from "@/types/org.interfaces";
 
 const BASE_URL = env.NEXT_PUBLIC_API_BASE_URL;
@@ -852,5 +854,45 @@ export const markContactApi = async (
   } catch (error: unknown) {
     const errorResult = handleApiError(error, "markContact");
     return { success: false, error: errorResult.error };
+  }
+};
+
+export const activateOrgModules = async (
+ orgId: string,
+  module: ModuleActivationPayload["module"],
+): Promise<{
+  success: boolean;
+  data?: ModuleActivationPayload;
+  error?: string;
+}> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.post<ModuleActivationResponse>(
+      `${BASE_URL}/portal/onboard/v1/api/gfPortal/service/organization/module-activated`,
+      { orgId, module },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (response.data.responsecode !== "000") {
+      return {
+        success: false,
+        error: response.data.responsedesc,
+      };
+    }
+
+    return {
+      success: true,
+      data: response.data.responsedata,
+    };
+  } catch (error: unknown) {
+    const errorResult = handleApiError(error, "activateOrgModules");
+    return {
+      success: false,
+      error: errorResult.error,
+    };
   }
 };

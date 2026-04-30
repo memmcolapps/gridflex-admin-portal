@@ -33,7 +33,7 @@ export const SelectModulesDialog = ({
     const { mutate: activateModules, isPending } = useActivateOrgModules(); 
 
     useEffect(() => {
-        if (!isOpen) {
+        if (isOpen) {
             const saved = modulesByOrg[organizationId] || [];
             setSelectedUnits(saved);
         }

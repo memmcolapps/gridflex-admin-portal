@@ -285,7 +285,7 @@ jobs:
               Write-Host "Reusing the cached admin portal WinSW executable on the Windows server."
           }
 
-      - name: Upload prepared Windows release with resume support
+      - name: Upload prepared Windows release
         shell: pwsh
         env:
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
@@ -308,75 +308,25 @@ jobs:
               $files += $wrapperPath
               $files += "$wrapperPath.sha256"
           }
+          $destination = "$env:SERVER_USERNAME@$env:SERVER_PUBLIC_ADDRESS`:./"
 
-          $remoteNames = $files | ForEach-Object { [IO.Path]::GetFileName($_) }
-          $quotedRemoteNames = ($remoteNames | ForEach-Object { "'.\$_'" }) -join ","
-          $remoteCleanupCommand = "powershell.exe -NoLogo -NoProfile -NonInteractive -Command `"Remove-Item -LiteralPath $quotedRemoteNames -Force -ErrorAction SilentlyContinue`""
-          $remoteCleaned = $false
-          for ($attempt = 1; $attempt -le 3 -and -not $remoteCleaned; $attempt++) {
-              & ssh.exe `
-                  -p $env:SERVER_PORT `
+          $uploaded = $false
+          for ($attempt = 1; $attempt -le 3 -and -not $uploaded; $attempt++) {
+              & scp.exe `
+                  -q `
+                  -P $env:SERVER_PORT `
                   -i $keyPath `
                   -o BatchMode=yes `
                   -o ConnectTimeout=20 `
                   -o ConnectionAttempts=3 `
                   -o ServerAliveInterval=15 `
                   -o ServerAliveCountMax=4 `
-                  "$env:SERVER_USERNAME@$env:SERVER_PUBLIC_ADDRESS" `
-                  $remoteCleanupCommand
-              $remoteCleaned = $LASTEXITCODE -eq 0
-              if (-not $remoteCleaned) { Start-Sleep -Seconds 15 }
+                  @files `
+                  $destination
+              $uploaded = $LASTEXITCODE -eq 0
+              if (-not $uploaded) { Start-Sleep -Seconds 15 }
           }
-          if (-not $remoteCleaned) { throw "Could not prepare the remote upload directory." }
-
-          foreach ($file in $files) {
-              $localFile = [IO.Path]::GetFullPath($file)
-              $localSftpPath = $localFile.Replace('\', '/')
-              $remoteName = [IO.Path]::GetFileName($localFile)
-              $expectedLength = (Get-Item -LiteralPath $localFile).Length
-              $batchPath = Join-Path $env:RUNNER_TEMP "gridflex-admin-$remoteName.sftp"
-              [IO.File]::WriteAllLines(
-                  $batchPath,
-                  @("reput `"$localSftpPath`" `"$remoteName`"", "quit"),
-                  [Text.ASCIIEncoding]::new()
-              )
-
-              $uploaded = $false
-              for ($attempt = 1; $attempt -le 8 -and -not $uploaded; $attempt++) {
-                  Write-Host "Uploading $remoteName (attempt $attempt of 8; interrupted transfers will resume)"
-                  & sftp.exe `
-                      -b $batchPath `
-                      -P $env:SERVER_PORT `
-                      -i $keyPath `
-                      -o BatchMode=yes `
-                      -o ConnectTimeout=20 `
-                      -o ConnectionAttempts=3 `
-                      -o ServerAliveInterval=15 `
-                      -o ServerAliveCountMax=4 `
-                      "$env:SERVER_USERNAME@$env:SERVER_PUBLIC_ADDRESS"
-
-                  $remoteLengthCommand = "powershell.exe -NoLogo -NoProfile -NonInteractive -Command `"`$item = Get-Item -LiteralPath '.\$remoteName' -ErrorAction SilentlyContinue; if (`$item) { Write-Output `$item.Length }`""
-                  $remoteLengthOutput = @(& ssh.exe `
-                      -p $env:SERVER_PORT `
-                      -i $keyPath `
-                      -o BatchMode=yes `
-                      -o ConnectTimeout=20 `
-                      -o ConnectionAttempts=3 `
-                      "$env:SERVER_USERNAME@$env:SERVER_PUBLIC_ADDRESS" `
-                      $remoteLengthCommand 2>$null)
-                  $remoteLength = [long]0
-                  $lastOutputLine = [string]($remoteLengthOutput | Select-Object -Last 1)
-                  $lengthParsed = [long]::TryParse($lastOutputLine.Trim(), [ref]$remoteLength)
-                  $uploaded = $lengthParsed -and $remoteLength -eq $expectedLength
-                  if (-not $uploaded) {
-                      Start-Sleep -Seconds ([Math]::Min(10 * $attempt, 45))
-                  }
-              }
-              if (-not $uploaded) {
-                  throw "Upload of $remoteName did not complete after eight resumable attempts."
-              }
-              Write-Host "Uploaded $remoteName ($expectedLength bytes)."
-          }
+          if (-not $uploaded) { throw "Release upload failed after three attempts." }
 
       - name: Activate release as a Windows service
         shell: pwsh

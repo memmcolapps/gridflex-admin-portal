@@ -117,7 +117,7 @@ export default function RecentIncidents() {
                                       </span>
                                       <span className="text-gray-600">
                                         Utility Company:{" "}
-                                        {incident?.organization.businessName}
+                                        {incident?.organization?.businessName}
                                       </span>
                                     </>
                                   ) : (
